@@ -313,38 +313,88 @@ python -m alembic current
 
 ### Worker Service
 
+**Plan Required:** Starter ($7/mo) or higher  
+⚠️ **Free tier does not support background workers**
+
 **Starts automatically** with:
 ```bash
-python -m rq worker -u $REDIS_URL ai_bookkeeper
+rq worker -u $REDIS_URL ai_bookkeeper
 ```
 
-**Monitor worker:**
-- Render Dashboard → Worker Service → Logs
-- Should see: "Worker started", "Listening on ai_bookkeeper queue"
+**Enable Worker in Render:**
+1. Go to: Dashboard → "New" → "Worker"
+2. Or: Edit `render.yaml` and apply Blueprint
+3. Select **Starter plan** minimum
+4. Worker will start automatically on deploy
 
-**Test background job:**
+**Monitor worker logs:**
+- Render Dashboard → ai-bookkeeper-worker → Logs
+- Should see: 
+  ```
+  Worker started
+  Listening on queue: ai_bookkeeper
+  Connected to Redis: redis://...
+  ```
+
+**Test worker is processing jobs:**
 ```bash
-# Trigger export (uses RQ)
-curl -X POST $RENDER_URL/api/export/qbo \
-  -H "Authorization: Bearer $JWT_TOKEN" \
-  -d '{"tenant_id":"pilot-smb-001"}'
+# Run the test script (dry-run if Redis unavailable)
+python scripts/test_rq_worker.py
 
-# Check worker logs for job processing
+# Expected output:
+# ✅ WORKER OK - Job completed successfully!
 ```
+
+**View job queue:**
+```bash
+# In Render Shell or locally
+rq info -u $REDIS_URL ai_bookkeeper
+
+# Shows: queued, started, finished, failed counts
+```
+
+**Troubleshooting:**
+- **No jobs processing:** Check worker logs for errors
+- **Import errors:** Worker must be able to import job functions
+- **Redis connection:** Verify REDIS_URL env var is set
+- **Restart worker:** Render Dashboard → Worker → Manual Deploy
 
 ### Cron Job (Analytics Rollup)
 
-**Schedule:** Daily at 02:00 UTC
+**Plan Required:** Starter ($7/mo) or higher  
+⚠️ **Free tier does not support cron jobs**
+
+**Schedule:** Daily at 02:00 UTC (`0 2 * * *`)
 
 **Command:**
 ```bash
 python jobs/analytics_rollup.py
 ```
 
+**Enable Cron in Render:**
+1. Go to: Dashboard → "New" → "Cron Job"
+2. Or: Edit `render.yaml` and apply Blueprint
+3. Select **Starter plan** minimum
+4. Cron will run on schedule automatically
+
+**View next run time:**
+- Render Dashboard → ai-bookkeeper-analytics-cron → Overview
+- Shows: Next scheduled run, last run status
+
+**View cron logs:**
+- Render Dashboard → ai-bookkeeper-analytics-cron → Logs
+- Each run creates a new log entry with timestamp
+
 **Manual trigger (for testing):**
 ```bash
-# In Render Shell
+# In Render Shell (or locally with DATABASE_URL set)
 python jobs/analytics_rollup.py
+
+# Expected output:
+# Processing events from: 2025-10-12
+# Found 47 events
+# Generated: reports/analytics/daily_20251012.json
+# ✅ Analytics rollup complete
 
 # Verify report created
 ls reports/analytics/daily_*.json
@@ -452,6 +502,103 @@ curl http://localhost:10000/healthz
 - 750 hours/month free for web services
 - Covers web + worker (both run 24/7 = 1,440 hours combined)
 - First month: ~$15 (Postgres + Redis + overage)
+
+---
+
+## Rollback & Recovery
+
+### Rollback to Previous Deploy
+
+**If new deploy fails or has issues:**
+
+1. **Via Render Dashboard:**
+   - Go to: Dashboard → ai-bookkeeper-web → Manual Deploy
+   - Click "Redeploy" on a previous successful deploy
+   - This restores the previous Docker image
+
+2. **Via Git:**
+   ```bash
+   # Revert to previous commit
+   git revert HEAD
+   git push origin main
+   
+   # Or reset to specific commit
+   git reset --hard <commit-sha>
+   git push origin main --force  # ⚠️  Use with caution
+   ```
+
+3. **Verify rollback:**
+   ```bash
+   curl https://ai-bookkeeper-app.onrender.com/healthz | jq .git_sha
+   # Should show previous commit SHA
+   ```
+
+### Database Rollback (Migrations)
+
+**If migration breaks the database:**
+
+1. **Downgrade one version:**
+   ```bash
+   # In Render Shell
+   alembic downgrade -1
+   
+   # Verify
+   alembic current
+   ```
+
+2. **Restore from backup:**
+   - Render Dashboard → ai-bookkeeper-db → Backups
+   - Select backup from before migration
+   - Click "Restore" (creates new database)
+   - Update DATABASE_URL in web/worker/cron services
+
+3. **Emergency fix:**
+   ```bash
+   # Skip broken migration and deploy fix
+   alembic stamp head
+   # Then deploy fixed migration
+   ```
+
+### Worker/Cron Rollback
+
+**If worker or cron job fails:**
+
+1. **Disable temporarily:**
+   - Render Dashboard → Worker/Cron → Suspend
+   - This stops processing but keeps config
+
+2. **Rollback code:**
+   - Worker and cron use same Docker image as web
+   - Rolling back web deployment rolls back worker/cron too
+
+3. **Clear stuck jobs:**
+   ```bash
+   # In Python
+   from redis import Redis
+   from rq import Queue
+   
+   redis_conn = Redis.from_url(os.getenv('REDIS_URL'))
+   queue = Queue('ai_bookkeeper', connection=redis_conn)
+   
+   # Clear all jobs
+   queue.empty()
+   
+   # Or remove failed jobs only
+   from rq.registry import FailedJobRegistry
+   registry = FailedJobRegistry(queue=queue)
+   for job_id in registry.get_job_ids():
+       registry.remove(job_id)
+   ```
+
+### Recovery Checklist
+
+After rollback, verify:
+- [ ] `/healthz` returns `status: ok`
+- [ ] `/readyz` shows correct migration version
+- [ ] Worker logs show "Listening on queue"
+- [ ] Cron next-run time is scheduled
+- [ ] Test login works
+- [ ] Test one transaction review flow
 
 ---
 

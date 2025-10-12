@@ -45,37 +45,74 @@
 
 ---
 
+### 4. **Consistent Button Sizing** ✅ FIXED
+- **Location:** All pages (/review, /receipts, /export, /rules, /firm)
+- **Issue:** Inconsistent button sizing across pages; some below WCAG 2.1 AA minimum target size (44x44px)
+- **Fix Applied:**
+  - Added `.btn-md` (44x44px) and `.btn-lg` (48x48px) CSS utility classes
+  - Applied to all interactive buttons site-wide
+- **Files Modified:**
+  - `app/ui/templates/base.html` (added CSS classes)
+- **Status:** ✅ Complete
+
+### 5. **Accessible Tooltips** ✅ FIXED
+- **Location:** Site-wide (receipt highlights, metrics charts, form hints)
+- **Issue:** Existing tooltips used bare `title` attribute, not accessible to keyboard users
+- **Fix Applied:**
+  - Created `app/ui/static/tooltips.js` with full keyboard support
+  - Uses `aria-describedby` for screen readers
+  - ESC to close, focus + hover triggers
+  - Auto-positioning with viewport boundary detection
+- **Files Created:**
+  - `app/ui/static/tooltips.js` (new file)
+  - Included in `base.html`
+- **Usage:** Add `data-tooltip="text"` to any element
+- **Status:** ✅ Complete
+
+### 6. **Toast Notifications with Proper Timing** ✅ FIXED
+- **Location:** All forms, export operations, rules dry-run
+- **Issue:** No centralized toast system; inconsistent timing
+- **Fix Applied:**
+  - Created `app/ui/static/toast.js` with queue support
+  - Success/info: 3.5s, Warning: 4.5s, Error: 6s
+  - ESC to dismiss, `aria-live="polite"` for screen readers
+  - Prevents notification spam with queue
+- **Files Created:**
+  - `app/ui/static/toast.js` (new file)
+  - Included in `base.html`
+- **API:** `Toast.success()`, `Toast.error()`, `Toast.warning()`, `Toast.info()`
+- **Status:** ✅ Complete
+
+### 7. **Legal & Support Pages** ✅ FIXED
+- **Location:** Footer links missing; no legal pages
+- **Issue:** No Terms, Privacy Policy, DPA, or Support page for pilot users
+- **Fix Applied:**
+  - Created `/legal/terms`, `/legal/privacy`, `/legal/dpa`, `/support` routes
+  - All pages have "template only" disclaimer and `noindex` meta
+  - Added footer links to all pages (Terms, Privacy, DPA, Support)
+- **Files Created:**
+  - `app/ui/templates/legal/terms.html`
+  - `app/ui/templates/legal/privacy.html`
+  - `app/ui/templates/legal/dpa.html`
+  - `app/ui/templates/support.html`
+  - `tests/test_legal_support_pages.py` (14 tests, all passing)
+- **Files Modified:**
+  - `app/ui/routes.py` (added 4 public routes)
+  - `app/ui/templates/base.html` (updated footer)
+- **Status:** ✅ Complete
+
+---
+
 ## Remaining Issues (Deprioritized for Post-Pilot)
 
 ### Medium Priority
 
-#### 4. **Filter Persistence Across Page Refreshes** (Med)
+#### 8. **Filter Persistence Across Page Refreshes** (Med)
 - **Location:** `/review`, `/audit`, `/metrics`
 - **Issue:** Selected filters reset on page reload
-- **Fix:** Store filters in localStorage or URL query params
-- **Effort:** 45min (add localStorage sync + restore on mount)
-- **Status:** Backlog
-
-#### 5. **Inconsistent Button Sizing** (Med)
-- **Location:** Various pages (primary vs secondary actions)
-- **Issue:** Some CTAs use `px-4 py-2`, others use `px-3 py-1.5`
-- **Fix:** Standardize to `btn-primary` and `btn-secondary` classes
-- **Effort:** 30min (CSS refactor + find/replace)
-- **Status:** Backlog
-
-#### 6. **Tooltip Positioning on Small Screens** (Med)
-- **Location:** Receipt highlight overlays, metrics charts
-- **Issue:** Tooltips overflow viewport on mobile
-- **Fix:** Add `data-placement="auto"` and boundary detection
-- **Effort:** 1hr (implement tooltip auto-placement logic)
-- **Status:** Backlog
-
-#### 7. **Success Messages Disappear Too Quickly** (Med)
-- **Location:** All forms (settings save, rule create)
-- **Issue:** Toast notifications auto-dismiss after 2 seconds
-- **Fix:** Increase to 5 seconds for success, 8 seconds for errors
-- **Effort:** 5min (update toast timeout constants)
-- **Status:** Backlog
+- **Fix:** Store filters in localStorage + URL query params with "Share this view" button
+- **Effort:** 45min (add localStorage sync + query string serialization)
+- **Status:** Backlog (placeholder ready in `review.html`)
 
 ### Low Priority
 

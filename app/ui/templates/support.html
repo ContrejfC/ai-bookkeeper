@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Support - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Support & Help Center</h1>
+        <p class="text-gray-600">Get help with AI Bookkeeper or reach out to our team</p>
+    </header>
+
+    <!-- Content -->
+    <div class="space-y-8">
+        <!-- Contact Support -->
+        <section class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">📧 Contact Support</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Our support team is here to help with any questions or issues.
+            </p>
+            <div class="space-y-3">
+                <div>
+                    <span class="text-sm font-medium text-gray-500">Email:</span>
+                    <a href="mailto:{{ SUPPORT_EMAIL }}" class="ml-2 text-blue-600 hover:underline text-lg">
+                        {{ SUPPORT_EMAIL or 'support@yourdomain.tld' }}
+                    </a>
+                </div>
+                <div>
+                    <span class="text-sm font-medium text-gray-500">Response Time:</span>
+                    <span class="ml-2 text-gray-700">Within 24 hours (business days)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Service Status -->
+        <section class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">🔍 Service Status</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Check the current status of AI Bookkeeper services and recent incidents.
+            </p>
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    All Systems Operational
+                </span>
+                <a href="#" class="text-blue-600 hover:underline text-sm">View status page →</a>
+            </div>
+        </section>
+
+        <!-- Export Your Data -->
+        <section class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">📦 Export Your Data</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                You can export all your data at any time in standard formats.
+            </p>
+            <div class="space-y-3">
+                <div>
+                    <a href="/export" class="text-blue-600 hover:underline font-medium">
+                        Go to Export Page →
+                    </a>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Available formats: CSV, JSON, QuickBooks IIF, Xero
+                    </p>
+                </div>
+                <div class="text-sm text-gray-600 mt-3">
+                    <strong>Data Portability:</strong> Per GDPR Article 20, you have the right to receive your data
+                    in a structured, commonly used, and machine-readable format.
+                </div>
+            </div>
+        </section>
+
+        <!-- Security & Privacy -->
+        <section class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">🔒 Security & Privacy</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Report a Security Issue</h3>
+                    <p class="text-gray-700 text-sm mb-2">
+                        If you discover a security vulnerability, please report it responsibly:
+                    </p>
+                    <a href="mailto:security@ai-bookkeeper.example.com" class="text-blue-600 hover:underline font-medium">
+                        security@ai-bookkeeper.example.com
+                    </a>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Please do not disclose security issues publicly until we've had a chance to address them.
+                    </p>
+                </div>
+                <div class="pt-3 border-t border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Privacy Request</h3>
+                    <p class="text-gray-700 text-sm mb-2">
+                        To exercise your privacy rights (access, rectification, erasure):
+                    </p>
+                    <a href="mailto:privacy@ai-bookkeeper.example.com" class="text-blue-600 hover:underline font-medium">
+                        privacy@ai-bookkeeper.example.com
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Questions -->
+        <section class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">❓ Common Questions</h2>
+            <div class="space-y-4">
+                <details class="group">
+                    <summary class="cursor-pointer font-medium text-gray-900 hover:text-blue-600">
+                        How does automated categorization work?
+                    </summary>
+                    <p class="mt-2 text-sm text-gray-600 pl-4">
+                        AI Bookkeeper uses machine learning to analyze transaction descriptions, amounts, and vendors
+                        to suggest appropriate account categories. All suggestions are reviewed by you before posting.
+                    </p>
+                </details>
+                <details class="group">
+                    <summary class="cursor-pointer font-medium text-gray-900 hover:text-blue-600">
+                        Is my financial data secure?
+                    </summary>
+                    <p class="mt-2 text-sm text-gray-600 pl-4">
+                        Yes. We use bank-level encryption (TLS 1.3 in transit, AES-256 at rest), role-based access
+                        controls, and comprehensive audit logging. See our 
+                        <a href="/legal/privacy" class="text-blue-600 hover:underline">Privacy Policy</a> for details.
+                    </p>
+                </details>
+                <details class="group">
+                    <summary class="cursor-pointer font-medium text-gray-900 hover:text-blue-600">
+                        Can I disable auto-posting to my general ledger?
+                    </summary>
+                    <p class="mt-2 text-sm text-gray-600 pl-4">
+                        Yes. Auto-posting is disabled by default (`AUTOPOST_ENABLED=false`). All transactions require
+                        manual review and approval before posting.
+                    </p>
+                </details>
+                <details class="group">
+                    <summary class="cursor-pointer font-medium text-gray-900 hover:text-blue-600">
+                        What integrations are supported?
+                    </summary>
+                    <p class="mt-2 text-sm text-gray-600 pl-4">
+                        Currently: Xero and QuickBooks Online. Exports available in CSV, JSON, IIF formats.
+                        Additional integrations (NetSuite, Sage) planned for Q1 2026.
+                    </p>
+                </details>
+            </div>
+        </section>
+
+        <!-- Documentation -->
+        <section class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">📚 Documentation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/help/getting-started" class="block p-4 border border-gray-200 rounded hover:bg-gray-50 transition">
+                    <h3 class="font-medium text-gray-900 mb-1">Getting Started Guide</h3>
+                    <p class="text-sm text-gray-600">Setup your account and import your first transactions</p>
+                </a>
+                <a href="/help/review-workflow" class="block p-4 border border-gray-200 rounded hover:bg-gray-50 transition">
+                    <h3 class="font-medium text-gray-900 mb-1">Review Workflow</h3>
+                    <p class="text-sm text-gray-600">Learn how to review and approve categorizations</p>
+                </a>
+                <a href="/help/receipt-processing" class="block p-4 border border-gray-200 rounded hover:bg-gray-50 transition">
+                    <h3 class="font-medium text-gray-900 mb-1">Receipt Processing</h3>
+                    <p class="text-sm text-gray-600">Upload and process receipts with OCR</p>
+                </a>
+                <a href="/help/reports" class="block p-4 border border-gray-200 rounded hover:bg-gray-50 transition">
+                    <h3 class="font-medium text-gray-900 mb-1">Reports & Analytics</h3>
+                    <p class="text-sm text-gray-600">Generate financial reports and metrics</p>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+        <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+            <a href="/legal/terms" class="hover:text-blue-600">Terms of Service</a>
+            <span>•</span>
+            <a href="/legal/privacy" class="hover:text-blue-600">Privacy Policy</a>
+            <span>•</span>
+            <a href="/legal/dpa" class="hover:text-blue-600">Data Processing Agreement</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

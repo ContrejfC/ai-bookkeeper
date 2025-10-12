@@ -1,0 +1,171 @@
+{
+  "version": "1.0",
+  "total": 33,
+  "screens": [
+    {
+      "path": "/login",
+      "file": "01_login_page.png",
+      "description": "Login page"
+    },
+    {
+      "path": "/review",
+      "file": "02_review_dashboard.png",
+      "description": "Review dashboard - main view"
+    },
+    {
+      "path": "/review?reason=below_threshold",
+      "file": "03_review_below_threshold.png",
+      "description": "Review filtered by below threshold"
+    },
+    {
+      "path": "/review?reason=cold_start",
+      "file": "04_review_cold_start.png",
+      "description": "Review filtered by cold start"
+    },
+    {
+      "path": "/review?reason=imbalance",
+      "file": "05_review_imbalance.png",
+      "description": "Review filtered by imbalance"
+    },
+    {
+      "path": "/review?reason=missing_receipt",
+      "file": "06_review_missing_receipt.png",
+      "description": "Review filtered by missing receipt"
+    },
+    {
+      "path": "/receipts",
+      "file": "07_receipts_list.png",
+      "description": "Receipts list view"
+    },
+    {
+      "path": "/receipts?highlight=true",
+      "file": "08_receipts_with_highlights.png",
+      "description": "Receipt with OCR highlights"
+    },
+    {
+      "path": "/analytics",
+      "file": "09_analytics_dashboard.png",
+      "description": "Product analytics dashboard"
+    },
+    {
+      "path": "/metrics",
+      "file": "10_metrics_overview.png",
+      "description": "Metrics overview"
+    },
+    {
+      "path": "/metrics?period=7d",
+      "file": "11_metrics_7d.png",
+      "description": "Metrics 7-day view"
+    },
+    {
+      "path": "/metrics?period=30d",
+      "file": "12_metrics_30d.png",
+      "description": "Metrics 30-day view"
+    },
+    {
+      "path": "/rules",
+      "file": "13_rules_console.png",
+      "description": "Rules console list"
+    },
+    {
+      "path": "/firm",
+      "file": "14_firm_console.png",
+      "description": "Firm console - owner view"
+    },
+    {
+      "path": "/audit",
+      "file": "15_audit_log.png",
+      "description": "Audit log viewer"
+    },
+    {
+      "path": "/audit?action=propose",
+      "file": "16_audit_filtered.png",
+      "description": "Audit log filtered by action"
+    },
+    {
+      "path": "/notifications",
+      "file": "17_notifications.png",
+      "description": "Notifications panel"
+    },
+    {
+      "path": "/billing",
+      "file": "18_billing.png",
+      "description": "Billing and usage"
+    },
+    {
+      "path": "/settings",
+      "file": "19_settings.png",
+      "description": "Settings page"
+    },
+    {
+      "path": "/settings/team",
+      "file": "20_settings_team.png",
+      "description": "Team management"
+    },
+    {
+      "path": "/settings/integrations",
+      "file": "21_settings_integrations.png",
+      "description": "Integrations (Xero, QuickBooks)"
+    },
+    {
+      "path": "/onboarding",
+      "file": "22_onboarding_step1.png",
+      "description": "Onboarding wizard step 1"
+    },
+    {
+      "path": "/onboarding?step=2",
+      "file": "23_onboarding_step2.png",
+      "description": "Onboarding wizard step 2"
+    },
+    {
+      "path": "/onboarding?step=3",
+      "file": "24_onboarding_step3.png",
+      "description": "Onboarding wizard step 3"
+    },
+    {
+      "path": "/onboarding?step=4",
+      "file": "25_onboarding_step4.png",
+      "description": "Onboarding wizard step 4"
+    },
+    {
+      "path": "/export",
+      "file": "26_export_page.png",
+      "description": "Export options"
+    },
+    {
+      "path": "/export/xero",
+      "file": "27_export_xero.png",
+      "description": "Xero export page"
+    },
+    {
+      "path": "/help",
+      "file": "28_help_page.png",
+      "description": "Help and documentation"
+    },
+    {
+      "path": "/profile",
+      "file": "29_profile.png",
+      "description": "User profile"
+    },
+    {
+      "path": "/reports",
+      "file": "30_reports.png",
+      "description": "Reports page"
+    },
+    {
+      "path": "/reconciliation",
+      "file": "31_reconciliation.png",
+      "description": "Reconciliation view"
+    },
+    {
+      "path": "/",
+      "file": "32_homepage.png",
+      "description": "Homepage (logged in)"
+    },
+    {
+      "path": "/healthz",
+      "file": "33_health_check.png",
+      "description": "Health check endpoint (JSON)"
+    }
+  ]
+}

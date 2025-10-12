@@ -519,6 +519,97 @@ python scripts/create_pilot_tenants.py
 
 ---
 
+## First-Hour Watch (Post-Deploy Checklist)
+
+After merging and deploying to Render, monitor these indicators for the first hour:
+
+### 1. Check Web Service Logs
+```bash
+# Render Dashboard → ai-bookkeeper-web → Logs
+# Look for:
+✅ "Application startup complete"
+✅ "Uvicorn running on http://0.0.0.0:10000"
+✅ "/healthz" requests returning 200
+❌ Any ERROR or CRITICAL log lines
+```
+
+### 2. Check Worker Service Logs
+```bash
+# Render Dashboard → ai-bookkeeper-worker → Logs
+# Look for:
+✅ "Worker started"
+✅ "Listening on queue: ai_bookkeeper"
+✅ "Connected to Redis"
+❌ Connection errors or import failures
+```
+
+### 3. Check Cron Service Status
+```bash
+# Render Dashboard → ai-bookkeeper-analytics-cron → Overview
+# Verify:
+✅ "Next run" shows 02:00 UTC (or next scheduled time)
+✅ No failed runs in history
+✅ Service status: "Live"
+```
+
+### 4. Run Smoke Test
+```bash
+# GitHub → Actions → "Staging Smoke Test" → Run workflow
+# Manual trigger to verify immediately
+# Expected artifacts: staging-healthz.json, staging-readyz.json
+# Verify: Both show status: "ok" / "ready"
+```
+
+### 5. Verify Health Endpoints
+```bash
+# Direct curl (replace with your Render URL)
+curl https://ai-bookkeeper-app.onrender.com/healthz | jq .
+# Expected: {"status":"ok", "database_status":"healthy", ...}
+
+curl https://ai-bookkeeper-app.onrender.com/readyz | jq .
+# Expected: {"status":"ready", "checks":{"database":"ok","migrations":"ok"}}
+```
+
+### 6. Test Legal Pages (No Auth)
+```bash
+# Visit in browser (should load without login):
+https://ai-bookkeeper-app.onrender.com/legal/terms
+https://ai-bookkeeper-app.onrender.com/legal/privacy
+https://ai-bookkeeper-app.onrender.com/support
+
+# Verify: "Template Only" banner visible, footer links present
+```
+
+### 7. Re-run Seed Pilots (If Needed)
+```bash
+# Only if database was wiped or first-time deploy
+# GitHub → Actions → "Seed Pilots (Staging)" → Run workflow
+# Input: I_UNDERSTAND
+# Check artifacts: seed_log.txt confirms tenants created
+```
+
+### Quick Reference URLs
+| Check | URL |
+|-------|-----|
+| Render Dashboard | https://dashboard.render.com |
+| Web Logs | Dashboard → ai-bookkeeper-web → Logs |
+| Worker Logs | Dashboard → ai-bookkeeper-worker → Logs |
+| Cron Status | Dashboard → ai-bookkeeper-analytics-cron → Overview |
+| Healthz | `https://YOUR-APP.onrender.com/healthz` |
+| Readyz | `https://YOUR-APP.onrender.com/readyz` |
+| GitHub Actions | `https://github.com/YOUR_ORG/ai-bookkeeper/actions` |
+
+### Alert Verification (If Configured)
+```bash
+# Test Slack/Email alerts:
+# 1. Temporarily set STAGING_BASE_URL to invalid URL in GitHub secrets
+# 2. Run smoke test workflow
+# 3. Check Slack channel or email inbox for alert
+# 4. Restore correct STAGING_BASE_URL
+```
+
+---
+
 ## Links to Workflows
 
 Once pushed to GitHub, access workflows at:

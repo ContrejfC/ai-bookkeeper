@@ -411,6 +411,46 @@ Toast.error('Test error message');
 
 **Status:** ✅ All sections complete and tested  
 **Branch:** `feature/cloud-upgrade-ux-legal`  
-**Commit:** `f0a0b95` - "feat: cloud upgrade + UX polish + legal pages"  
+**Version:** `v0.9.1` (see `app/VERSION`)  
+**Tests:** 17/17 passing (`tests/test_legal_support_pages.py`)  
 **Ready for:** Merge to `main` and deploy to Render staging
+
+---
+
+## 📍 Quick Reference
+
+### Legal/Support Routes
+- **Terms:** `GET /legal/terms` → `app/ui/templates/legal/terms.html`
+- **Privacy:** `GET /legal/privacy` → `app/ui/templates/legal/privacy.html`
+- **DPA:** `GET /legal/dpa` → `app/ui/templates/legal/dpa.html`
+- **Support:** `GET /support` → `app/ui/templates/support.html`
+
+### Tooltip/Toast Assets
+- **Tooltips:** `app/ui/static/tooltips.js` (WCAG 2.1 AA compliant)
+  - Usage: `<button data-tooltip="text">Button</button>`
+- **Toasts:** `app/ui/static/toast.js` (queued, aria-live)
+  - API: `Toast.success()`, `Toast.error()`, `Toast.warning()`, `Toast.info()`
+
+### Tests Added
+- **File:** `tests/test_legal_support_pages.py`
+- **Count:** 17 tests (all passing ✅)
+- **Coverage:** Legal pages, support page, public access, footer links
+
+### New Environment Variables
+- `SUPPORT_EMAIL` — Support email shown on /support page (default: support@yourdomain.tld)
+- `SLACK_WEBHOOK_URL` — GitHub secret for Slack alerting (optional)
+- `ALERT_EMAIL` — GitHub secret for email alerting (optional)
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` — SMTP config for email alerts (optional)
+
+### Documentation Files
+- **PR body:** `PR_BODY_v0.9.1.md`
+- **Release notes:** `RELEASE_NOTES_v0.9.1.md`
+- **Changelog:** `CHANGELOG.md` (lines 10-103)
+- **Version:** `app/VERSION` = `0.9.1`
+
+---
+
+**Last Updated:** October 12, 2025  
+**Commits:** `f0a0b95`, `2b37616`, and finalization commits  
+**Ready for:** Code review and merge
 

@@ -42,7 +42,7 @@ This release prepares the system for pilot deployment with worker services, cron
 - **Templates with disclaimers**: All legal pages include "template only / not legal advice" banner
 - **noindex meta tags**: Legal pages excluded from search engine indexing
 - **Footer links**: Terms, Privacy, DPA, Support visible site-wide
-- **Tests**: `tests/test_legal_support_pages.py` (14 tests, all passing)
+- **Tests**: `tests/test_legal_support_pages.py` (17 tests, all passing)
 
 #### D) UX Polish & Accessibility
 - **Consistent button sizing**: `.btn-md` (44x44px) and `.btn-lg` (48x48px) CSS classes for WCAG 2.1 AA compliance

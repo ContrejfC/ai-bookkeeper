@@ -1,6 +1,7 @@
 """Reconciliation matcher for linking transactions to journal entries."""
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from datetime import datetime, timedelta
+from dataclasses import dataclass
 from sqlalchemy.orm import Session
 from app.db.models import (
     TransactionDB, JournalEntryDB, ReconciliationDB
@@ -9,6 +10,16 @@ from config.settings import settings
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ReconciliationResult:
+    """Result of a reconciliation match."""
+    txn_id: str
+    je_id: Optional[str]
+    match_type: Optional[str]
+    match_score: float
+    status: str  # matched, unmatched, orphan
 
 
 class ReconciliationMatcher:

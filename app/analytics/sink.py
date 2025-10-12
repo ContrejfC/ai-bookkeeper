@@ -16,6 +16,15 @@ logger = logging.getLogger(__name__)
 EVENTS_DIR = Path("logs/analytics")
 EVENTS_DIR.mkdir(parents=True, exist_ok=True)
 
+# Event type constants (for tests and consistency)
+EVENT_PAGE_VIEW = "page_view"
+EVENT_REVIEW_APPROVE = "transaction_reviewed"
+EVENT_REVIEW_REJECT = "transaction_rejected"
+EVENT_RULE_CREATED = "rule_created"
+EVENT_RULE_DELETED = "rule_deleted"
+EVENT_EXPORT_STARTED = "export_started"
+EVENT_EXPORT_COMPLETED = "export_completed"
+
 
 def log_event(
     event_type: str,
@@ -53,6 +62,33 @@ def log_event(
         logger.debug(f"Logged event: {event_type} for tenant={tenant_id}")
     except Exception as e:
         logger.error(f"Failed to log event {event_type}: {e}")
+
+
+def log_page_view(
+    path: str,
+    tenant_id: Optional[str] = None,
+    user_role: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None
+) -> None:
+    """
+    Log a page view event (convenience helper).
+    
+    Args:
+        path: Page path (e.g., "/review", "/metrics")
+        tenant_id: Tenant identifier (hashed/anonymized)
+        user_role: User role (owner/staff)
+        metadata: Additional context (e.g., filters applied, load time)
+    """
+    combined_metadata = {"path": path}
+    if metadata:
+        combined_metadata.update(metadata)
+    
+    log_event(
+        event_type=EVENT_PAGE_VIEW,
+        tenant_id=tenant_id,
+        user_role=user_role,
+        metadata=combined_metadata
+    )
 
 
 def _strip_pii(metadata: Dict[str, Any]) -> Dict[str, Any]:

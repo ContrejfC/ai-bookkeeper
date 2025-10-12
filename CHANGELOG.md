@@ -44,6 +44,27 @@ This release prepares the system for pilot deployment with worker services, cron
 - **Footer links**: Terms, Privacy, DPA, Support visible site-wide
 - **Tests**: `tests/test_legal_support_pages.py` (17 tests, all passing)
 
+#### C.1) Home Page & Marketing Landing
+- **Public marketing page at `/`**: Pilot-ready landing with product overview and clear Sign in CTA
+- **Hero section**:
+  - H1: "AI Bookkeeper — Faster, Safer Transaction Review"
+  - Value prop: "Review, explain, and export with confidence. No auto-posting by default."
+  - Primary CTA: Sign in → `/login`
+  - Secondary CTA: See how it works → `#how`
+  - Trust strip: Security-first defaults, human-in-the-loop, audit logging
+- **How It Works**: 3-step workflow (Connect & Import → Review & Explain → Export to QBO/Xero)
+- **Features grid**: 8 product features (Review Inbox, Explain Drawer, Receipt OCR, Auto-post Gating, Metrics, Alerts, Export, Billing)
+- **Screenshot strip**: Placeholder cards linking to `/review`, `/receipts`, `/metrics`
+- **Security section**: 6 key controls (auto-post disabled by default, 90% confidence gating, decision audit log, PII stripping, CSRF + JWT/RBAC, idempotent exports)
+- **Pricing teaser**: Starter/Pro/Firm tiers with "Contact sales" CTAs (no real prices; points to `/support`)
+- **FAQ**: 5 Q&As (accuracy, supported exports, data ownership, OCR limits, pilots)
+- **SEO control**: `SEO_INDEX` env var (0=noindex for staging, 1=index for production)
+- **Analytics logging**: `log_page_view("/")` tracks visits with referrer (PII-free, non-blocking, non-fatal)
+- **Accessibility**: WCAG 2.1 AA compliant (single H1, semantic headings, 44px+ touch targets, visible focus states, proper `aria-label` attributes)
+- **Performance**: <1s response time in local tests, p95 target <300ms on staging
+- **Template**: `app/ui/templates/home.html` (Tailwind + responsive grid, hover effects, smooth scroll, prefers-reduced-motion support)
+- **Tests**: `tests/test_home_page.py` (18 tests covering public access, CTAs, sections, SEO, a11y, links, performance, analytics)
+
 #### D) UX Polish & Accessibility
 - **Consistent button sizing**: `.btn-md` (44x44px) and `.btn-lg` (48x48px) CSS classes for WCAG 2.1 AA compliance
 - **Accessible tooltips**: `app/ui/static/tooltips.js`

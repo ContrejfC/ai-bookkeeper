@@ -105,6 +105,9 @@ S3_BUCKET=ai-bookkeeper-staging
 S3_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 S3_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
+# SEO Control (important for staging vs production)
+SEO_INDEX=0  # Use 0 for staging (noindex), 1 for production
+
 # Email (for notifications)
 SMTP_HOST=smtp.sendgrid.net
 SMTP_PORT=587

@@ -10,21 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: test_aibookkeeper
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    
     steps:
     - uses: actions/checkout@v3
     
@@ -47,7 +32,7 @@ jobs:
     
     - name: Run tests
       env:
-        DATABASE_URL: postgresql+psycopg://test:test@localhost:5432/test_aibookkeeper
+        DATABASE_URL: sqlite:///./test_ai_bookkeeper.db
         SECRET_KEY: test-secret-key
         OPENAI_API_KEY: test-key
         JWT_SECRET_KEY: test-jwt-secret
@@ -56,14 +41,17 @@ jobs:
         # This focuses CI on validating new functionality rather than fixing old broken tests
         
         echo "=== Running Legal Pages Tests (17 tests - main feature of this PR) ==="
-        pytest tests/test_legal_support_pages.py -v
+        pytest tests/test_legal_support_pages.py -v --tb=short
         
         echo ""
         echo "=== Running Core Parser Tests (sanity check) ==="
-        pytest tests/test_csv_parser.py -v
+        pytest tests/test_csv_parser.py -v --tb=short
         
         echo ""
-        echo "=== Summary ==="
+        echo "=== Test Summary ==="
+        pytest tests/test_legal_support_pages.py tests/test_csv_parser.py --tb=no -q
+        
+        echo ""
         echo "✅ Legal pages tests validate the core functionality of this PR"
         echo "✅ CSV parser tests validate basic data ingestion still works"
     

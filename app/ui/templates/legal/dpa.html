@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Data Processing Agreement - AI Bookkeeper{% endblock %}
+
+{% block head_extra %}
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Template Notice Banner -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8" role="alert">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                    <strong>Template Only:</strong> This is a placeholder document and does not constitute legal advice.
+                    Consult with a qualified attorney to draft production-ready DPA compliant with GDPR Article 28.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Data Processing Agreement (DPA)</h1>
+        <p class="text-sm text-gray-600">Last Updated: October 12, 2025</p>
+        <p class="text-sm text-gray-600">Effective Date: October 12, 2025</p>
+        <p class="text-sm text-gray-600">GDPR Article 28 Compliant Template</p>
+    </header>
+
+    <!-- Content -->
+    <div class="prose prose-slate max-w-none">
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">1. Definitions</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">For the purposes of this DPA:</p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                <li><strong>Controller:</strong> The customer (you) who determines purposes and means of processing</li>
+                <li><strong>Processor:</strong> AI Bookkeeper, processing personal data on behalf of Controller</li>
+                <li><strong>Personal Data:</strong> Information relating to identified or identifiable individuals</li>
+                <li><strong>Processing:</strong> Any operation performed on personal data</li>
+                <li><strong>Sub-processor:</strong> Third-party processors engaged by AI Bookkeeper</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">2. Scope and Purpose</h2>
+            <p class="text-gray-700 leading-relaxed">
+                AI Bookkeeper processes personal data solely for the purpose of providing automated bookkeeping,
+                receipt processing, financial reporting, and related services as described in the 
+                <a href="/legal/terms" class="text-blue-600 hover:underline">Terms of Service</a>.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-3">
+                <strong>Categories of Personal Data:</strong> Names, email addresses, transaction details,
+                vendor information, receipt images.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-3">
+                <strong>Categories of Data Subjects:</strong> Controller's employees, contractors, customers, vendors.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">3. Processor Obligations</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">AI Bookkeeper shall:</p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                <li>Process personal data only on documented instructions from Controller</li>
+                <li>Ensure persons authorized to process data are bound by confidentiality</li>
+                <li>Implement appropriate technical and organizational measures (TOMs)</li>
+                <li>Engage sub-processors only with prior written consent</li>
+                <li>Assist Controller in responding to data subject rights requests</li>
+                <li>Delete or return all personal data upon termination</li>
+                <li>Make available all information necessary to demonstrate compliance</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">4. Security Measures (TOMs)</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">
+                AI Bookkeeper implements the following technical and organizational measures:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                <li><strong>Encryption:</strong> TLS 1.3 in transit, AES-256 at rest</li>
+                <li><strong>Access Controls:</strong> Role-based access control (RBAC), multi-factor authentication</li>
+                <li><strong>Pseudonymization:</strong> PII stripped from analytics and log files</li>
+                <li><strong>Audit Logging:</strong> Immutable logs of all data access</li>
+                <li><strong>Vulnerability Management:</strong> Regular security audits, automated scanning</li>
+                <li><strong>Incident Response:</strong> 72-hour breach notification protocol</li>
+                <li><strong>Data Minimization:</strong> Only necessary data collected</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">5. Sub-processors</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">
+                AI Bookkeeper engages the following sub-processors:
+            </p>
+            <table class="min-w-full border border-gray-300 mt-3">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-900 border-b">Sub-processor</th>
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-900 border-b">Purpose</th>
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-900 border-b">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">Render.com</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">Cloud hosting, database, compute</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">USA</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">PostgreSQL (managed)</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">Database storage</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">USA</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">Redis (managed)</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">Caching, job queue</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 border-b">USA</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-gray-700 leading-relaxed mt-3">
+                Controller will be notified 30 days prior to engaging new sub-processors.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">6. Data Subject Rights</h2>
+            <p class="text-gray-700 leading-relaxed">
+                AI Bookkeeper will assist Controller in fulfilling data subject requests including:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mt-3">
+                <li>Access requests (Article 15)</li>
+                <li>Rectification requests (Article 16)</li>
+                <li>Erasure requests / "right to be forgotten" (Article 17)</li>
+                <li>Portability requests (Article 20)</li>
+                <li>Objection to processing (Article 21)</li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed mt-3">
+                Response time: Within 30 days of Controller's request.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">7. Data Breach Notification</h2>
+            <p class="text-gray-700 leading-relaxed">
+                In the event of a personal data breach, AI Bookkeeper shall notify Controller without undue delay
+                and within 72 hours of becoming aware of the breach, providing:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mt-3">
+                <li>Description of the nature of the breach</li>
+                <li>Categories and approximate number of data subjects affected</li>
+                <li>Likely consequences of the breach</li>
+                <li>Measures taken or proposed to address the breach</li>
+                <li>Contact point for further information</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">8. International Data Transfers</h2>
+            <p class="text-gray-700 leading-relaxed">
+                Where personal data is transferred outside the EEA, AI Bookkeeper ensures appropriate safeguards
+                including:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mt-3">
+                <li>Standard Contractual Clauses (SCCs) approved by the European Commission</li>
+                <li>Supplementary measures to ensure data protection equivalent to EU standards</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">9. Audit and Compliance</h2>
+            <p class="text-gray-700 leading-relaxed">
+                Controller has the right to audit AI Bookkeeper's compliance with this DPA. AI Bookkeeper will:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mt-3">
+                <li>Provide SOC 2 Type II reports (when available)</li>
+                <li>Allow on-site or remote audits (once per year, with 30 days notice)</li>
+                <li>Respond to written compliance questionnaires</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">10. Termination and Data Return</h2>
+            <p class="text-gray-700 leading-relaxed">
+                Upon termination of services:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4 mt-3">
+                <li>Controller may export all data via self-service export tools</li>
+                <li>AI Bookkeeper will delete all personal data within 90 days</li>
+                <li>Copies retained for legal compliance will be isolated and protected</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">11. Contact for DPA Matters</h2>
+            <p class="text-gray-700 leading-relaxed">
+                For DPA-related questions:
+                <br>
+                Data Protection Officer: <a href="mailto:dpo@ai-bookkeeper.example.com" class="text-blue-600 hover:underline">dpo@ai-bookkeeper.example.com</a>
+            </p>
+        </section>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+        <div class="flex flex-wrap gap-4 text-sm">
+            <a href="/legal/terms" class="text-blue-600 hover:underline">Terms of Service</a>
+            <a href="/legal/privacy" class="text-blue-600 hover:underline">Privacy Policy</a>
+            <a href="/support" class="text-blue-600 hover:underline">Support</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

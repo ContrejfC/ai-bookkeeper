@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service - AI Bookkeeper{% endblock %}
+
+{% block head_extra %}
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Template Notice Banner -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8" role="alert">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                    <strong>Template Only:</strong> This is a placeholder document and does not constitute legal advice.
+                    Consult with a qualified attorney to draft production-ready terms of service.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
+        <p class="text-sm text-gray-600">Last Updated: October 12, 2025</p>
+        <p class="text-sm text-gray-600">Effective Date: October 12, 2025</p>
+    </header>
+
+    <!-- Content -->
+    <div class="prose prose-slate max-w-none">
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">1. Acceptance of Terms</h2>
+            <p class="text-gray-700 leading-relaxed">
+                By accessing and using AI Bookkeeper ("the Service"), you accept and agree to be bound by the terms
+                and provision of this agreement. If you do not agree to these terms, please do not use the Service.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">2. Description of Service</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">
+                AI Bookkeeper provides automated accounting and bookkeeping services including:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                <li>Transaction categorization and review</li>
+                <li>Receipt processing with OCR</li>
+                <li>Financial reporting and analytics</li>
+                <li>Integration with accounting systems (Xero, QuickBooks)</li>
+                <li>Audit logging and compliance tracking</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">3. User Responsibilities</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">You agree to:</p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                <li>Provide accurate and complete information</li>
+                <li>Maintain the security of your account credentials</li>
+                <li>Comply with all applicable laws and regulations</li>
+                <li>Not misuse or abuse the Service</li>
+                <li>Review all automated categorizations before finalizing</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">4. Disclaimer of Warranties</h2>
+            <p class="text-gray-700 leading-relaxed">
+                The Service is provided "as is" without warranties of any kind. AI Bookkeeper does not guarantee
+                the accuracy, completeness, or reliability of automated categorizations or suggestions. Users are
+                responsible for reviewing all transactions before posting to their general ledger.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">5. Limitation of Liability</h2>
+            <p class="text-gray-700 leading-relaxed">
+                To the maximum extent permitted by law, AI Bookkeeper shall not be liable for any indirect,
+                incidental, special, consequential, or punitive damages arising from your use of the Service.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">6. Data Processing and Storage</h2>
+            <p class="text-gray-700 leading-relaxed">
+                We process and store your financial data in accordance with our <a href="/legal/privacy" class="text-blue-600 hover:underline">Privacy Policy</a>
+                and applicable data protection laws. Data is encrypted in transit and at rest.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">7. Modifications to Terms</h2>
+            <p class="text-gray-700 leading-relaxed">
+                We reserve the right to modify these terms at any time. We will notify users of material changes
+                via email or in-app notification. Continued use of the Service after changes constitutes acceptance.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">8. Termination</h2>
+            <p class="text-gray-700 leading-relaxed">
+                Either party may terminate this agreement at any time. Upon termination, you may export your data
+                via the provided export tools. Data will be retained for 90 days per our data retention policy.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">9. Contact Information</h2>
+            <p class="text-gray-700 leading-relaxed">
+                For questions about these terms, please contact:
+                <br>
+                Email: <a href="mailto:legal@ai-bookkeeper.example.com" class="text-blue-600 hover:underline">legal@ai-bookkeeper.example.com</a>
+            </p>
+        </section>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+        <div class="flex flex-wrap gap-4 text-sm">
+            <a href="/legal/privacy" class="text-blue-600 hover:underline">Privacy Policy</a>
+            <a href="/legal/dpa" class="text-blue-600 hover:underline">Data Processing Agreement</a>
+            <a href="/support" class="text-blue-600 hover:underline">Support</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

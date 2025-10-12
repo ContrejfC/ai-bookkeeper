@@ -514,3 +514,45 @@ async def audit_log(
         "total_entries": len(filtered_entries)
     })
 
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Legal & Support Pages (Public, No Auth Required)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+@router.get("/legal/terms", response_class=HTMLResponse)
+async def legal_terms(request: Request):
+    """Terms of Service (public access, no auth required)."""
+    return templates.TemplateResponse("legal/terms.html", {
+        "request": request,
+        "LEGAL_LAST_UPDATED": "October 12, 2025"
+    })
+
+
+@router.get("/legal/privacy", response_class=HTMLResponse)
+async def legal_privacy(request: Request):
+    """Privacy Policy (public access, no auth required)."""
+    return templates.TemplateResponse("legal/privacy.html", {
+        "request": request,
+        "LEGAL_LAST_UPDATED": "October 12, 2025"
+    })
+
+
+@router.get("/legal/dpa", response_class=HTMLResponse)
+async def legal_dpa(request: Request):
+    """Data Processing Agreement (public access, no auth required)."""
+    return templates.TemplateResponse("legal/dpa.html", {
+        "request": request,
+        "LEGAL_LAST_UPDATED": "October 12, 2025"
+    })
+
+
+@router.get("/support", response_class=HTMLResponse)
+async def support_page(request: Request):
+    """Support & Help Center (public access, no auth required)."""
+    support_email = os.getenv("SUPPORT_EMAIL", "support@yourdomain.tld")
+    
+    return templates.TemplateResponse("support.html", {
+        "request": request,
+        "SUPPORT_EMAIL": support_email
+    })
+

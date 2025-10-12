@@ -7,6 +7,102 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.1] - 2025-10-12
+
+### 🚀 Cloud Upgrade + UX Polish + Legal Pages
+
+This release prepares the system for pilot deployment with worker services, cron jobs, alerting, legal pages, and accessibility improvements.
+
+---
+
+### Added
+
+#### A) Render Services: Worker + Cron
+- **RQ Worker service**: Background job processing for exports and async operations
+- **Analytics Cron job**: Daily rollup at 02:00 UTC (`jobs/analytics_rollup.py`)
+- **Dry-run worker test**: `scripts/test_rq_worker.py` gracefully handles missing Redis
+- **`render.yaml` updates**: Three services (web, worker, cron) with proper env vars
+- **Starter plan requirement**: Worker and cron require Render Starter plan ($7/mo each)
+
+#### B) Alerting: Slack + Email on Failure
+- **Slack notifications**: Smoke test failures post to webhook (if `SLACK_WEBHOOK_URL` configured)
+  - Rich message with service status, troubleshooting tips, and action buttons
+  - Gracefully skipped if webhook not configured (non-blocking)
+- **Email notifications**: Optional SMTP-based alerts (if `ALERT_EMAIL` configured)
+  - Uses `dawidd6/action-send-mail` GitHub Action
+  - Configurable SMTP server (defaults to Gmail)
+- **Enhanced GitHub Actions summary**: Green/red status badges in workflow output
+
+#### C) Legal & Support Pages
+- **Public routes** (no authentication required):
+  - `GET /legal/terms` — Terms of Service
+  - `GET /legal/privacy` — Privacy Policy
+  - `GET /legal/dpa` — Data Processing Agreement (GDPR Article 28 compliant template)
+  - `GET /support` — Support & Help Center
+- **Templates with disclaimers**: All legal pages include "template only / not legal advice" banner
+- **noindex meta tags**: Legal pages excluded from search engine indexing
+- **Footer links**: Terms, Privacy, DPA, Support visible site-wide
+- **Tests**: `tests/test_legal_support_pages.py` (17 tests, all passing)
+
+#### D) UX Polish & Accessibility
+- **Consistent button sizing**: `.btn-md` (44x44px) and `.btn-lg` (48x48px) CSS classes for WCAG 2.1 AA compliance
+- **Accessible tooltips**: `app/ui/static/tooltips.js`
+  - Keyboard accessible (focus + hover)
+  - `aria-describedby` for screen readers
+  - ESC to close, auto-positioning with viewport detection
+- **Toast notifications**: `app/ui/static/toast.js`
+  - Success/info: 3.5s, Warning: 4.5s, Error: 6s
+  - Queued notifications with `aria-live="polite"`
+  - ESC to dismiss, semantic color coding
+- **Site-wide utility scripts**: Toast and tooltip included in `base.html`
+
+#### E) Documentation Updates
+- **`RENDER_DEPLOYMENT.md`**:
+  - Rollback procedures (web, worker, cron, database)
+  - Plan tier requirements and limitations
+  - Manual re-run instructions for cron jobs
+  - Worker troubleshooting guide
+- **`CI_RUNBOOK.md`**:
+  - Slack webhook setup instructions
+  - Email alert configuration (SMTP)
+  - Test alerting procedure
+  - Required GitHub Secrets matrix
+- **`UI_ISSUES.md`**:
+  - Marked 4 items as fixed (button sizing, tooltips, toasts, legal pages)
+  - Updated status counts (7 fixed, 11 backlog)
+- **`CHANGELOG.md`**: This entry
+
+---
+
+### Changed
+
+- **`render.yaml`**: Now includes worker and cron services (requires Starter plan)
+- **`.github/workflows/smoke_staging.yml`**: Enhanced with Slack/email alerting and status badges
+- **`app/ui/templates/base.html`**: 
+  - Updated footer with legal/support links
+  - Included toast.js and tooltips.js site-wide
+  - Added `.btn-md` and `.btn-lg` CSS utility classes
+- **`scripts/test_rq_worker.py`**: Made dry-run friendly (exits 0 if Redis unavailable)
+
+---
+
+### Fixed
+
+- **Button touch targets**: All interactive buttons now meet WCAG 2.1 AA minimum size (44x44px)
+- **Tooltip accessibility**: Replaced bare `title` attributes with keyboard-accessible tooltips
+- **Toast timing consistency**: Standardized notification durations across all pages
+- **Missing legal pages**: Terms, Privacy, DPA, and Support now publicly accessible
+
+---
+
+### Infrastructure
+
+- **Plan requirements**: Worker and cron require Render Starter plan ($7/mo each, $14/mo total)
+- **Free tier limitations**: Worker and cron not available on free tier (documented in `RENDER_DEPLOYMENT.md`)
+- **Alerting is optional**: Slack and email alerts only fire if secrets configured (graceful degradation)
+
+---
+
 ## [0.9.0-rc] - 2024-10-11
 
 ### 🎉 Release Candidate — Sprint 9 Complete

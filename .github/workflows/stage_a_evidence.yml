@@ -3,8 +3,9 @@ name: Stage A Evidence - PostgreSQL + Migrations
 on:
   push:
     branches: [main, develop]
-  pull_request:
-    branches: [main]
+  # Disabled for PRs - use main CI workflow instead
+  # pull_request:
+  #   branches: [main]
   workflow_dispatch:
 
 jobs:

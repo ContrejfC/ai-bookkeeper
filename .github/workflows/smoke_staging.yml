@@ -121,24 +121,163 @@ jobs:
           path: artifacts/staging-smoke/*
           retention-days: 30
       
-      - name: Set summary
+      - name: Set summary with badges
         if: always()
         run: |
-          echo "### Staging Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          # Determine status
+          HEALTHZ_STATUS="unknown"
+          READYZ_STATUS="unknown"
+          
+          if [ -f artifacts/staging-smoke/staging-healthz.json ]; then
+            HEALTHZ_STATUS=$(jq -r '.status // "unknown"' artifacts/staging-smoke/staging-healthz.json)
+          fi
+          
+          if [ -f artifacts/staging-smoke/staging-readyz.json ]; then
+            READYZ_STATUS=$(jq -r '.status // "unknown"' artifacts/staging-smoke/staging-readyz.json)
+          fi
+          
+          # Create badges
+          if [ "$HEALTHZ_STATUS" = "ok" ]; then
+            HEALTHZ_BADGE="![](https://img.shields.io/badge/healthz-✅%20ok-green)"
+          else
+            HEALTHZ_BADGE="![](https://img.shields.io/badge/healthz-❌%20${HEALTHZ_STATUS}-red)"
+          fi
+          
+          if [ "$READYZ_STATUS" = "ready" ] || [ "$READYZ_STATUS" = "ok" ]; then
+            READYZ_BADGE="![](https://img.shields.io/badge/readyz-✅%20${READYZ_STATUS}-green)"
+          else
+            READYZ_BADGE="![](https://img.shields.io/badge/readyz-❌%20${READYZ_STATUS}-red)"
+          fi
+          
+          # Write summary
+          echo "# 🏥 Staging Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$HEALTHZ_BADGE $READYZ_BADGE" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Base URL:** ${BASE_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          
           if [ -f artifacts/staging-smoke/staging-healthz.json ]; then
-            echo "#### /healthz" >> $GITHUB_STEP_SUMMARY
+            echo "### `/healthz` Response" >> $GITHUB_STEP_SUMMARY
             echo '```json' >> $GITHUB_STEP_SUMMARY
             cat artifacts/staging-smoke/staging-healthz.json >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
+          
           echo "" >> $GITHUB_STEP_SUMMARY
+          
           if [ -f artifacts/staging-smoke/staging-readyz.json ]; then
-            echo "#### /readyz" >> $GITHUB_STEP_SUMMARY
+            echo "### `/readyz` Response" >> $GITHUB_STEP_SUMMARY
             echo '```json' >> $GITHUB_STEP_SUMMARY
             cat artifacts/staging-smoke/staging-readyz.json >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
+      
+      - name: Send Slack alert on failure
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          # Collect failure details
+          HEALTHZ_STATUS=$(jq -r '.status // "unavailable"' artifacts/staging-smoke/staging-healthz.json 2>/dev/null || echo "unavailable")
+          READYZ_STATUS=$(jq -r '.status // "unavailable"' artifacts/staging-smoke/staging-readyz.json 2>/dev/null || echo "unavailable")
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          # Create Slack payload
+          cat > slack-payload.json <<EOF
+          {
+            "text": "🚨 Staging Smoke Test Failed",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🚨 Staging Smoke Test Failed"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Service:* AI Bookkeeper Staging"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Environment:* ${BASE_URL}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Healthz:* ${HEALTHZ_STATUS}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Readyz:* ${READYZ_STATUS}"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "💡 *Quick Tips:*\n• Check Render logs: Dashboard → ai-bookkeeper-web → Logs\n• Verify worker: Dashboard → ai-bookkeeper-worker → Logs\n• Database issues: Check Render DB status\n• Recent deploy: May be a cold start (wait 60s)"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Run Logs"
+                    },
+                    "url": "${RUN_URL}",
+                    "style": "danger"
+                  },
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "Render Dashboard"
+                    },
+                    "url": "https://dashboard.render.com"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          
+          # Send to Slack
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d @slack-payload.json \
+            || echo "⚠️  Slack webhook failed (non-fatal)"
+      
+      - name: Send email alert on failure
+        if: failure() && secrets.ALERT_EMAIL != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.SMTP_PORT || '587' }}
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "🚨 AI Bookkeeper Staging: Smoke Test Failed"
+          to: ${{ secrets.ALERT_EMAIL }}
+          from: "AI Bookkeeper Alerts <noreply@ai-bookkeeper.dev>"
+          body: |
+            Staging smoke test failed at ${{ env.BASE_URL }}
+            
+            Status:
+            - /healthz: Check failed
+            - /readyz: Check failed
+            
+            View logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            Check Render Dashboard:
+            - Web service logs
+            - Worker service logs
+            - Database status
+          ignore_errors: true
+        continue-on-error: true
 

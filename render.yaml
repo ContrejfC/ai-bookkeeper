@@ -1,4 +1,5 @@
 services:
+  # Web service (FastAPI + Gunicorn)
   - type: web
     name: ai-bookkeeper-web
     runtime: docker
@@ -21,7 +22,48 @@ services:
         value: "0.90"
       - key: OCR_PROVIDER
         value: tesseract
+      - key: LOG_LEVEL
+        value: "INFO"
     
-    # Run migrations automatically on deploy
-    preDeployCommand: "alembic current"
+    # Run migrations automatically on deploy (|| true makes it non-blocking)
+    preDeployCommand: "alembic current || true"
     postDeployCommand: "alembic upgrade head"
+  
+  # Background Worker (RQ) - requires Starter plan or higher
+  - type: worker
+    name: ai-bookkeeper-worker
+    runtime: docker
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: OCR_PROVIDER
+        value: tesseract
+      - key: AUTOPOST_ENABLED
+        value: "false"
+      - key: GATING_THRESHOLD
+        value: "0.90"
+      - key: LOG_LEVEL
+        value: "INFO"
+    
+    startCommand: "rq worker -u $REDIS_URL ai_bookkeeper"
+  
+  # Daily Analytics Cron - requires Starter plan or higher
+  - type: cron
+    name: ai-bookkeeper-analytics-cron
+    runtime: docker
+    plan: starter
+    schedule: "0 2 * * *"  # 02:00 UTC daily
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: LOG_LEVEL
+        value: "INFO"
+    
+    startCommand: "python jobs/analytics_rollup.py"

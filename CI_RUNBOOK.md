@@ -24,6 +24,12 @@ Set these in: **GitHub Repo → Settings → Secrets and variables → Actions**
 | Secret Name | Example Value | Required |
 |-------------|---------------|----------|
 | `STAGING_BASE_URL` | `https://ai-bookkeeper-web.onrender.com` | ✅ Yes |
+| `SLACK_WEBHOOK_URL` | `https://hooks.slack.com/services/...` | ⚠️ Optional (alerting) |
+| `ALERT_EMAIL` | `ops@company.com` | ⚠️ Optional (alerting) |
+| `SMTP_HOST` | `smtp.gmail.com` | ⚠️ Optional (if email alerts) |
+| `SMTP_PORT` | `587` | ⚠️ Optional (defaults to 587) |
+| `SMTP_USER` | `alerts@company.com` | ⚠️ Required if `ALERT_EMAIL` set |
+| `SMTP_PASSWORD` | `app-password` | ⚠️ Required if `ALERT_EMAIL` set |
 
 ### For Seed Pilots
 
@@ -54,7 +60,9 @@ Automated health monitoring of staging environment. Runs every 6 hours and on-de
 3. ✅ Hits `GET /readyz` endpoint
 4. ✅ Validates JSON responses with `jq`
 5. ✅ Uploads artifacts (`staging-healthz.json`, `staging-readyz.json`)
-6. ✅ Displays results in GitHub Actions summary
+6. ✅ Displays results in GitHub Actions summary with badges
+7. ✅ **Sends Slack alert on failure** (if `SLACK_WEBHOOK_URL` configured)
+8. ✅ **Sends email alert on failure** (if `ALERT_EMAIL` configured)
 
 ### Trigger
 - **Automatic:** Every 6 hours (0, 6, 12, 18 UTC)
@@ -110,6 +118,83 @@ Automated health monitoring of staging environment. Runs every 6 hours and on-de
 curl https://your-app.onrender.com/healthz | jq .
 # Ensure it returns valid JSON with 'status' field
 ```
+
+### Alerting on Failure
+
+When smoke tests fail, the workflow can send alerts to Slack and/or email. These are **optional** and only activate if secrets are configured.
+
+#### Slack Notifications
+
+**Setup:**
+1. Create an Incoming Webhook in your Slack workspace:
+   - Go to: https://api.slack.com/messaging/webhooks
+   - Select your workspace and channel (e.g., `#ops-alerts`)
+   - Copy the webhook URL (looks like: `https://hooks.slack.com/services/T.../B.../...`)
+
+2. Add as GitHub Secret:
+   ```
+   Name: SLACK_WEBHOOK_URL
+   Value: https://hooks.slack.com/services/T.../B.../...
+   ```
+
+**What Gets Sent:**
+- 🚨 Alert header
+- Service name and staging URL
+- Healthz and Readyz statuses
+- Quick troubleshooting tips
+- Links to GitHub Actions run and Render Dashboard
+
+**When It's Sent:**
+- Only on workflow failure (healthz or readyz returns non-200 or invalid JSON)
+- Gracefully skipped if `SLACK_WEBHOOK_URL` not set (non-blocking)
+
+**Example Message:**
+```
+🚨 Staging Smoke Test Failed
+
+Service: AI Bookkeeper Staging
+Environment: https://ai-bookkeeper-app.onrender.com
+Healthz: unavailable
+Readyz: unavailable
+
+💡 Quick Tips:
+• Check Render logs: Dashboard → ai-bookkeeper-web → Logs
+• Verify worker: Dashboard → ai-bookkeeper-worker → Logs
+• Database issues: Check Render DB status
+• Recent deploy: May be a cold start (wait 60s)
+
+[View Run Logs] [Render Dashboard]
+```
+
+#### Email Notifications
+
+**Setup:**
+1. Configure SMTP credentials (Gmail example):
+   ```
+   ALERT_EMAIL=ops@company.com
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=alerts@company.com
+   SMTP_PASSWORD=<app-password>  # Generate at myaccount.google.com/apppasswords
+   ```
+
+2. Add all as GitHub Secrets
+
+**What Gets Sent:**
+- Subject: "🚨 AI Bookkeeper Staging: Smoke Test Failed"
+- Body: Staging URL, status summary, link to GitHub Actions run
+- Plain text format
+
+**When It's Sent:**
+- Only on workflow failure
+- Gracefully skipped if `ALERT_EMAIL` not set (non-blocking)
+
+**Test Alerting:**
+To test alerts without breaking staging:
+1. Temporarily set `STAGING_BASE_URL` to an invalid URL (e.g., `https://invalid-url-test`)
+2. Run workflow manually
+3. Verify Slack/email received
+4. Restore correct `STAGING_BASE_URL`
 
 ---
 
@@ -430,6 +515,97 @@ export DATABASE_URL="postgresql://..."
 python scripts/create_pilot_tenants.py
 
 # 5. Commit fix and re-run workflow
+```
+
+---
+
+## First-Hour Watch (Post-Deploy Checklist)
+
+After merging and deploying to Render, monitor these indicators for the first hour:
+
+### 1. Check Web Service Logs
+```bash
+# Render Dashboard → ai-bookkeeper-web → Logs
+# Look for:
+✅ "Application startup complete"
+✅ "Uvicorn running on http://0.0.0.0:10000"
+✅ "/healthz" requests returning 200
+❌ Any ERROR or CRITICAL log lines
+```
+
+### 2. Check Worker Service Logs
+```bash
+# Render Dashboard → ai-bookkeeper-worker → Logs
+# Look for:
+✅ "Worker started"
+✅ "Listening on queue: ai_bookkeeper"
+✅ "Connected to Redis"
+❌ Connection errors or import failures
+```
+
+### 3. Check Cron Service Status
+```bash
+# Render Dashboard → ai-bookkeeper-analytics-cron → Overview
+# Verify:
+✅ "Next run" shows 02:00 UTC (or next scheduled time)
+✅ No failed runs in history
+✅ Service status: "Live"
+```
+
+### 4. Run Smoke Test
+```bash
+# GitHub → Actions → "Staging Smoke Test" → Run workflow
+# Manual trigger to verify immediately
+# Expected artifacts: staging-healthz.json, staging-readyz.json
+# Verify: Both show status: "ok" / "ready"
+```
+
+### 5. Verify Health Endpoints
+```bash
+# Direct curl (replace with your Render URL)
+curl https://ai-bookkeeper-app.onrender.com/healthz | jq .
+# Expected: {"status":"ok", "database_status":"healthy", ...}
+
+curl https://ai-bookkeeper-app.onrender.com/readyz | jq .
+# Expected: {"status":"ready", "checks":{"database":"ok","migrations":"ok"}}
+```
+
+### 6. Test Legal Pages (No Auth)
+```bash
+# Visit in browser (should load without login):
+https://ai-bookkeeper-app.onrender.com/legal/terms
+https://ai-bookkeeper-app.onrender.com/legal/privacy
+https://ai-bookkeeper-app.onrender.com/support
+
+# Verify: "Template Only" banner visible, footer links present
+```
+
+### 7. Re-run Seed Pilots (If Needed)
+```bash
+# Only if database was wiped or first-time deploy
+# GitHub → Actions → "Seed Pilots (Staging)" → Run workflow
+# Input: I_UNDERSTAND
+# Check artifacts: seed_log.txt confirms tenants created
+```
+
+### Quick Reference URLs
+| Check | URL |
+|-------|-----|
+| Render Dashboard | https://dashboard.render.com |
+| Web Logs | Dashboard → ai-bookkeeper-web → Logs |
+| Worker Logs | Dashboard → ai-bookkeeper-worker → Logs |
+| Cron Status | Dashboard → ai-bookkeeper-analytics-cron → Overview |
+| Healthz | `https://YOUR-APP.onrender.com/healthz` |
+| Readyz | `https://YOUR-APP.onrender.com/readyz` |
+| GitHub Actions | `https://github.com/YOUR_ORG/ai-bookkeeper/actions` |
+
+### Alert Verification (If Configured)
+```bash
+# Test Slack/Email alerts:
+# 1. Temporarily set STAGING_BASE_URL to invalid URL in GitHub secrets
+# 2. Run smoke test workflow
+# 3. Check Slack channel or email inbox for alert
+# 4. Restore correct STAGING_BASE_URL
 ```
 
 ---

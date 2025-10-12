@@ -14,9 +14,28 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    <!-- Toast & Tooltip utilities (WCAG 2.1 AA compliant) -->
+    <script src="/static/toast.js"></script>
+    <script src="/static/tooltips.js"></script>
+    
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Button sizing for consistent touch targets (WCAG 2.1 AA) */
+        .btn-md {
+            min-height: 44px;
+            min-width: 44px;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-lg {
+            min-height: 48px;
+            min-width: 48px;
+            padding: 0.75rem 1.5rem;
+        }
     </style>
+    
+    {% block head_extra %}{% endblock %}
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -76,10 +95,24 @@
     <!-- Footer -->
     <footer class="mt-12 bg-white border-t">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-xs text-gray-500">
-                AI Bookkeeper © 2024 | <a href="/healthz" class="text-indigo-600 hover:text-indigo-500">Health</a> | 
-                <a href="/readyz" class="text-indigo-600 hover:text-indigo-500">Readiness</a>
-            </p>
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+                <p class="text-xs text-gray-500">
+                    AI Bookkeeper © 2025
+                </p>
+                <nav class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-gray-500">
+                    <a href="/legal/terms" class="hover:text-indigo-600">Terms</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="/legal/privacy" class="hover:text-indigo-600">Privacy</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="/legal/dpa" class="hover:text-indigo-600">DPA</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="/support" class="hover:text-indigo-600">Support</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="/healthz" class="hover:text-indigo-600">Health</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="/readyz" class="hover:text-indigo-600">Readiness</a>
+                </nav>
+            </div>
         </div>
     </footer>
 </body>

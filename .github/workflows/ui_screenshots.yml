@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches: ["staging", "main"]
-  pull_request:
-    branches: ["staging", "main"]
+  # Disabled for PRs - requires staging URL or Redis service
+  # pull_request:
+  #   branches: ["staging", "main"]
 
 jobs:
   capture:

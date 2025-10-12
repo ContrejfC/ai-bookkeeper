@@ -83,7 +83,7 @@ jobs:
         run: |
           python scripts/capture_screenshots_playwright.py \
             --base-url "$BASE_URL" \
-            --manifest artifacts/ui-assessment/screenshot_manifest.json \
+            --manifest fixtures/screenshot_manifest.json \
             --out artifacts/ui-assessment \
             --headless
         continue-on-error: true
@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshot-manifest
-          path: artifacts/ui-assessment/screenshot_manifest.json
+          path: fixtures/screenshot_manifest.json
           retention-days: 30
       
       - name: Generate screenshot index

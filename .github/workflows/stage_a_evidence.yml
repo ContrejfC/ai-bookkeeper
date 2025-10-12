@@ -1,0 +1,205 @@
+name: Stage A Evidence - PostgreSQL + Migrations
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  stage-a-evidence:
+    name: PostgreSQL + Migrations + Health Checks
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: aibookkeeper
+          POSTGRES_USER: bookkeeper
+          POSTGRES_PASSWORD: bookkeeper_dev_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-postgres.txt
+          pip install uvicorn fastapi sqlalchemy alembic pydantic pydantic-settings
+      
+      - name: Set DATABASE_URL
+        run: echo "DATABASE_URL=postgresql://bookkeeper:bookkeeper_dev_pass@localhost:5432/aibookkeeper" >> $GITHUB_ENV
+      
+      - name: Run Alembic migrations
+        run: |
+          alembic upgrade head
+          echo "✅ Alembic migrations applied"
+      
+      - name: Capture alembic current output
+        run: |
+          mkdir -p artifacts/stage_a
+          alembic current > artifacts/stage_a/alembic_current.txt 2>&1 || true
+          echo "--- Alembic Current Output ---"
+          cat artifacts/stage_a/alembic_current.txt
+      
+      - name: Run database smoke test
+        run: |
+          python scripts/db_smoke.py > artifacts/stage_a/db_smoke_output.txt 2>&1
+          exit_code=$?
+          echo "--- Database Smoke Test Output ---"
+          cat artifacts/stage_a/db_smoke_output.txt
+          if [ $exit_code -ne 0 ]; then
+            echo "❌ Database smoke test failed"
+            exit 1
+          fi
+          echo "✅ Database smoke test passed"
+      
+      - name: Start API server in background
+        run: |
+          uvicorn app.api.main:app --host 0.0.0.0 --port 8000 &
+          echo $! > api_server.pid
+          echo "⏳ Waiting for API server to start..."
+          sleep 5
+      
+      - name: Test /readyz endpoint
+        run: |
+          curl -f http://localhost:8000/readyz -o artifacts/stage_a/readyz_response.json || {
+            echo "❌ /readyz endpoint failed"
+            cat api_server.pid | xargs kill || true
+            exit 1
+          }
+          echo "--- /readyz Response ---"
+          cat artifacts/stage_a/readyz_response.json | python -m json.tool
+          echo "✅ /readyz endpoint responded"
+      
+      - name: Test /healthz endpoint
+        run: |
+          curl -f http://localhost:8000/healthz -o artifacts/stage_a/healthz_response.json || {
+            echo "⚠️  /healthz endpoint failed (non-blocking)"
+          }
+          if [ -f artifacts/stage_a/healthz_response.json ]; then
+            echo "--- /healthz Response ---"
+            cat artifacts/stage_a/healthz_response.json | python -m json.tool
+          fi
+      
+      - name: Stop API server
+        if: always()
+        run: |
+          if [ -f api_server.pid ]; then
+            cat api_server.pid | xargs kill || true
+          fi
+      
+      - name: Validate evidence artifacts
+        run: |
+          echo "Checking required artifacts..."
+          
+          if [ ! -f artifacts/stage_a/alembic_current.txt ]; then
+            echo "❌ Missing: alembic_current.txt"
+            exit 1
+          fi
+          
+          if [ ! -f artifacts/stage_a/db_smoke_output.txt ]; then
+            echo "❌ Missing: db_smoke_output.txt"
+            exit 1
+          fi
+          
+          if [ ! -f artifacts/stage_a/readyz_response.json ]; then
+            echo "❌ Missing: readyz_response.json"
+            exit 1
+          fi
+          
+          # Check that /readyz returned "ready": true
+          if ! grep -q '"ready": true' artifacts/stage_a/readyz_response.json; then
+            echo "❌ /readyz did not return ready: true"
+            cat artifacts/stage_a/readyz_response.json
+            exit 1
+          fi
+          
+          echo "✅ All required artifacts present and valid"
+      
+      - name: Generate evidence summary
+        run: |
+          cat > artifacts/stage_a/EVIDENCE_SUMMARY.md << 'SUMMARY'
+          # Stage A Evidence Summary (CI)
+          
+          **Generated:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          **Workflow:** stage_a_evidence.yml
+          **Status:** ✅ All checks passed
+          
+          ## Artifacts
+          
+          1. **alembic_current.txt** - Current migration state
+          2. **db_smoke_output.txt** - Database connectivity test
+          3. **readyz_response.json** - Readiness probe response
+          4. **healthz_response.json** - Health check response (optional)
+          
+          ## Validation Results
+          
+          - ✅ PostgreSQL 15 service started
+          - ✅ Dependencies installed
+          - ✅ Alembic migrations applied
+          - ✅ Database smoke test passed
+          - ✅ API server started successfully
+          - ✅ /readyz endpoint returned ready: true
+          - ✅ All required artifacts generated
+          
+          ## Acceptance Criteria
+          
+          - [x] Postgres 15 running
+          - [x] Alembic at head
+          - [x] Database connectivity confirmed
+          - [x] /readyz health checks passing
+          - [x] Artifacts published to artifacts/stage_a/
+          
+          **Stage A Status:** ✅ **ACCEPTED** (automated via CI)
+          SUMMARY
+          
+          echo "Evidence summary generated"
+      
+      - name: Upload Stage A artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stage-a-evidence
+          path: artifacts/stage_a/
+          retention-days: 90
+      
+      - name: Stage A Acceptance Check
+        run: |
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ STAGE A: ACCEPTED (Automated CI Evidence)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "All Stage A acceptance criteria met:"
+          echo "  ✅ PostgreSQL 15 running"
+          echo "  ✅ Alembic migrations at head"
+          echo "  ✅ Database smoke test passed"
+          echo "  ✅ /readyz endpoint healthy"
+          echo "  ✅ Artifacts captured and uploaded"
+          echo ""
+          echo "Artifacts available in: artifacts/stage_a/"
+          echo "  - alembic_current.txt"
+          echo "  - db_smoke_output.txt"
+          echo "  - readyz_response.json"
+          echo "  - healthz_response.json"
+          echo "  - EVIDENCE_SUMMARY.md"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+

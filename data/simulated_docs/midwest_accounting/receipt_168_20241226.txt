@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Professional Liability Ins
+Date: 2024-12-26
+Amount: $328.45
+Invoice #: 87018
+
+[Synthetic receipt for midwest_accounting]

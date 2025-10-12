@@ -1,0 +1,1 @@
+INVOICE From: FedEx 8349 Elm St cleveland, OH 33228 Phone: (480) 972-9416 Invoice; #: INV-83630 Date: 03/26/2025 Due Date: 04/25/2025 Bill To: XYZ Corp Descriptn Amount ---------------------------------------- Maetrials $ 107.02 ---------------------------------------- Skubtotal: $107.02 Tax: $7.49 Tzotal Due $114.51 Please remit payment by 04/25/2025

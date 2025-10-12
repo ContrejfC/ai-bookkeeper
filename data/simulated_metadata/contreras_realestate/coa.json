@@ -1,0 +1,62 @@
+[
+  {
+    "account_num": "1000",
+    "account_name": "Cash at Bank",
+    "account_type": "BANK"
+  },
+  {
+    "account_num": "1200",
+    "account_name": "Accounts Receivable",
+    "account_type": "AR"
+  },
+  {
+    "account_num": "2000",
+    "account_name": "Accounts Payable",
+    "account_type": "AP"
+  },
+  {
+    "account_num": "2100",
+    "account_name": "Payroll Liabilities",
+    "account_type": "OCLIAB"
+  },
+  {
+    "account_num": "3000",
+    "account_name": "Owner's Equity",
+    "account_type": "EQUITY"
+  },
+  {
+    "account_num": "8000",
+    "account_name": "Sales Revenue",
+    "account_type": "INC"
+  },
+  {
+    "account_num": "6100",
+    "account_name": "Office Supplies",
+    "account_type": "EXP"
+  },
+  {
+    "account_num": "6200",
+    "account_name": "Utilities",
+    "account_type": "EXP"
+  },
+  {
+    "account_num": "6500",
+    "account_name": "Travel & Transport",
+    "account_type": "EXP"
+  },
+  {
+    "account_num": "7000",
+    "account_name": "Marketing & Advertising",
+    "account_type": "EXP"
+  },
+  {
+    "account_num": "8100",
+    "account_name": "Commission Revenue",
+    "account_type": "INC"
+  },
+  {
+    "account_num": "6600",
+    "account_name": "MLS Fees",
+    "account_type": "EXP"
+  }
+]

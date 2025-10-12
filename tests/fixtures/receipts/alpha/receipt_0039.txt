@@ -1,0 +1,1 @@
+Salseforce Service Receipqt Date: 03/10/2025 Job #:  JOB-9470 Customer: ABC Comany Address: 6817 Busines Pkwy Services Provided: Consulting $ 201.35 Office Suppliees $ 268.60 Materials $ 70.82 Materials $ 371.91 Labr: $547.61 Materials: $365.07 Subtodtal: $912.68 Tax: $63.89 Total: $976.57 Payment Received: $976.57 Method: Check Authorized by: John Smith

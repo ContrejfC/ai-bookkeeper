@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Duke Energy
+Date: 2025-08-16
+Amount: $229.58
+Invoice #: 68756
+
+[Synthetic receipt for hamilton_coffee]

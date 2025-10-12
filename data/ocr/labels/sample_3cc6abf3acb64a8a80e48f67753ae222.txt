@@ -1,0 +1,6 @@
+{
+  "company": "Walmart Supercenter",
+  "date": "2025-05-22",
+  "total": 41.49,
+  "address": "9907 Main St, City, ST 14618"
+}

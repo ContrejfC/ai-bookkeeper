@@ -1,0 +1,290 @@
+/* AI Bookkeeper Styles */
+
+:root {
+    --primary: #007bff;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --secondary: #6c757d;
+    --light: #f8f9fa;
+    --dark: #343a40;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.stats-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: var(--light);
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.85em;
+    color: var(--secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--dark);
+}
+
+.stat-value.warning {
+    color: var(--warning);
+}
+
+.stat-value.success {
+    color: var(--success);
+}
+
+.actions-bar {
+    padding: 20px;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--secondary);
+    color: white;
+}
+
+.entries-container {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.entry-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.entry-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.entry-card.needs-review {
+    border-color: var(--warning);
+    background: #fffbf0;
+}
+
+.entry-card.status-posted {
+    opacity: 0.7;
+    border-color: var(--success);
+}
+
+.entry-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: var(--light);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.entry-checkbox {
+    margin-right: 15px;
+}
+
+.entry-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.entry-id {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: var(--secondary);
+}
+
+.entry-date {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-proposed {
+    background: #e3f2fd;
+    color: var(--primary);
+}
+
+.badge-approved {
+    background: #d4edda;
+    color: var(--success);
+}
+
+.badge-posted {
+    background: var(--success);
+    color: white;
+}
+
+.badge-warning {
+    background: var(--warning);
+    color: #333;
+}
+
+.confidence-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: white;
+}
+
+.entry-body {
+    padding: 15px;
+}
+
+.entry-memo, .entry-transaction {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.entry-lines {
+    margin-top: 15px;
+}
+
+.lines-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.lines-table th {
+    background: var(--light);
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.lines-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.lines-table .amount {
+    text-align: right;
+    font-family: monospace;
+}
+
+.totals-row {
+    background: var(--light);
+    font-weight: bold;
+}
+
+.error-row {
+    background: #f8d7da;
+}
+
+.error {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--secondary);
+}
+
+.empty-state p {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+

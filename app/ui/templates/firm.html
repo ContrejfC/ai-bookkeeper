@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Firm Console - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div x-data="{ 
+    selectedTenant: null,
+    showSettingsModal: false,
+    settingsForm: {
+        autopost_enabled: false,
+        autopost_threshold: 0.90,
+        llm_tenant_cap_usd: 50
+    }
+}">
+    <!-- Header -->
+    <div class="px-4 sm:px-0">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Firm Console</h1>
+                <p class="mt-1 text-sm text-gray-500">
+                    Multi-tenant management dashboard
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-800">
+                    {{ user_role|upper }}
+                </span>
+                <span class="text-sm text-gray-500">{{ tenants|length }} tenants</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenants Table -->
+    <div class="mt-6 bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Automation</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Review</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backlog</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Drift (PSI)</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Export</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for tenant in tenants %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">{{ tenant.name }}</div>
+                                <div class="text-xs text-gray-500">{{ tenant.tier }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                     {% if tenant.automation_rate >= 0.85 %}bg-green-100 text-green-800{% elif tenant.automation_rate >= 0.70 %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ "%.1f"|format(tenant.automation_rate * 100) }}%
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ "%.1f"|format(tenant.review_rate * 100) }}%
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if tenant.review_backlog_count > 20 %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            {{ tenant.review_backlog_count }}
+                        </span>
+                        {% else %}
+                        <span class="text-sm text-gray-900">{{ tenant.review_backlog_count }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-xs text-gray-900">
+                            V: {{ "%.3f"|format(tenant.psi_vendor) }}<br>
+                            A: {{ "%.3f"|format(tenant.psi_amount) }}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if tenant.fallback_active %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Fallback
+                        </span>
+                        {% elif tenant.autopost_enabled %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Auto-Post
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Review Mode
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                        {% if tenant.last_export_at %}
+                        {{ tenant.last_export_at[:10] }}
+                        {% else %}
+                        Never
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <a href="/review?tenant_id={{ tenant.id }}" 
+                               class="text-indigo-600 hover:text-indigo-900">
+                                Review
+                            </a>
+                            <a href="/metrics?tenant_id={{ tenant.id }}" 
+                               class="text-indigo-600 hover:text-indigo-900">
+                                Metrics
+                            </a>
+                            {% if can_modify %}
+                            <button @click="selectedTenant = '{{ tenant.id }}'; showSettingsModal = true; settingsForm.autopost_enabled = {{ tenant.autopost_enabled|lower }}; settingsForm.autopost_threshold = {{ tenant.autopost_threshold }}; settingsForm.llm_tenant_cap_usd = {{ tenant.llm_tenant_cap_usd }}"
+                                    class="text-blue-600 hover:text-blue-900">
+                                Settings
+                            </button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if tenants|length == 0 %}
+        <div class="text-center py-12">
+            <p class="text-gray-500">No tenants visible.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Settings Modal -->
+    <div x-show="showSettingsModal" 
+         x-cloak
+         @click.away="showSettingsModal = false"
+         class="fixed inset-0 overflow-y-auto z-50"
+         style="display: none;">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+            
+            <!-- Modal -->
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        Tenant Settings
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500" x-text="'Tenant ID: ' + selectedTenant"></p>
+                    
+                    <div class="mt-6 space-y-6">
+                        <!-- Auto-Post Toggle -->
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" 
+                                       x-model="settingsForm.autopost_enabled"
+                                       class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="ml-2 text-sm text-gray-700">Enable Auto-Post</span>
+                            </label>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Guardrails: vendor not cold-start, calibrated_p ≥ threshold, JE balanced, budget OK
+                            </p>
+                        </div>
+                        
+                        <!-- Threshold Slider -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">
+                                Auto-Post Threshold: <span x-text="settingsForm.autopost_threshold.toFixed(2)"></span>
+                            </label>
+                            <input type="range" 
+                                   x-model.number="settingsForm.autopost_threshold"
+                                   min="0.80" max="0.98" step="0.01"
+                                   class="mt-1 w-full">
+                            <p class="mt-1 text-xs text-gray-500">Range: 0.80 - 0.98</p>
+                        </div>
+                        
+                        <!-- Budget Cap -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">LLM Budget Cap (USD/month)</label>
+                            <input type="number" 
+                                   x-model.number="settingsForm.llm_tenant_cap_usd"
+                                   min="0" max="10000" step="10"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex space-x-3">
+                    <button @click="showSettingsModal = false"
+                            class="flex-1 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button @click="showSettingsModal = false; alert('Settings saved (mock)')"
+                            class="flex-1 bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

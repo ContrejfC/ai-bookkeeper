@@ -1,0 +1,1 @@
+Satples Service Receipt Date: 11/26/2024 Job #: JOB-4615 Customer: ABC Cmopany Address: 7411 sBiness Pkwy Services Provided: Consultig $ 350.71 Labor: $210.43 Materialis: $140.28 Subtotnal: $350.71 Tax: $24.55 Total: $375.26 Payment Received: $375.26 Method: Debti Card Authorized by: Bob Johnson

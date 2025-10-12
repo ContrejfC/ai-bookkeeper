@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Paychex
+Date: 2025-01-25
+Amount: $387.53
+Invoice #: 10568
+
+[Synthetic receipt for liberty_childcare]

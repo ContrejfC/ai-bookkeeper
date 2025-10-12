@@ -1,0 +1,1 @@
+INVOwICE From: Microsoft 4288 Main St Cincinnati, OH 88794 Phoe: (677) 293-6067 Invoice #: INV-45235 ate: 10/30/2024 Due Dante: 11/29/2024 Bill To: XYZ Corp Description Amount ---------------------------------------- Consulting $ 303.03 ---------------------------------------- Subtotal: $303.03 TAX: $21.21 Total Du: $324.24  Please remirt payment by 11/29/2024

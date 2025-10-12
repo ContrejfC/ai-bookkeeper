@@ -1,0 +1,39 @@
+date,amount,description,counterparty,currency
+2025-03-01,5209.36,Wire Transfer Payment,Wire Transfer,USD
+2025-03-02,6139.31,Check Payment,Check,USD
+2025-03-02,6261.27,Stripe Payment,Stripe,USD
+2025-03-02,-239.66,Gordon Food Service ****8591,Gordon Food Service,USD
+2025-03-03,-357.84,Cincinnati Water Works ****6345,Cincinnati Water Works,USD
+2025-03-04,-3201.65,ADP ****6370,ADP,USD
+2025-03-05,-221.2,Spectrum ****7102,Spectrum,USD
+2025-03-05,-289.08,Duke Energy ****5093,Duke Energy,USD
+2025-03-08,-349.53,Cincinnati Water Works ****3831,Cincinnati Water Works,USD
+2025-03-08,-52.83,Sysco ****8728,Sysco,USD
+2025-03-08,-252.04,Spectrum ****6435,Spectrum,USD
+2025-03-09,2856.59,Check Payment,Check,USD
+2025-03-09,-157.89,Lakeshore Learning ****3248,Lakeshore Learning,USD
+2025-03-09,-95.16,School Specialty ****3320,School Specialty,USD
+2025-03-10,-135.5,School Specialty ****4584,School Specialty,USD
+2025-03-10,-359.66,Sam's Club ****7481,Sam's Club,USD
+2025-03-11,1969.1,Wire Transfer Payment,Wire Transfer,USD
+2025-03-13,-176.47,School Specialty ****4588,School Specialty,USD
+2025-03-13,-142.73,Lakeshore Learning ****4951,Lakeshore Learning,USD
+2025-03-14,8059.35,Wire Transfer Payment,Wire Transfer,USD
+2025-03-15,-497.19,Paychex ****9907,Paychex,USD
+2025-03-16,-444.63,Duke Energy ****1567,Duke Energy,USD
+2025-03-16,-412.74,Spectrum ****1916,Spectrum,USD
+2025-03-19,-456.44,Gordon Food Service ****5505,Gordon Food Service,USD
+2025-03-19,-108.65,Discount School Supply ****6210,Discount School Supply,USD
+2025-03-21,7486.94,Wire Transfer Payment,Wire Transfer,USD
+2025-03-21,-330.26,Gordon Food Service ****9614,Gordon Food Service,USD
+2025-03-23,-444.32,Cincinnati Water Works ****8848,Cincinnati Water Works,USD
+2025-03-23,-396.18,Spectrum ****6636,Spectrum,USD
+2025-03-24,-389.25,Sam's Club ****4813,Sam's Club,USD
+2025-03-25,-108.39,Sysco ****1621,Sysco,USD
+2025-03-26,-177.76,Spectrum ****5430,Spectrum,USD
+2025-03-26,-422.43,Gordon Food Service ****9064,Gordon Food Service,USD
+2025-03-26,-184.87,Lakeshore Learning ****6285,Lakeshore Learning,USD
+2025-03-27,-6084.89,ADP ****5835,ADP,USD
+2025-03-27,-408.06,Gordon Food Service ****6582,Gordon Food Service,USD
+2025-03-30,-475.09,Sam's Club ****3328,Sam's Club,USD
+2025-03-30,-461.42,Discount School Supply ****6301,Discount School Supply,USD

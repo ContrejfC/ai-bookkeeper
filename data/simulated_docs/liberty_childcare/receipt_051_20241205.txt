@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Spectrum
+Date: 2024-12-05
+Amount: $493.11
+Invoice #: 26827
+
+[Synthetic receipt for liberty_childcare]

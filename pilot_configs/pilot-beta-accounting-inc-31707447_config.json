@@ -1,0 +1,105 @@
+{
+  "tenant": {
+    "tenant_id": "pilot-beta-accounting-inc-31707447",
+    "tenant_name": "Beta Accounting Inc",
+    "tier": "pro",
+    "created_at": "2025-10-11T15:21:54.751991",
+    "status": "active",
+    "config": {
+      "autopost_enabled": true,
+      "autopost_threshold": 0.92,
+      "coldstart_min_labels": 5,
+      "llm_tenant_cap_usd": 100,
+      "max_transactions_per_month": 2000
+    },
+    "features": {
+      "ml_classifier": true,
+      "llm_fallback": true,
+      "auto_rule_promotion": true,
+      "drift_detection": true,
+      "calibration": true
+    },
+    "coa_preset": "standard_professional_services"
+  },
+  "coa": [
+    {
+      "code": "1000",
+      "name": "Operating Account",
+      "type": "Asset"
+    },
+    {
+      "code": "1050",
+      "name": "Payroll Account",
+      "type": "Asset"
+    },
+    {
+      "code": "1200",
+      "name": "Accounts Receivable",
+      "type": "Asset"
+    },
+    {
+      "code": "1300",
+      "name": "Unbilled Receivables",
+      "type": "Asset"
+    },
+    {
+      "code": "2000",
+      "name": "Accounts Payable",
+      "type": "Liability"
+    },
+    {
+      "code": "2100",
+      "name": "Accrued Expenses",
+      "type": "Liability"
+    },
+    {
+      "code": "3000",
+      "name": "Partner Capital",
+      "type": "Equity"
+    },
+    {
+      "code": "4000",
+      "name": "Professional Fees",
+      "type": "Revenue"
+    },
+    {
+      "code": "4100",
+      "name": "Consulting Revenue",
+      "type": "Revenue"
+    },
+    {
+      "code": "5000",
+      "name": "Subcontractor Costs",
+      "type": "Expense"
+    },
+    {
+      "code": "6000",
+      "name": "Salaries & Wages",
+      "type": "Expense"
+    },
+    {
+      "code": "6100",
+      "name": "Payroll Taxes",
+      "type": "Expense"
+    },
+    {
+      "code": "6200",
+      "name": "Professional Development",
+      "type": "Expense"
+    },
+    {
+      "code": "6300",
+      "name": "Technology & Software",
+      "type": "Expense"
+    }
+  ],
+  "user": {
+    "user_id": "user-0925b0f17105c583",
+    "email": "pilot+pilot-beta-accounting-inc-31707447@example.com",
+    "role": "admin",
+    "tenant_id": "pilot-beta-accounting-inc-31707447",
+    "created_at": "2025-10-11T15:21:54.752238",
+    "api_token_hash": "f76e77914b2ef334cac2f415b30f063b62915589dfaf4a2e7b6dcc2c5a1932fa"
+  },
+  "api_token": "sk_pilot_LYxCzHj-zZhttCxUJGVagmsmyGyQlB1ueUyPO3lZouw"
+}

@@ -1,0 +1,96 @@
+# Vendor categorization rules
+# Format: pattern -> account mapping
+# Patterns support regex
+
+rules:
+  # Office Supplies & Equipment
+  - pattern: "(?i)(amazon|amzn).*"
+    account: "6100 Office Supplies"
+    category: "office_supplies"
+    
+  - pattern: "(?i)(office depot|staples|costco|sam's club)"
+    account: "6100 Office Supplies"
+    category: "office_supplies"
+    
+  - pattern: "(?i)(dell|hp|lenovo|apple\\.com)"
+    account: "6150 Computer Equipment"
+    category: "equipment"
+  
+  # Advertising & Marketing
+  - pattern: "(?i)(google ads|linkedin|facebook ads)"
+    account: "7000 Advertising"
+    category: "advertising"
+  
+  # Utilities & Internet
+  - pattern: "(?i)(at&t|verizon|comcast|spectrum|internet)"
+    account: "6200 Utilities"
+    category: "utilities"
+  
+  # Software & Subscriptions
+  - pattern: "(?i)(microsoft|adobe|zoom|dropbox|github|google workspace)"
+    account: "6300 Software Subscriptions"
+    category: "software"
+    
+  - pattern: "(?i)(netflix|spotify|hulu)"
+    account: "6400 Entertainment"
+    category: "personal"
+  
+  # Transportation
+  - pattern: "(?i)(uber|lyft)"
+    account: "6500 Travel & Transport"
+    category: "transport"
+    
+  - pattern: "(?i)(shell|chevron|exxon|mobil|gas|fuel)"
+    account: "6500 Travel & Transport"
+    category: "transport"
+  
+  # Shipping
+  - pattern: "(?i)(fedex|ups|usps|dhl)"
+    account: "6600 Shipping & Freight"
+    category: "shipping"
+  
+  # Professional Services
+  - pattern: "(?i)(contractor|consultant|freelance)"
+    account: "6700 Contract Labor"
+    category: "professional_services"
+  
+  # Insurance
+  - pattern: "(?i)(insurance|state farm|geico|allstate)"
+    account: "6800 Insurance"
+    category: "insurance"
+  
+  # Taxes
+  - pattern: "(?i)(irs|tax payment|payroll tax)"
+    account: "2100 Taxes Payable"
+    category: "tax"
+  
+  # Rent
+  - pattern: "(?i)(rent|landlord|property)"
+    account: "6900 Rent Expense"
+    category: "rent"
+  
+  # Revenue - Income
+  - pattern: "(?i)(deposit|invoice|client|customer payment|wire transfer.*client)"
+    account: "8000 Sales Revenue"
+    category: "revenue"
+    match_condition: "amount > 0"
+  
+  - pattern: "(?i)(payroll|salary)"
+    account: "8100 Payroll Income"
+    category: "revenue"
+    match_condition: "amount > 0"
+  
+  # Bank & Credit Card
+  - pattern: "(?i)(credit card payment|cc payment|chase bank)"
+    account: "2000 Credit Card Payable"
+    category: "liability"
+    
+  - pattern: "(?i)(bank fee|service charge|overdraft)"
+    account: "6950 Bank Fees"
+    category: "fees"
+
+# Default accounts for unmatched transactions
+default:
+  positive_amount: "8000 Sales Revenue"
+  negative_amount: "6999 Miscellaneous Expense"
+

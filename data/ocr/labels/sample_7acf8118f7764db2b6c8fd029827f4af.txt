@@ -1,0 +1,6 @@
+{
+  "company": "Starbucks Coffee",
+  "date": "2025-05-08",
+  "total": 9.34,
+  "address": "5363 Main St, City, ST 16825"
+}

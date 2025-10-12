@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Practice CS
+Date: 2025-02-10
+Amount: $288.83
+Invoice #: 45580
+
+[Synthetic receipt for midwest_accounting]

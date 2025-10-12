@@ -1,0 +1,1 @@
+INVOICE Fqrom: Staples 5782 Mai St Columbus,  HO 48648 Phnoe: (848) 472-1367 Invoice #: INV-37595 Date: 07/08/2025 Due Date: 08/07/2025 Bill To: XYZ Corp Description iAmount ---------------------------------------- Labor $ 268.25 ---------------------------------------- suBtOTaL: $268.25  Tax: $18.78 Total Due: $287.03 lPease remit payment by 08/07/2025

@@ -1,0 +1,94 @@
+# Docker Compose configuration for staging environment
+# Usage: docker-compose -f docker-compose.yml -f deploy/staging_postgres.yml up
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: aibookkeeper-postgres
+    environment:
+      POSTGRES_USER: aibookkeeper
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme123}
+      POSTGRES_DB: aibookkeeper
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aibookkeeper"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aibookkeeper-network
+    restart: unless-stopped
+
+  # AI Bookkeeper App
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: aibookkeeper-app
+    environment:
+      - APP_ENV=staging
+      - DATABASE_URL=postgresql+psycopg://aibookkeeper:${POSTGRES_PASSWORD:-changeme123}@postgres:5432/aibookkeeper
+      - SECRET_KEY=${SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - VECTOR_BACKEND=pgvector
+      - CORS_ORIGINS=https://staging.aibookkeeper.com
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - app_logs:/app/logs
+      - app_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - aibookkeeper-network
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Running migrations...' &&
+        alembic upgrade head &&
+        echo 'Starting server...' &&
+        uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --workers 4
+      "
+
+  # Nginx Reverse Proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: aibookkeeper-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    networks:
+      - aibookkeeper-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
+  app_data:
+    driver: local
+
+networks:
+  aibookkeeper-network:
+    driver: bridge
+

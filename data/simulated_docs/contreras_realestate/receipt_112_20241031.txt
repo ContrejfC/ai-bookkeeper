@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: MLS Cincinnati
+Date: 2024-10-31
+Amount: $121.90
+Invoice #: 48590
+
+[Synthetic receipt for contreras_realestate]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Facebook Ads
+Date: 2025-01-25
+Amount: $780.97
+Invoice #: 73469
+
+[Synthetic receipt for cincy_web]

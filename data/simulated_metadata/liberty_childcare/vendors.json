@@ -1,0 +1,26 @@
+{
+  "business_type": "childcare",
+  "vendors": {
+    "supplies": [
+      "School Specialty",
+      "Lakeshore Learning",
+      "Discount School Supply"
+    ],
+    "food": [
+      "Gordon Food Service",
+      "Sysco",
+      "Sam's Club"
+    ],
+    "utilities": [
+      "Cincinnati Water Works",
+      "Duke Energy",
+      "Spectrum"
+    ],
+    "payroll": [
+      "ADP",
+      "Paychex"
+    ]
+  },
+  "transaction_count": 368,
+  "receipt_count": 52
+}

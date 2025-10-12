@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: FedEx
+Date: 2025-02-25
+Amount: $267.63
+Invoice #: 80499
+
+[Synthetic receipt for contreras_realestate]

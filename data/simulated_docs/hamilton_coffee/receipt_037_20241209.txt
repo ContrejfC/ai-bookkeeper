@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Coffee Bean Co
+Date: 2024-12-09
+Amount: $302.48
+Invoice #: 29442
+
+[Synthetic receipt for hamilton_coffee]

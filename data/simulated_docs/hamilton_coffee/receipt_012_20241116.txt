@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Clover
+Date: 2024-11-16
+Amount: $439.41
+Invoice #: 87812
+
+[Synthetic receipt for hamilton_coffee]

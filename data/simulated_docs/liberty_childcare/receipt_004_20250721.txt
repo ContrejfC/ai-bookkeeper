@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Gordon Food Service
+Date: 2025-07-21
+Amount: $262.73
+Invoice #: 93055
+
+[Synthetic receipt for liberty_childcare]

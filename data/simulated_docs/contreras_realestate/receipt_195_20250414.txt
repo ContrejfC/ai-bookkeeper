@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: MLS Cincinnati
+Date: 2025-04-14
+Amount: $69.18
+Invoice #: 67917
+
+[Synthetic receipt for contreras_realestate]

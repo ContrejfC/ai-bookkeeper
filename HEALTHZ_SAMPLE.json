@@ -1,0 +1,14 @@
+{
+  "status": "ok",
+  "uptime_seconds": 3245.6,
+  "version": "0.2.0-beta",
+  "git_sha": "a3f7d8c",
+  "ruleset_version_id": "v0.4.13",
+  "model_version_id": "m1.2.0",
+  "db_ping_ms": 1.23,
+  "database_status": "healthy",
+  "ocr_stub_loaded": false,
+  "vector_store_status": "none",
+  "timestamp": "2025-10-11T15:00:00-04:00"
+}
+

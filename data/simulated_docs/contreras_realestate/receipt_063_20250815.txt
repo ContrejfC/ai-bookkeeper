@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Vistaprint
+Date: 2025-08-15
+Amount: $55.09
+Invoice #: 97993
+
+[Synthetic receipt for contreras_realestate]

@@ -1,0 +1,6 @@
+{
+  "company": "Lowe's",
+  "date": "2025-05-27",
+  "total": 27.85,
+  "address": "9546 Main St, City, ST 15895"
+}

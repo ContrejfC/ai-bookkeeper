@@ -1,0 +1,29 @@
+{
+  "business_type": "retail",
+  "vendors": {
+    "suppliers": [
+      "Coffee Bean Co",
+      "Java Imports",
+      "Roasters Supply",
+      "Cafe Equipment LLC"
+    ],
+    "utilities": [
+      "Cincinnati Gas Electric",
+      "Duke Energy",
+      "AT&T"
+    ],
+    "pos_systems": [
+      "Square",
+      "Clover",
+      "Toast POS"
+    ],
+    "misc": [
+      "Amazon Business",
+      "Costco",
+      "Office Depot",
+      "Uber Eats"
+    ]
+  },
+  "transaction_count": 330,
+  "receipt_count": 84
+}

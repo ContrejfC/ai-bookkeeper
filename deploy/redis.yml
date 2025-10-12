@@ -1,0 +1,61 @@
+# Redis configuration for async job queue
+# Usage: docker-compose -f docker-compose.yml -f deploy/redis.yml up
+
+version: '3.8'
+
+services:
+  # Redis for job queue and caching
+  redis:
+    image: redis:7-alpine
+    container_name: aibookkeeper-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - aibookkeeper-network
+    restart: unless-stopped
+
+  # RQ Worker for background jobs
+  worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: aibookkeeper-worker
+    environment:
+      - APP_ENV=staging
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - QUEUE_CONCURRENCY=4
+      - ML_MODEL_PATH=/app/models/classifier.pkl
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - app_logs:/app/logs
+      - app_data:/app/data
+      - app_models:/app/models
+    networks:
+      - aibookkeeper-network
+    restart: unless-stopped
+    command: python3 -m app.worker.main
+
+volumes:
+  redis_data:
+    driver: local
+  app_models:
+    driver: local
+
+networks:
+  aibookkeeper-network:
+    external: true
+

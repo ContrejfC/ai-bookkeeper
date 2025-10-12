@@ -1,0 +1,1 @@
+INVOICE From: Office Depot 4220 Oak St Cincinnati, OH 59032 Phone: (640) 553-7922 Invoice #: IrNV-81851 Date: 10/02/2025 Due Date: 11/01/2025 Bill To: XYZ C,orp Descmription Amount ---------------------------------------- lAboR $ 335.25 Materials $ 374.08 ---------------------------------------- Subtotakl: $709.33 Tax: $49.65 otal Due: $758.98 Please remit xpayment by 11/01/2025

@@ -1,0 +1,6 @@
+{
+  "company": "Office Depot",
+  "date": "2024-11-17",
+  "total": 86.67,
+  "address": "9699 Main St, City, ST 86645"
+}

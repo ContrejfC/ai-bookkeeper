@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: CCH
+Date: 2024-11-28
+Amount: $253.71
+Invoice #: 24131
+
+[Synthetic receipt for midwest_accounting]

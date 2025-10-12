@@ -1,0 +1,34 @@
+{
+  "ready": true,
+  "checks": {
+    "database_connect": {
+      "status": "ok",
+      "timing_ms": 2.34
+    },
+    "migrations": {
+      "status": "ok",
+      "current": "001_initial_schema",
+      "head": "001_initial_schema",
+      "timing_ms": 5.67
+    },
+    "write_read_smoke": {
+      "status": "ok",
+      "timing_ms": 3.89
+    },
+    "ocr_stub": {
+      "status": "warning",
+      "available": false,
+      "message": "OCR module not found (expected for Stage A)",
+      "timing_ms": 0.12
+    },
+    "vector_store": {
+      "status": "ok",
+      "backend": "none",
+      "message": "Vector store disabled (as expected)",
+      "timing_ms": 0.08
+    }
+  },
+  "total_timing_ms": 12.10,
+  "timestamp": "2025-10-11T14:30:00-04:00"
+}
+

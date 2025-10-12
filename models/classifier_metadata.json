@@ -1,0 +1,8 @@
+{
+  "model_type": "logistic_regression",
+  "trained_at": "2025-10-08T23:06:12.587694",
+  "test_accuracy": 1.0,
+  "num_classes": 8,
+  "training_samples": 1702,
+  "feature_dimensions": 322
+}

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Square
+Date: 2024-10-17
+Amount: $326.95
+Invoice #: 58843
+
+[Synthetic receipt for hamilton_coffee]

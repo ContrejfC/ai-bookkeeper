@@ -1,0 +1,1 @@
+Offic Depot Service Rceeipt Date: 04/11/2025 kJbo #: JOB-6943 Customer: ABC Company Adress: 6165 oBusiness Pkwy eSrvices Provided: iOffice Supplies $ 285.83 Labor: $171.50 Materials: $114.33 Subtoatl: $285.83 Tax: $20.01 Total: $305.84 Pyament Received: $305.84 Method: Cash Authorized gby: JANE Doe

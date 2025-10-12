@@ -1,0 +1,5 @@
+# Environment variables for Beta Accounting Inc
+TENANT_ID=pilot-beta-accounting-inc-31707447
+API_TOKEN=sk_pilot_LYxCzHj-zZhttCxUJGVagmsmyGyQlB1ueUyPO3lZouw
+AUTOPOST_ENABLED=True
+AUTOPOST_THRESHOLD=0.92

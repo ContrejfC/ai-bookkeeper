@@ -1,0 +1,2 @@
+"""Bank statement ingestion package."""
+

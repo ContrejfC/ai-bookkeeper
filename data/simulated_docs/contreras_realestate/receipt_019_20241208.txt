@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: DocuSign
+Date: 2024-12-08
+Amount: $365.51
+Invoice #: 49760
+
+[Synthetic receipt for contreras_realestate]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Thomson Reuters
+Date: 2024-10-19
+Amount: $48.29
+Invoice #: 25544
+
+[Synthetic receipt for midwest_accounting]

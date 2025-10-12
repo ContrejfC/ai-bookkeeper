@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: LinkedIn
+Date: 2025-01-01
+Amount: $294.70
+Invoice #: 96479
+
+[Synthetic receipt for midwest_accounting]

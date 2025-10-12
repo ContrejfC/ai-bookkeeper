@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Uber Eats
+Date: 2024-11-03
+Amount: $28.09
+Invoice #: 20589
+
+[Synthetic receipt for hamilton_coffee]

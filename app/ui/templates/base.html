@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Bookkeeper{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- htmx -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-indigo-600">AI Bookkeeper</span>
+                        <span class="ml-2 text-xs text-gray-500">v0.9.0-rc</span>
+                    </div>
+                    <div class="ml-6 flex space-x-8">
+                        <a href="/review" class="{% if request.url.path == '/review' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Review
+                        </a>
+                        <a href="/metrics" class="{% if request.url.path == '/metrics' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Metrics
+                        </a>
+                        <a href="/export" class="{% if request.url.path == '/export' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Export
+                        </a>
+                        <a href="/firm" class="{% if request.url.path == '/firm' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Firm
+                        </a>
+                        <a href="/rules" class="{% if request.url.path == '/rules' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Rules
+                        </a>
+                        <a href="/audit" class="{% if request.url.path == '/audit' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Audit
+                        </a>
+                        <a href="/receipts" class="{% if request.url.path == '/receipts' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Receipts
+                        </a>
+                        <a href="/analytics" class="{% if request.url.path == '/analytics' %}border-indigo-500 text-gray-900{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Analytics
+                        </a>
+                        <a href="/onboarding" class="{% if request.url.path == '/onboarding' %}border-indigo-500 text-indigo-900{% else %}border-transparent text-indigo-600 hover:border-indigo-300 hover:text-indigo-800{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Onboarding
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-2 text-xs text-gray-500">
+                        <span>Ruleset: <span class="font-mono">v0.4.13</span></span>
+                        <span>Model: <span class="font-mono">m1.2.0</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 bg-white border-t">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-xs text-gray-500">
+                AI Bookkeeper © 2024 | <a href="/healthz" class="text-indigo-600 hover:text-indigo-500">Health</a> | 
+                <a href="/readyz" class="text-indigo-600 hover:text-indigo-500">Readiness</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
+

@@ -1,0 +1,6 @@
+{
+  "company": "7-Eleven",
+  "date": "2025-05-06",
+  "total": 60.77,
+  "address": "4757 Main St, City, ST 54584"
+}

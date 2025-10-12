@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Java Imports
+Date: 2025-01-28
+Amount: $470.99
+Invoice #: 22656
+
+[Synthetic receipt for hamilton_coffee]

@@ -1,0 +1,8 @@
+# PostgreSQL driver (required for Stage A final acceptance)
+psycopg2-binary==2.9.9
+
+# Note: Install with:
+# pip install -r requirements-postgres.txt
+#
+# Or add to main requirements.txt once PostgreSQL is confirmed working
+

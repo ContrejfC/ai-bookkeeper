@@ -1,0 +1,313 @@
+name: Seed Pilots (Staging)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type I_UNDERSTAND to run seeding on STAGING_DATABASE_URL'
+        required: true
+        default: ''
+      tenant_prefix:
+        description: 'Prefix for tenant IDs (e.g., pilot, demo)'
+        required: false
+        default: 'pilot'
+      count:
+        description: 'How many tenants to create'
+        required: false
+        default: '3'
+        type: choice
+        options: ['1', '2', '3', '5']
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    
+    env:
+      DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+      REDIS_URL: ${{ secrets.STAGING_REDIS_URL }}
+      JWT_SECRET_KEY: ${{ secrets.STAGING_JWT_SECRET_KEY }}
+      TENANT_PREFIX: ${{ github.event.inputs.tenant_prefix }}
+      TENANT_COUNT: ${{ github.event.inputs.count }}
+      AUTOPOST_ENABLED: 'false'
+      GATING_THRESHOLD: '0.90'
+      OCR_PROVIDER: 'tesseract'
+    
+    steps:
+      - name: Guard — Confirmation
+        run: |
+          echo "🔒 Checking safety confirmation..."
+          if [ "${{ github.event.inputs.confirm }}" != "I_UNDERSTAND" ]; then
+            echo "❌ You must type I_UNDERSTAND to run this workflow."
+            echo "   This will seed data to STAGING_DATABASE_URL."
+            exit 1
+          fi
+          echo "✅ Confirmation received"
+      
+      - name: Guard — DATABASE_URL Sanity Check
+        run: |
+          echo "🔍 Validating DATABASE_URL..."
+          
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "❌ STAGING_DATABASE_URL secret is not set."
+            echo "   Set it in: GitHub repo → Settings → Secrets → Actions"
+            exit 1
+          fi
+          
+          # Redact password for logging
+          SAFE_URL=$(echo "${DATABASE_URL}" | sed 's/:.*@/:****@/')
+          echo "✅ DATABASE_URL configured: ${SAFE_URL}"
+          
+          # Block SQLite
+          if echo "${DATABASE_URL}" | grep -qi 'sqlite'; then
+            echo "❌ Refusing to run against sqlite."
+            echo "   This workflow is for staging Postgres only."
+            exit 1
+          fi
+          
+          # Block production (adjust pattern to your naming convention)
+          if echo "${DATABASE_URL}" | grep -Ei 'prod|production'; then
+            echo "❌ DATABASE_URL contains 'prod' — refusing to run."
+            echo "   This workflow is for staging only."
+            exit 1
+          fi
+          
+          # Ensure it's PostgreSQL
+          if ! echo "${DATABASE_URL}" | grep -qi 'postgres'; then
+            echo "⚠️  WARNING: DATABASE_URL doesn't look like Postgres"
+          fi
+          
+          echo "✅ DATABASE_URL passed safety checks"
+      
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies..."
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # Ensure psycopg2 for Postgres connectivity
+          pip install psycopg2-binary
+          echo "✅ Dependencies installed"
+      
+      - name: Run Alembic Migrations
+        run: |
+          echo "🔄 Running database migrations..."
+          python -m alembic upgrade head
+          echo "✅ Migrations complete"
+      
+      - name: Create artifacts directory
+        run: mkdir -p artifacts/seed
+      
+      - name: Run Seed Scripts
+        run: |
+          set -euo pipefail
+          echo "🌱 Starting seed process..."
+          
+          exec > >(tee -a artifacts/seed/seed_log.txt) 2>&1
+          
+          echo "============================================"
+          echo "SEED PILOTS - STAGING"
+          echo "============================================"
+          echo "Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo "Database: $(echo "$DATABASE_URL" | sed 's/:.*@/:****@/')"
+          echo "Tenant Prefix: ${TENANT_PREFIX}"
+          echo "Tenant Count: ${TENANT_COUNT}"
+          echo "============================================"
+          echo ""
+          
+          # 1. Create pilot tenants
+          echo "📝 Step 1: Creating pilot tenants..."
+          if [ -f scripts/create_pilot_tenants.py ]; then
+            python3 scripts/create_pilot_tenants.py || {
+              echo "⚠️  create_pilot_tenants.py failed (non-fatal)"
+            }
+          else
+            echo "⚠️  scripts/create_pilot_tenants.py not found"
+          fi
+          echo ""
+          
+          # 2. Seed demo data (alternative)
+          echo "📝 Step 2: Seeding demo data..."
+          if [ -f scripts/seed_demo_data.py ]; then
+            python3 scripts/seed_demo_data.py || {
+              echo "⚠️  seed_demo_data.py failed (non-fatal)"
+            }
+          else
+            echo "⚠️  scripts/seed_demo_data.py not found"
+          fi
+          echo ""
+          
+          # 3. Test notifications
+          echo "📧 Step 3: Testing notifications..."
+          if [ -f scripts/test_notifications.py ]; then
+            python3 scripts/test_notifications.py || {
+              echo "⚠️  test_notifications.py failed (non-fatal, SMTP may not be configured)"
+            }
+          else
+            echo "⚠️  scripts/test_notifications.py not found"
+          fi
+          echo ""
+          
+          # 4. Generate shadow reports
+          echo "📊 Step 4: Generating shadow reports..."
+          if [ -f scripts/generate_shadow_reports.py ]; then
+            python3 scripts/generate_shadow_reports.py || {
+              echo "⚠️  generate_shadow_reports.py failed (non-fatal)"
+            }
+          else
+            echo "⚠️  scripts/generate_shadow_reports.py not found"
+          fi
+          echo ""
+          
+          # 5. Run analytics rollup
+          echo "📈 Step 5: Running analytics rollup..."
+          if [ -f jobs/analytics_rollup.py ]; then
+            python3 jobs/analytics_rollup.py || {
+              echo "⚠️  analytics_rollup.py failed (non-fatal)"
+            }
+          else
+            echo "⚠️  jobs/analytics_rollup.py not found"
+          fi
+          echo ""
+          
+          echo "============================================"
+          echo "SEED COMPLETE"
+          echo "============================================"
+      
+      - name: Collect Reports
+        run: |
+          echo "📦 Collecting generated reports..."
+          
+          # Shadow reports
+          if ls reports/shadow/*.json >/dev/null 2>&1; then
+            mkdir -p artifacts/seed/reports/shadow
+            cp -r reports/shadow/*.json artifacts/seed/reports/shadow/ || true
+            echo "✅ Copied shadow reports"
+          fi
+          
+          # Analytics reports
+          if ls reports/analytics/*.json >/dev/null 2>&1; then
+            mkdir -p artifacts/seed/reports/analytics
+            cp -r reports/analytics/*.json artifacts/seed/reports/analytics/ || true
+            echo "✅ Copied analytics reports"
+          fi
+          
+          # CSV exports (if any)
+          if ls exports/*.csv >/dev/null 2>&1; then
+            mkdir -p artifacts/seed/exports
+            cp exports/*.csv artifacts/seed/exports/ || true
+            echo "✅ Copied exports"
+          fi
+      
+      - name: Database Summary
+        run: |
+          echo "📊 Generating database summary..."
+          
+          python3 - <<'PY' | tee artifacts/seed/db_summary.txt
+import os
+import sys
+
+try:
+    import psycopg2
+    from urllib.parse import urlparse
+    
+    db_url = os.environ.get("DATABASE_URL", "")
+    if not db_url:
+        print("DATABASE_URL not set")
+        sys.exit(0)
+    
+    # Redact password
+    parsed = urlparse(db_url)
+    safe_url = db_url.replace(parsed.password, "****") if parsed.password else db_url
+    print(f"Database: {safe_url}")
+    print("")
+    
+    # Connect and query
+    conn = psycopg2.connect(db_url)
+    cur = conn.cursor()
+    
+    # Row counts
+    tables = [
+        "tenants",
+        "users", 
+        "transactions",
+        "journal_entries",
+        "rules",
+        "audit_log",
+        "receipts",
+        "receipt_fields"
+    ]
+    
+    print("Table Row Counts:")
+    print("-" * 40)
+    for table in tables:
+        try:
+            cur.execute(f"SELECT COUNT(*) FROM {table}")
+            count = cur.fetchone()[0]
+            print(f"{table:25} {count:>10,}")
+        except Exception as e:
+            print(f"{table:25} {'ERROR':>10}")
+    
+    print("-" * 40)
+    print("")
+    
+    # Alembic version
+    try:
+        cur.execute("SELECT version_num FROM alembic_version LIMIT 1")
+        version = cur.fetchone()[0]
+        print(f"Alembic Version: {version}")
+    except:
+        print("Alembic Version: N/A")
+    
+    cur.close()
+    conn.close()
+    print("")
+    print("✅ Database summary complete")
+    
+except ImportError:
+    print("psycopg2 not available, skipping DB summary")
+except Exception as e:
+    print(f"Error generating DB summary: {e}")
+PY
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seed-pilots
+          path: artifacts/seed/**/*
+          retention-days: 30
+      
+      - name: Set Summary
+        if: always()
+        run: |
+          echo "### Seed Pilots - Staging" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+          echo "**Tenant Prefix:** ${TENANT_PREFIX}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tenant Count:** ${TENANT_COUNT}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f artifacts/seed/seed_log.txt ]; then
+            echo "#### Seed Log (last 50 lines)" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -50 artifacts/seed/seed_log.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f artifacts/seed/db_summary.txt ]; then
+            echo "#### Database Summary" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat artifacts/seed/db_summary.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+

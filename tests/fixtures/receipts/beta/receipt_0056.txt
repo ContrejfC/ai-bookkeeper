@@ -1,0 +1,1 @@
+Google Service Receipt Date: 07/01/2025 Job #: JOB-7152 Customer: XYZ Corp Address: 8119 tBusiness Pkwy Services Phrovded: Labor $ 298.28 Materials $ 128.44 Labor: $256.03 MATREIALS: $170.69 Subtotal: $426.72 Tax: $29.87 Totanl: $456.59  Payment Received: $456.59 Method: Cash Authorized by: Jane Doe

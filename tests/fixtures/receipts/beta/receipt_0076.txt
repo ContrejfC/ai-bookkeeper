@@ -1,0 +1,1 @@
+ComcAst erqvice Recei;pt Date: 07/23/2025 Job #: JOB-6751 Customer: Smith Industrie Address: 5887 Business Pkwy Services Provigded: abor $ 257.09 Labor: $154.25 Materials: $102.84 Subtotal: $257.09 Tax: $18.00 Total: $275.09 Payment Received: $275.09 Method: Credit Card Authorized by: Jane Doe

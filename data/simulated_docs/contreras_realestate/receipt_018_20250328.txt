@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Office Depot
+Date: 2025-03-28
+Amount: $145.48
+Invoice #: 63903
+
+[Synthetic receipt for contreras_realestate]

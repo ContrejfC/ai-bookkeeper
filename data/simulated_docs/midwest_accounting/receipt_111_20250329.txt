@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: FedEx
+Date: 2025-03-29
+Amount: $281.12
+Invoice #: 79742
+
+[Synthetic receipt for midwest_accounting]

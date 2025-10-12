@@ -1,0 +1,146 @@
+name: UI Screenshots (Playwright)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["staging", "main"]
+  pull_request:
+    branches: ["staging", "main"]
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    
+    env:
+      # If staging URL is set as secret, use it; otherwise run local
+      BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Tesseract OCR
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr libtesseract-dev
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install playwright
+      
+      - name: Install Playwright browsers
+        run: python -m playwright install --with-deps chromium
+      
+      - name: Start local server (if BASE_URL not set)
+        if: env.BASE_URL == ''
+        run: |
+          # Set local environment variables
+          export DATABASE_URL=sqlite:///./ai_bookkeeper_ci.db
+          export REDIS_URL=redis://localhost:6379/0
+          export JWT_SECRET_KEY=ci-test-secret-key
+          export AUTOPOST_ENABLED=false
+          export GATING_THRESHOLD=0.90
+          export OCR_PROVIDER=tesseract
+          export UI_ASSESSMENT=1
+          
+          # Run migrations
+          python -m alembic upgrade head
+          
+          # Seed demo data
+          python scripts/seed_demo_data.py || echo "Seed script not found, skipping"
+          
+          # Start server in background
+          nohup uvicorn app.api.main:app --host 0.0.0.0 --port 8000 > server.log 2>&1 &
+          
+          # Wait for server to be healthy
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000/healthz; then
+              echo "Server is healthy"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 2
+          done
+          
+          # Set BASE_URL for next steps
+          echo "BASE_URL=http://127.0.0.1:8000" >> $GITHUB_ENV
+      
+      - name: Verify server health
+        run: |
+          echo "Testing BASE_URL: $BASE_URL"
+          curl -fsS $BASE_URL/healthz || (echo "Health check failed" && exit 1)
+          curl -fsS $BASE_URL/readyz || echo "Readyz not available"
+      
+      - name: Capture screenshots
+        run: |
+          python scripts/capture_screenshots_playwright.py \
+            --base-url "$BASE_URL" \
+            --manifest artifacts/ui-assessment/screenshot_manifest.json \
+            --out artifacts/ui-assessment \
+            --headless
+        continue-on-error: true
+      
+      - name: Check server logs (if local)
+        if: env.BASE_URL == 'http://127.0.0.1:8000' && failure()
+        run: |
+          echo "=== Server Logs ==="
+          cat server.log || echo "No server logs found"
+      
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screenshots
+          path: artifacts/ui-assessment/*.png
+          retention-days: 30
+      
+      - name: Upload screenshot manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-manifest
+          path: artifacts/ui-assessment/screenshot_manifest.json
+          retention-days: 30
+      
+      - name: Generate screenshot index
+        if: success()
+        run: |
+          echo "# UI Screenshots" > artifacts/ui-assessment/INDEX.md
+          echo "" >> artifacts/ui-assessment/INDEX.md
+          echo "Generated: $(date)" >> artifacts/ui-assessment/INDEX.md
+          echo "Base URL: $BASE_URL" >> artifacts/ui-assessment/INDEX.md
+          echo "" >> artifacts/ui-assessment/INDEX.md
+          echo "## Screenshots" >> artifacts/ui-assessment/INDEX.md
+          for png in artifacts/ui-assessment/*.png; do
+            if [ -f "$png" ]; then
+              basename=$(basename "$png")
+              echo "- [$basename]($basename)" >> artifacts/ui-assessment/INDEX.md
+            fi
+          done
+      
+      - name: Upload index
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-index
+          path: artifacts/ui-assessment/INDEX.md
+          retention-days: 30
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "### UI Screenshots Capture" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Base URL:** $BASE_URL" >> $GITHUB_STEP_SUMMARY
+          echo "**Screenshots:** $(ls -1 artifacts/ui-assessment/*.png 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f artifacts/ui-assessment/INDEX.md ]; then
+            cat artifacts/ui-assessment/INDEX.md >> $GITHUB_STEP_SUMMARY
+          fi
+

@@ -1,0 +1,6 @@
+{
+  "company": "Amazon",
+  "date": "2024-12-25",
+  "total": 36.21,
+  "address": "8722 Main St, City, ST 22326"
+}

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Discount School Supply
+Date: 2025-10-01
+Amount: $74.26
+Invoice #: 76628
+
+[Synthetic receipt for liberty_childcare]

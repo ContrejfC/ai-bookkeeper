@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Practice CS
+Date: 2024-12-18
+Amount: $116.46
+Invoice #: 99903
+
+[Synthetic receipt for midwest_accounting]

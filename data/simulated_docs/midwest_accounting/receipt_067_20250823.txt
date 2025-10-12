@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Chamber of Commerce
+Date: 2025-08-23
+Amount: $431.13
+Invoice #: 16385
+
+[Synthetic receipt for midwest_accounting]

@@ -1,0 +1,1 @@
+Digital Ocean Service Receipt Dae: 12/07/2024 Job #: JOB-2825 Customer: Smith Indutsries Adrdess: 2801 Bucsiness Pkwy Services Povided: Office Suppiles $ 404.04 Labor: $242.42 Materials: $161.62 Subtotaml: $404.04 Tax: $28.28 Total: $432.32 Payment Reeived: $432.32 Method: yCash Authorized by: Jne Doe

@@ -1,0 +1,6 @@
+{
+  "company": "Best Buy",
+  "date": "2025-02-15",
+  "total": 422.83,
+  "address": "7939 Main St, City, ST 59669"
+}

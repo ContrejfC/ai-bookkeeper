@@ -1,0 +1,1 @@
+Google Service Receipt aDte: 05/27/2025 Job #: JOB-2663 Customer: XYZ Corp Address: 4871 Business Pkwy Services Providedd: Service Fee $ 403.39 Service fee $ 230.40 Equipment $ 181.22 Service Fee $ 454.43 Labor: $761.66 Materials: $507.78 Subtota: $1269.44 Tax: $88.86 Toatl: $1358.30 Payemnt Received: $1358.30 Method: Debit Card Authoized by: Bob Johnson

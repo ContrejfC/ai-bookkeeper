@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Matterport
+Date: 2025-01-25
+Amount: $295.83
+Invoice #: 21854
+
+[Synthetic receipt for contreras_realestate]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: ADP
+Date: 2025-07-07
+Amount: $5020.49
+Invoice #: 25826
+
+[Synthetic receipt for liberty_childcare]

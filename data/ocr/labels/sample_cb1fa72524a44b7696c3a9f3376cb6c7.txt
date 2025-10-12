@@ -1,0 +1,6 @@
+{
+  "company": "FedEx Office",
+  "date": "2025-02-04",
+  "total": 21.54,
+  "address": "1874 Main St, City, ST 84857"
+}

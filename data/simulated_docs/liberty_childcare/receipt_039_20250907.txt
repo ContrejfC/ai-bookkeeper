@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: School Specialty
+Date: 2025-09-07
+Amount: $29.59
+Invoice #: 75382
+
+[Synthetic receipt for liberty_childcare]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Office Depot
+Date: 2025-07-02
+Amount: $55.38
+Invoice #: 97896
+
+[Synthetic receipt for midwest_accounting]

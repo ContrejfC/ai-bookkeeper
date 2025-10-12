@@ -1,0 +1,6 @@
+{
+  "company": "Costco Wholesale",
+  "date": "2025-06-21",
+  "total": 207.85,
+  "address": "9497 Main St, City, ST 61924"
+}

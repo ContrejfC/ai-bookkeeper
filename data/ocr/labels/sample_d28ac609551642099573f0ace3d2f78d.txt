@@ -1,0 +1,6 @@
+{
+  "company": "Staples",
+  "date": "2025-10-08",
+  "total": 73.32,
+  "address": "7612 Main St, City, ST 81254"
+}

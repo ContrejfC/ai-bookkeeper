@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Export Center - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div>
+    <!-- Header -->
+    <div class="px-4 sm:px-0">
+        <h1 class="text-3xl font-bold text-gray-900">Export Center</h1>
+        <p class="mt-2 text-sm text-gray-700">
+            Export journal entries to QuickBooks Online (QBO) CSV format. Re-exports are idempotent and skip duplicates.
+        </p>
+    </div>
+
+    <!-- Export Trigger -->
+    <div class="mt-6 bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900">Trigger QBO Export</h2>
+        <p class="mt-2 text-sm text-gray-500">
+            Generate a QBO-compatible CSV file with 11 columns. Duplicates are automatically skipped based on ExternalId.
+        </p>
+        
+        <div id="export-result"></div>
+        
+        <button hx-post="/export/qbo" 
+                hx-target="#export-result"
+                hx-swap="innerHTML"
+                class="mt-4 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            Export to QBO CSV
+        </button>
+    </div>
+
+    <!-- Export History -->
+    <div class="mt-6 bg-white shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Export History</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Export ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posted</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skipped</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Lines</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for export in export_history %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">{{ export.export_id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ export.timestamp[:19] }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                {{ export.posted_count }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {% if export.skipped_count > 0 %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                {{ export.skipped_count }}
+                            </span>
+                            {% else %}
+                            <span class="text-gray-400">0</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ export.total_lines }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                         {% if export.status == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ export.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ export.note or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- QBO Export Log (Idempotency Tracking) -->
+    <div class="mt-6 bg-white shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">QBO Export Log (Idempotency)</h2>
+                <span class="text-xs text-gray-500">Showing latest 10 entries</span>
+            </div>
+            <p class="mt-1 text-sm text-gray-500">
+                Each journal entry is assigned a unique ExternalId (SHA-256 hash). Re-exports automatically skip duplicates.
+            </p>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ExternalId (32 hex)</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">JE ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Export</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attempts</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for entry in qbo_log_entries %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                            <span class="group relative cursor-help">
+                                {{ entry.external_id_full[:32] }}
+                                <!-- Tooltip with full SHA-256 -->
+                                <div class="invisible group-hover:visible absolute z-10 w-72 px-3 py-2 text-xs text-white bg-gray-900 rounded-lg shadow-lg top-full mt-2 left-0">
+                                    <strong>Full SHA-256 (64 hex):</strong><br>
+                                    <span class="font-mono break-all">{{ entry.external_id_full }}</span>
+                                </div>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">{{ entry.je_id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ entry.date }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                {{ entry.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ entry.first_export_ts[:19] }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {% if entry.attempt_count > 1 %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                {{ entry.attempt_count }} ({{ entry.attempt_count - 1 }} skipped)
+                            </span>
+                            {% else %}
+                            <span class="text-gray-500">1</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Export Format Reference -->
+    <div class="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <h3 class="text-sm font-medium text-gray-900">QBO CSV Format (11 Columns)</h3>
+        <pre class="mt-2 text-xs text-gray-700 overflow-x-auto">Date,JournalNumber,AccountName,Debit,Credit,Currency,Memo,Entity,Class,Location,ExternalId</pre>
+        <p class="mt-2 text-xs text-gray-500">
+            <strong>ExternalId:</strong> SHA-256(je_id|date|sorted_lines_json) → First 32 hex displayed in CSV, full 64 hex stored internally.
+        </p>
+    </div>
+</div>
+{% endblock %}
+

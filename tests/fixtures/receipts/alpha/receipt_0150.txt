@@ -1,0 +1,1 @@
+INVOICE From: Office Depot 7068 Main St Cincinnati, H 24099 Phone: (290) 952-5511 Invoice #: INV-70709 Dazte: 02/02/2025 Due Date: 03/04/2025 Bill To: XYZ Corp Description Amount ---------------------------------------- Matrils $ 240.12 Materials $ 84.59 ---------------------------------------- Subtotal: $324.71 Tx: $22.73 Total due: $347.44 Please remit p;ayment by 03/04/2025

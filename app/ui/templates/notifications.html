@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Notification Settings - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 max-w-4xl" x-data="notificationSettings()">
+    <h1 class="text-3xl font-bold mb-6">Notification Settings</h1>
+    
+    <!-- Dry-Run Banner -->
+    <div x-show="!smtpConfigured && !slackConfigured" 
+         class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded">
+        <p class="font-bold">ℹ️ Dry-Run Mode</p>
+        <p>SMTP and Slack are not configured. Notifications will be logged but not sent. Set <code>SMTP_HOST</code> and <code>SMTP_USER</code> or Slack webhook to enable.</p>
+    </div>
+    
+    <!-- Settings Form -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Notification Channels</h2>
+        
+        <!-- Email -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+            </label>
+            <input type="email" 
+                   x-model="settings.email"
+                   placeholder="admin@example.com"
+                   class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <p class="mt-1 text-sm text-gray-500">Receive alerts via email</p>
+        </div>
+        
+        <!-- Slack Webhook -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Slack Webhook URL
+            </label>
+            <input type="text" 
+                   x-model="settings.slack_webhook_url"
+                   placeholder="https://hooks.slack.com/services/..."
+                   class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <p class="mt-1 text-sm text-gray-500">
+                Get alerts in Slack. 
+                <a href="https://api.slack.com/messaging/webhooks" target="_blank" class="text-indigo-600 underline">
+                    Create webhook
+                </a>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Alert Types -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Alert Types</h2>
+        <p class="text-sm text-gray-600 mb-4">Select which events should trigger notifications (debounced to once per 15 minutes)</p>
+        
+        <div class="space-y-4">
+            <!-- PSI Alert -->
+            <label class="flex items-center">
+                <input type="checkbox" x-model="settings.psi_alert"
+                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <span class="ml-3">
+                    <span class="font-medium text-gray-900">Data Drift (PSI > 0.20)</span>
+                    <span class="block text-sm text-gray-500">Alert when Population Stability Index exceeds threshold</span>
+                </span>
+            </label>
+            
+            <!-- Budget Fallback -->
+            <label class="flex items-center">
+                <input type="checkbox" x-model="settings.budget_fallback"
+                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <span class="ml-3">
+                    <span class="font-medium text-gray-900">LLM Budget Exceeded</span>
+                    <span class="block text-sm text-gray-500">Alert when system falls back to Rules/ML due to budget cap</span>
+                </span>
+            </label>
+            
+            <!-- JE Imbalance -->
+            <label class="flex items-center">
+                <input type="checkbox" x-model="settings.je_imbalance"
+                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <span class="ml-3">
+                    <span class="font-medium text-gray-900">Journal Entry Imbalance</span>
+                    <span class="block text-sm text-gray-500">Alert when unbalanced entries are detected</span>
+                </span>
+            </label>
+            
+            <!-- Export Completed -->
+            <label class="flex items-center">
+                <input type="checkbox" x-model="settings.export_completed"
+                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <span class="ml-3">
+                    <span class="font-medium text-gray-900">Export Completed</span>
+                    <span class="block text-sm text-gray-500">Alert when QBO/Xero export finishes</span>
+                </span>
+            </label>
+            
+            <!-- Cold-Start Graduated -->
+            <label class="flex items-center">
+                <input type="checkbox" x-model="settings.coldstart_graduated"
+                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <span class="ml-3">
+                    <span class="font-medium text-gray-900">Vendor Ready for Auto-Post</span>
+                    <span class="block text-sm text-gray-500">Alert when vendor graduates cold-start (≥3 consistent labels)</span>
+                </span>
+            </label>
+        </div>
+    </div>
+    
+    <!-- Actions -->
+    <div class="flex gap-4">
+        <button @click="saveSettings()"
+                class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                :disabled="saving">
+            <span x-show="!saving">Save Settings</span>
+            <span x-show="saving">Saving...</span>
+        </button>
+        
+        <button @click="testEmail()"
+                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                :disabled="!settings.email || testing"
+                x-bind:title="!settings.email ? 'Enter email address first' : 'Send test email'">
+            <span x-show="!testing">Test Email</span>
+            <span x-show="testing">Sending...</span>
+        </button>
+        
+        <button @click="testSlack()"
+                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                :disabled="!settings.slack_webhook_url || testing"
+                x-bind:title="!settings.slack_webhook_url ? 'Enter Slack webhook first' : 'Send test Slack message'">
+            <span x-show="!testing">Test Slack</span>
+            <span x-show="testing">Sending...</span>
+        </button>
+    </div>
+    
+    <!-- Status Messages -->
+    <div x-show="statusMessage" 
+         x-text="statusMessage"
+         class="mt-4 p-3 rounded"
+         :class="statusSuccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+    </div>
+</div>
+
+<script>
+function notificationSettings() {
+    return {
+        settings: {
+            tenant_id: '{{ tenant_id }}',
+            email: null,
+            slack_webhook_url: null,
+            psi_alert: false,
+            budget_fallback: false,
+            je_imbalance: false,
+            export_completed: false,
+            coldstart_graduated: false
+        },
+        saving: false,
+        testing: false,
+        statusMessage: '',
+        statusSuccess: false,
+        smtpConfigured: false,
+        slackConfigured: false,
+        
+        init() {
+            this.loadSettings();
+        },
+        
+        async loadSettings() {
+            try {
+                const response = await fetch(`/api/notifications/settings?tenant_id=${this.settings.tenant_id}`, {
+                    headers: {
+                        'X-CSRF-Token': getCsrfToken()
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    this.settings = data;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        },
+        
+        async saveSettings() {
+            this.saving = true;
+            this.statusMessage = '';
+            
+            try {
+                const response = await fetch('/api/notifications/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCsrfToken()
+                    },
+                    body: JSON.stringify(this.settings)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    this.statusMessage = '✓ Settings saved successfully';
+                    this.statusSuccess = true;
+                } else {
+                    this.statusMessage = '✗ Error: ' + (data.detail || 'Failed to save');
+                    this.statusSuccess = false;
+                }
+            } catch (error) {
+                this.statusMessage = '✗ Error saving settings';
+                this.statusSuccess = false;
+                console.error('Save error:', error);
+            } finally {
+                this.saving = false;
+                setTimeout(() => { this.statusMessage = ''; }, 5000);
+            }
+        },
+        
+        async testEmail() {
+            this.testing = true;
+            this.statusMessage = '';
+            
+            try {
+                const response = await fetch('/api/notifications/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        tenant_id: this.settings.tenant_id,
+                        channel: 'email'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    this.statusMessage = '✓ ' + data.message;
+                    this.statusSuccess = true;
+                } else {
+                    this.statusMessage = '⚠️ ' + (data.message || 'Email test failed');
+                    this.statusSuccess = false;
+                }
+            } catch (error) {
+                this.statusMessage = '✗ Error testing email';
+                this.statusSuccess = false;
+                console.error('Test email error:', error);
+            } finally {
+                this.testing = false;
+                setTimeout(() => { this.statusMessage = ''; }, 7000);
+            }
+        },
+        
+        async testSlack() {
+            this.testing = true;
+            this.statusMessage = '';
+            
+            try {
+                const response = await fetch('/api/notifications/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        tenant_id: this.settings.tenant_id,
+                        channel: 'slack'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    this.statusMessage = '✓ ' + data.message;
+                    this.statusSuccess = true;
+                } else {
+                    this.statusMessage = '⚠️ ' + (data.message || 'Slack test failed');
+                    this.statusSuccess = false;
+                }
+            } catch (error) {
+                this.statusMessage = '✗ Error testing Slack';
+                this.statusSuccess = false;
+                console.error('Test Slack error:', error);
+            } finally {
+                this.testing = false;
+                setTimeout(() => { this.statusMessage = ''; }, 7000);
+            }
+        }
+    }
+}
+</script>
+{% endblock %}
+

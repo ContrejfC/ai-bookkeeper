@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Office Depot
+Date: 2024-12-16
+Amount: $397.94
+Invoice #: 70036
+
+[Synthetic receipt for hamilton_coffee]

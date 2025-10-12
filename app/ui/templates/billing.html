@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Billing & Subscription - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 max-w-6xl">
+    <h1 class="text-3xl font-bold mb-6">Billing & Subscription</h1>
+    
+    <!-- Test Mode Banner -->
+    {% if test_mode %}
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded">
+        <p class="font-bold">🧪 Test Mode</p>
+        <p>Billing is running in Stripe test mode. Use <a href="https://stripe.com/docs/testing" target="_blank" class="underline">test cards</a> for checkout.</p>
+    </div>
+    {% endif %}
+    
+    <!-- Not Configured Banner -->
+    {% if not stripe_configured %}
+    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded">
+        <p class="font-bold">ℹ️ Billing Not Configured</p>
+        <p>Set <code>STRIPE_SECRET_KEY</code> and price IDs in environment to enable billing.</p>
+    </div>
+    {% endif %}
+    
+    <!-- Current Subscription -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Current Plan</h2>
+        
+        {% if subscription %}
+        <div class="flex items-center justify-between">
+            <div>
+                <span class="text-2xl font-bold capitalize">{{ subscription.plan }}</span>
+                <span class="ml-3 px-3 py-1 rounded-full text-sm font-semibold
+                    {% if subscription.status == 'active' %}bg-green-100 text-green-800{% endif %}
+                    {% if subscription.status == 'past_due' %}bg-red-100 text-red-800{% endif %}
+                    {% if subscription.status == 'canceled' %}bg-gray-100 text-gray-800{% endif %}
+                    {% if subscription.status == 'trialing' %}bg-blue-100 text-blue-800{% endif %}
+                ">{{ subscription.status }}</span>
+                
+                {% if subscription.cancel_at_period_end %}
+                <span class="ml-3 px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-800">
+                    Canceling
+                </span>
+                {% endif %}
+            </div>
+            
+            <div>
+                {% if subscription.status == 'active' and stripe_configured %}
+                <button hx-get="/api/billing/portal_link?tenant_id={{ tenant_id }}"
+                        hx-swap="none"
+                        onclick="openPortal(event)"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                    Manage Billing
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if subscription.current_period_end %}
+        <p class="mt-4 text-gray-600">
+            {% if subscription.cancel_at_period_end %}
+                Access ends on {{ subscription.current_period_end.strftime('%B %d, %Y') }}
+            {% else %}
+                Renews on {{ subscription.current_period_end.strftime('%B %d, %Y') }}
+            {% endif %}
+        </p>
+        {% endif %}
+        
+        {% if subscription.status == 'past_due' %}
+        <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
+            <p class="text-red-800">⚠️ Payment failed. Please update your payment method.</p>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <p class="text-gray-600">No active subscription. Select a plan below to get started.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Plan Selector -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <!-- Starter Plan -->
+        <div class="bg-white rounded-lg shadow p-6 border-2 border-gray-200 hover:border-indigo-500 transition">
+            <h3 class="text-xl font-bold mb-2">Starter</h3>
+            <p class="text-3xl font-bold mb-4">$49<span class="text-lg text-gray-600">/mo</span></p>
+            <ul class="mb-6 space-y-2 text-sm">
+                <li>✓ Up to 1,000 transactions/mo</li>
+                <li>✓ Basic categorization</li>
+                <li>✓ Email support</li>
+                <li>✓ QBO/Xero export</li>
+            </ul>
+            <button onclick="checkout('starter')"
+                    {% if not stripe_configured %}disabled{% endif %}
+                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Select Plan
+            </button>
+        </div>
+        
+        <!-- Pro Plan -->
+        <div class="bg-white rounded-lg shadow p-6 border-2 border-indigo-500 relative">
+            <span class="absolute top-0 right-0 bg-indigo-600 text-white px-3 py-1 rounded-bl-lg rounded-tr-lg text-xs font-semibold">
+                POPULAR
+            </span>
+            <h3 class="text-xl font-bold mb-2 mt-2">Pro</h3>
+            <p class="text-3xl font-bold mb-4">$149<span class="text-lg text-gray-600">/mo</span></p>
+            <ul class="mb-6 space-y-2 text-sm">
+                <li>✓ Up to 10,000 transactions/mo</li>
+                <li>✓ ML + LLM categorization</li>
+                <li>✓ Priority support</li>
+                <li>✓ Custom rules engine</li>
+                <li>✓ Receipt scanning</li>
+            </ul>
+            <button onclick="checkout('pro')"
+                    {% if not stripe_configured %}disabled{% endif %}
+                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Select Plan
+            </button>
+        </div>
+        
+        <!-- Firm Plan -->
+        <div class="bg-white rounded-lg shadow p-6 border-2 border-gray-200 hover:border-indigo-500 transition">
+            <h3 class="text-xl font-bold mb-2">Firm</h3>
+            <p class="text-3xl font-bold mb-4">$499<span class="text-lg text-gray-600">/mo</span></p>
+            <ul class="mb-6 space-y-2 text-sm">
+                <li>✓ Unlimited transactions</li>
+                <li>✓ Multi-tenant management</li>
+                <li>✓ Dedicated support</li>
+                <li>✓ Custom integrations</li>
+                <li>✓ White-label option</li>
+                <li>✓ SLA guarantee</li>
+            </ul>
+            <button onclick="checkout('firm')"
+                    {% if not stripe_configured %}disabled{% endif %}
+                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Select Plan
+            </button>
+        </div>
+    </div>
+    
+    <!-- Coupon Code -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Have a Coupon?</h2>
+        <div class="flex gap-2">
+            <input type="text" id="coupon-code" placeholder="Enter coupon code (e.g., PILOT20)"
+                   class="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button onclick="applyCoupon()"
+                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                Apply
+            </button>
+        </div>
+        <p id="coupon-message" class="mt-2 text-sm"></p>
+    </div>
+</div>
+
+<script>
+    let appliedCoupon = null;
+    
+    function applyCoupon() {
+        const coupon = document.getElementById('coupon-code').value.trim();
+        if (coupon) {
+            appliedCoupon = coupon;
+            document.getElementById('coupon-message').innerHTML = 
+                '<span class="text-green-600">✓ Coupon "' + coupon + '" will be applied at checkout</span>';
+        }
+    }
+    
+    function checkout(plan) {
+        const coupon = appliedCoupon || document.getElementById('coupon-code').value.trim();
+        const tenantId = '{{ tenant_id }}';
+        
+        fetch('/api/billing/create_checkout_session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
+            },
+            body: JSON.stringify({
+                plan: plan,
+                tenant_id: tenantId,
+                coupon: coupon || null
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.checkout_url) {
+                window.location.href = data.checkout_url;
+            } else {
+                alert(data.message || 'Billing not configured. Contact support.');
+            }
+        })
+        .catch(err => {
+            console.error('Checkout error:', err);
+            alert('Error creating checkout session. Please try again.');
+        });
+    }
+    
+    function openPortal(event) {
+        event.preventDefault();
+        const tenantId = '{{ tenant_id }}';
+        
+        fetch('/api/billing/portal_link?tenant_id=' + tenantId, {
+            headers: {
+                'X-CSRF-Token': getCsrfToken()
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.portal_url) {
+                window.location.href = data.portal_url;
+            } else {
+                alert(data.message || 'Could not open billing portal');
+            }
+        });
+    }
+    
+    // Check for success/cancel query params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+        alert('✓ Subscription successful! Your plan will be active shortly.');
+        // Clear query params
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (urlParams.get('canceled') === 'true') {
+        alert('Checkout canceled. You can try again anytime.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+</script>
+{% endblock %}
+

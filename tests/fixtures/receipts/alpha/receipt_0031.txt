@@ -1,0 +1,1 @@
+INVOIEC From: AWS 6437 Main St Cleveland, OH 69010 Phone: (211) 230-8080 invoice #: INV-86404 Da.te: 01/19/2025 Due Date: 02/18/2025 Bill To: ABC pCompany Descriptino Amount ---------------------------------------- Labor $ 196.02 Svice Fehe $ 328.03 ---------------------------------------- Subtotal: $524.05 Tax: $36.68 Total Due: $560.73 Please remit payment by 02/18/2025

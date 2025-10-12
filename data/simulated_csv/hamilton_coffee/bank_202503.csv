@@ -1,0 +1,25 @@
+date,amount,description,counterparty,currency
+2025-03-01,-174.0,Office Depot ****9379,Office Depot,USD
+2025-03-01,-265.88,Cincinnati Gas Electric ****7691,Cincinnati Gas Electric,USD
+2025-03-02,3470.93,Wire Transfer Payment,Wire Transfer,USD
+2025-03-03,5060.64,Stripe Payment,Stripe,USD
+2025-03-05,1767.86,Stripe Payment,Stripe,USD
+2025-03-08,-141.3,Coffee Bean Co ****8784,Coffee Bean Co,USD
+2025-03-10,-96.64,Roasters Supply ****7275,Roasters Supply,USD
+2025-03-13,-434.21,Costco ****8373,Costco,USD
+2025-03-15,-184.53,Cincinnati Gas Electric ****9849,Cincinnati Gas Electric,USD
+2025-03-16,-142.44,Office Depot ****5543,Office Depot,USD
+2025-03-16,-61.8,Square ****5681,Square,USD
+2025-03-17,7654.52,Check Payment,Check,USD
+2025-03-18,3433.87,Stripe Payment,Stripe,USD
+2025-03-21,-298.44,Amazon Business ****7291,Amazon Business,USD
+2025-03-21,-455.76,Uber Eats ****8305,Uber Eats,USD
+2025-03-21,-182.17,AT&T ****8633,AT&T,USD
+2025-03-22,-289.77,Coffee Bean Co ****2988,Coffee Bean Co,USD
+2025-03-22,-405.67,Roasters Supply ****9702,Roasters Supply,USD
+2025-03-23,-140.89,AT&T ****1090,AT&T,USD
+2025-03-25,-175.72,Toast POS ****8251,Toast POS,USD
+2025-03-27,-390.03,Uber Eats ****8461,Uber Eats,USD
+2025-03-27,-366.66,Uber Eats ****9270,Uber Eats,USD
+2025-03-29,5604.19,Stripe Payment,Stripe,USD
+2025-03-30,-360.55,Roasters Supply ****2052,Roasters Supply,USD

@@ -1,0 +1,1 @@
+INVOICE From: wSalesforce 234 Main St Clevnelad, OH 65526 Phone: (736) 475-4045 Invoic.e #: IN-83060 Date: 01/07/2025 Due Date: 02/06/2025 Bill To: XY,Z Corp Dkescription Amount ---------------------------------------- Materials $ 390.83 ---------------------------------------- Subtotal: $390.83 Tax: $27.36 Total Due: $418.19 Pelase remit payment by 02/06/2025

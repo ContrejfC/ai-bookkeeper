@@ -1,0 +1,1 @@
+INVOICE Frm: AT&T 3811 Maple St Columbus, OH 23057 Phone: (340) 733-5921 Invoice #: INV-14711 Date: 05/05/2025 Due Date: 06/04/2025 Bill To: XYZ Crop Descriqption Amount ---------------------------------------- Equipment $ 323.93 ---------------------------------------- Subtotal: $323.93 Tax: $22.68 Total Due: $346.61 Please remit payment by 06/04/2025

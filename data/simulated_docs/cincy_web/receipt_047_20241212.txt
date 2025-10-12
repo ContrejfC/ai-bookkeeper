@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Zoom
+Date: 2024-12-12
+Amount: $361.70
+Invoice #: 46739
+
+[Synthetic receipt for cincy_web]

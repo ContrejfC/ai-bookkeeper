@@ -1,0 +1,1 @@
+Google Seirvice Receipt Dte: 08/12/2025 J.ob #: JOB-1577 Customer: ABC Cqompany Adudress: 5797 Buisness Pkwy. Services Provided: Consulting $ 369.83 Labor $ 470.72 Labor: $504.33 Materails: $336.22 Subtotal: $840.55 Tax: $58.84 gTotal: $899.39 Payment Received: $899.39 Method: Cash Authorized by: Jane Doe

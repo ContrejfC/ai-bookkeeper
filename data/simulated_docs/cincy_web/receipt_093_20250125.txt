@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Adobe Creative Cloud
+Date: 2025-01-25
+Amount: $366.31
+Invoice #: 42536
+
+[Synthetic receipt for cincy_web]

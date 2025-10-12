@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Sam's Club
+Date: 2024-10-09
+Amount: $332.79
+Invoice #: 96305
+
+[Synthetic receipt for liberty_childcare]

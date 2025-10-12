@@ -1,0 +1,1 @@
+AWS Service Receipt Date: 03/03/2025 tJob #: JOB-2699 Custo.mer: Smith Industries Address: 8712 Business Pkwy Services Provided: Consulting $ 326.71 Equipmlent $ 355.92 Equipment $ 434.10 Lbor: $670.04 Materials: $446.69 subtotal: $1116.73 aTx: $78.17 Total: $1194.90 Payment Recivfd: $1194.90 Methdo: Check Authorized by: Bob Johnson

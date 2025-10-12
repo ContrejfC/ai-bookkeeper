@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Chamber of Commerce
+Date: 2024-12-14
+Amount: $191.40
+Invoice #: 54832
+
+[Synthetic receipt for midwest_accounting]

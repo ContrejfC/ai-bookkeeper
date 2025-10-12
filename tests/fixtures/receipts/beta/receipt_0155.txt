@@ -1,0 +1,1 @@
+INVOICE Fr,om: Aamzon Busine,ss 5659 Oak st Columbus, H 45162 Phone: (140) 725-2410 Invoice #: INV-55608 Date: 06/23/2025 Deu Date: 07/23/2025 Bill To: XYZ Corp Description Amount ---------------------------------------- Office Supplies $ 374.74 ---------------------------------------- Subtotal: $374.74 Tax: $26.23 Total Due: $400.97 lease remit payment by 07/23/2025

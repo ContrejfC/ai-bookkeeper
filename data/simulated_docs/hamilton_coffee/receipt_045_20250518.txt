@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Costco
+Date: 2025-05-18
+Amount: $240.53
+Invoice #: 52622
+
+[Synthetic receipt for hamilton_coffee]

@@ -1,0 +1,102 @@
+"""Test per-file ingestion isolation."""
+import sys
+from pathlib import Path
+import tempfile
+import shutil
+
+# Add parent to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from app.db.session import get_db_context, engine
+from app.db.models import Base, TransactionDB, CompanyDB
+from scripts.run_simulation_ingest import ingest_transactions, IngestionMetrics
+
+
+def test_per_file_isolation():
+    """Test that a bad CSV doesn't prevent good CSVs from being processed."""
+    
+    # Create temp directory for test CSVs
+    test_dir = Path(tempfile.mkdtemp())
+    
+    try:
+        # Create database
+        Base.metadata.create_all(bind=engine)
+        
+        # Create test company
+        with get_db_context() as db:
+            company = CompanyDB(
+                company_id="test_isolation_company",
+                company_name="Test Isolation Company",
+                currency="USD"
+            )
+            db.add(company)
+            db.commit()
+        
+        # Create good CSV #1
+        good_csv_1 = test_dir / "good_1.csv"
+        with open(good_csv_1, 'w') as f:
+            f.write("date,amount,description,counterparty,currency\n")
+            f.write("2025-01-01,100.00,Good Transaction 1,Vendor A,USD\n")
+            f.write("2025-01-02,200.00,Good Transaction 2,Vendor B,USD\n")
+        
+        # Create BAD CSV (malformed dates)
+        bad_csv = test_dir / "bad.csv"
+        with open(bad_csv, 'w') as f:
+            f.write("date,amount,description,counterparty,currency\n")
+            f.write("INVALID_DATE,50.00,Bad Transaction,Vendor C,USD\n")  # This will fail
+        
+        # Create good CSV #2
+        good_csv_2 = test_dir / "good_2.csv"
+        with open(good_csv_2, 'w') as f:
+            f.write("date,amount,description,counterparty,currency\n")
+            f.write("2025-01-03,300.00,Good Transaction 3,Vendor D,USD\n")
+            f.write("2025-01-04,400.00,Good Transaction 4,Vendor E,USD\n")
+        
+        # Run ingestion
+        csv_files = [good_csv_1, bad_csv, good_csv_2]
+        metrics = IngestionMetrics("test_isolation_company", "Test Isolation Company")
+        
+        with get_db_context() as db:
+            ingest_transactions(db, "test_isolation_company", csv_files, metrics)
+        
+        # Verify results
+        with get_db_context() as db:
+            transactions = db.query(TransactionDB).filter(
+                TransactionDB.company_id == "test_isolation_company"
+            ).all()
+            
+            # Should have 4 transactions (2 from good_1, 2 from good_2)
+            # The bad CSV should not prevent others from processing
+            assert len(transactions) == 4, f"Expected 4 transactions, got {len(transactions)}"
+            
+            # Check that metrics recorded the error
+            assert len(metrics.errors) == 1, f"Expected 1 error, got {len(metrics.errors)}"
+            assert "bad.csv" in metrics.errors[0], "Error should mention bad.csv"
+            
+            # Check that ingestion count is correct
+            assert metrics.txn_count == 4, f"Expected 4 txns ingested, got {metrics.txn_count}"
+        
+        print("✅ Per-file isolation test passed!")
+        print(f"   - {metrics.txn_count} transactions ingested successfully")
+        print(f"   - {len(metrics.errors)} file(s) failed (as expected)")
+        
+        return True
+    
+    finally:
+        # Cleanup
+        shutil.rmtree(test_dir, ignore_errors=True)
+        
+        # Clean up test data
+        with get_db_context() as db:
+            db.query(TransactionDB).filter(
+                TransactionDB.company_id == "test_isolation_company"
+            ).delete()
+            db.query(CompanyDB).filter(
+                CompanyDB.company_id == "test_isolation_company"
+            ).delete()
+            db.commit()
+
+
+if __name__ == "__main__":
+    test_per_file_isolation()
+

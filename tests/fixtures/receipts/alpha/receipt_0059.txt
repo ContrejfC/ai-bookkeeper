@@ -1,0 +1,1 @@
+INVOICE From: FedEx 4662 Elm St Toledo, OH 15221 Phone: (462) 513-2708 iInvopice #: INV-53882 Date: 07/13/2025 Due Date: 08/12/2025 Bill To: XYZ Corp Descriptin Amount ---------------------------------------- Co,nsulting $ 281.18 ---------------------------------------- ubtotal: $281.18 Tax: $19.68 Total Due: $300.86 Pleas,e remit pyment by 08/12/2025

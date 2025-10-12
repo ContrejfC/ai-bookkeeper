@@ -1,0 +1,51 @@
+category,document_id,image_path,label_address,label_amount,label_date,label_path,label_vendor
+General,355b645f7ffc4660b3e3e29629e82e3e,sample_355b645f7ffc4660b3e3e29629e82e3e.jpg,"9546 Main St, City, ST 15895",27.85,2025-05-27,sample_355b645f7ffc4660b3e3e29629e82e3e.txt,Lowe's
+General,3e17265554e645acb766a50da2c6b83f,sample_3e17265554e645acb766a50da2c6b83f.jpg,"3504 Main St, City, ST 40324",30.1,2025-08-28,sample_3e17265554e645acb766a50da2c6b83f.txt,Amazon
+Retail,105df868119447029e2d7644667f9ab6,sample_105df868119447029e2d7644667f9ab6.jpg,"4270 Main St, City, ST 36152",86.78,2025-01-22,sample_105df868119447029e2d7644667f9ab6.txt,Home Depot
+General,786f3e2ab2254000a57bafd1730c8b1c,sample_786f3e2ab2254000a57bafd1730c8b1c.jpg,"1370 Main St, City, ST 16180",21.97,2025-04-03,sample_786f3e2ab2254000a57bafd1730c8b1c.txt,Office Depot
+Food & Dining,7acf8118f7764db2b6c8fd029827f4af,sample_7acf8118f7764db2b6c8fd029827f4af.jpg,"5363 Main St, City, ST 16825",9.34,2025-05-08,sample_7acf8118f7764db2b6c8fd029827f4af.txt,Starbucks Coffee
+Food & Dining,fe0a00f0d7884cb5913ec006201d1264,sample_fe0a00f0d7884cb5913ec006201d1264.jpg,"4927 Main St, City, ST 10321",17.25,2025-06-14,sample_fe0a00f0d7884cb5913ec006201d1264.txt,McDonald's
+General,bbb37ad15ba9491784c15696aff65184,sample_bbb37ad15ba9491784c15696aff65184.jpg,"4842 Main St, City, ST 74671",29.51,2025-07-27,sample_bbb37ad15ba9491784c15696aff65184.txt,Amazon
+Electronics,718dd25673504695ae446f651b834555,sample_718dd25673504695ae446f651b834555.jpg,"3787 Main St, City, ST 11396",303.71,2025-08-19,sample_718dd25673504695ae446f651b834555.txt,Best Buy
+General,f25d4ff119e641f2b9e2c108810e01df,sample_f25d4ff119e641f2b9e2c108810e01df.jpg,"6742 Main St, City, ST 22509",47.6,2025-02-16,sample_f25d4ff119e641f2b9e2c108810e01df.txt,Lowe's
+Healthcare,1043e64bb24644f2a0e09f8aa055782a,sample_1043e64bb24644f2a0e09f8aa055782a.jpg,"2544 Main St, City, ST 75406",43.05,2025-03-16,sample_1043e64bb24644f2a0e09f8aa055782a.txt,CVS Pharmacy
+Food & Dining,66cb4ebeb0e74ba8871de0b5d11b8c43,sample_66cb4ebeb0e74ba8871de0b5d11b8c43.jpg,"8140 Main St, City, ST 90554",13.94,2025-04-03,sample_66cb4ebeb0e74ba8871de0b5d11b8c43.txt,Starbucks Coffee
+Retail,1caf7e00b3d24480bb05393cc5403ee7,sample_1caf7e00b3d24480bb05393cc5403ee7.jpg,"3265 Main St, City, ST 97046",161.06,2025-04-13,sample_1caf7e00b3d24480bb05393cc5403ee7.txt,Home Depot
+Retail,f46abcfc77f94695845f7a6c705dc71d,sample_f46abcfc77f94695845f7a6c705dc71d.jpg,"3733 Main St, City, ST 43131",60.34,2025-01-17,sample_f46abcfc77f94695845f7a6c705dc71d.txt,Home Depot
+General,5ccdd48a46a04b8da427156030d7fe04,sample_5ccdd48a46a04b8da427156030d7fe04.jpg,"6706 Main St, City, ST 13790",31.09,2025-05-11,sample_5ccdd48a46a04b8da427156030d7fe04.txt,Lowe's
+General,c3e6acfac49049b1b11268d504ac1e67,sample_c3e6acfac49049b1b11268d504ac1e67.jpg,"3177 Main St, City, ST 13468",64.81,2025-09-26,sample_c3e6acfac49049b1b11268d504ac1e67.txt,Amazon
+Retail,670b7e2832194edbb23d8f7ed7446d10,sample_670b7e2832194edbb23d8f7ed7446d10.jpg,"2957 Main St, City, ST 48707",189.79,2025-09-10,sample_670b7e2832194edbb23d8f7ed7446d10.txt,Costco Wholesale
+Retail,3880c9445887488da3f72b85da7595cd,sample_3880c9445887488da3f72b85da7595cd.jpg,"4923 Main St, City, ST 56082",193.46,2025-03-18,sample_3880c9445887488da3f72b85da7595cd.txt,Home Depot
+Electronics,c1c7b07e010f41aab445bf908d22b4aa,sample_c1c7b07e010f41aab445bf908d22b4aa.jpg,"7939 Main St, City, ST 59669",422.83,2025-02-15,sample_c1c7b07e010f41aab445bf908d22b4aa.txt,Best Buy
+Food & Dining,b16095b398d7498fbdfe74aecb4382f5,sample_b16095b398d7498fbdfe74aecb4382f5.jpg,"190 Main St, City, ST 14786",14.51,2024-12-13,sample_b16095b398d7498fbdfe74aecb4382f5.txt,Starbucks Coffee
+Retail,0f7038f1f23440848108e0ed5543ac59,sample_0f7038f1f23440848108e0ed5543ac59.jpg,"2300 Main St, City, ST 96032",99.19,2025-05-07,sample_0f7038f1f23440848108e0ed5543ac59.txt,Home Depot
+Retail,5448f8dcd9c643a690f09f6f10beeeaa,sample_5448f8dcd9c643a690f09f6f10beeeaa.jpg,"5173 Main St, City, ST 59940",79.53,2025-08-23,sample_5448f8dcd9c643a690f09f6f10beeeaa.txt,Walmart Supercenter
+General,bfe402984fbc4275a41adc0a2dac8036,sample_bfe402984fbc4275a41adc0a2dac8036.jpg,"3104 Main St, City, ST 64941",95.16,2025-06-06,sample_bfe402984fbc4275a41adc0a2dac8036.txt,Office Depot
+Business Services,91c4a16fb4fe4ec498adf3d666eb0996,sample_91c4a16fb4fe4ec498adf3d666eb0996.jpg,"2424 Main St, City, ST 83485",17.44,2025-03-18,sample_91c4a16fb4fe4ec498adf3d666eb0996.txt,FedEx Office
+Business Services,12f11abcccb4420da374f0f6db04404f,sample_12f11abcccb4420da374f0f6db04404f.jpg,"6233 Main St, City, ST 20517",80.55,2025-07-15,sample_12f11abcccb4420da374f0f6db04404f.txt,FedEx Office
+General,3bc7394d5ea34003990cd16fe205359e,sample_3bc7394d5ea34003990cd16fe205359e.jpg,"8722 Main St, City, ST 22326",36.21,2024-12-25,sample_3bc7394d5ea34003990cd16fe205359e.txt,Amazon
+Business Services,cb1fa72524a44b7696c3a9f3376cb6c7,sample_cb1fa72524a44b7696c3a9f3376cb6c7.jpg,"1874 Main St, City, ST 84857",21.54,2025-02-04,sample_cb1fa72524a44b7696c3a9f3376cb6c7.txt,FedEx Office
+Office Supplies,d28ac609551642099573f0ace3d2f78d,sample_d28ac609551642099573f0ace3d2f78d.jpg,"7612 Main St, City, ST 81254",73.32,2025-10-08,sample_d28ac609551642099573f0ace3d2f78d.txt,Staples
+General,f042a8ef7cc9481c8cfcc9d0fa4ff730,sample_f042a8ef7cc9481c8cfcc9d0fa4ff730.jpg,"7901 Main St, City, ST 39564",13.87,2025-08-17,sample_f042a8ef7cc9481c8cfcc9d0fa4ff730.txt,Subway
+General,c487a1c3d0174c7c8ac598b8182a627b,sample_c487a1c3d0174c7c8ac598b8182a627b.jpg,"8493 Main St, City, ST 15661",72.74,2025-02-11,sample_c487a1c3d0174c7c8ac598b8182a627b.txt,Amazon
+Electronics,74ea0cca3ed54e459d482a77f7e040ff,sample_74ea0cca3ed54e459d482a77f7e040ff.jpg,"1443 Main St, City, ST 95589",358.86,2024-11-11,sample_74ea0cca3ed54e459d482a77f7e040ff.txt,Best Buy
+Office Supplies,e5d6e193bee4401c9b7089161fee03cd,sample_e5d6e193bee4401c9b7089161fee03cd.jpg,"5361 Main St, City, ST 19690",121.37,2024-11-10,sample_e5d6e193bee4401c9b7089161fee03cd.txt,Staples
+Retail,21b2b80cc04e4ddeb56e04870984e343,sample_21b2b80cc04e4ddeb56e04870984e343.jpg,"1236 Main St, City, ST 18676",39.08,2025-03-20,sample_21b2b80cc04e4ddeb56e04870984e343.txt,Home Depot
+Office Supplies,50a16e11690e4407b71433cd3dadbc53,sample_50a16e11690e4407b71433cd3dadbc53.jpg,"2944 Main St, City, ST 21010",148.13,2024-12-30,sample_50a16e11690e4407b71433cd3dadbc53.txt,Staples
+Office Supplies,b1d0cdbe07bf437d965f6ba70cedd8d8,sample_b1d0cdbe07bf437d965f6ba70cedd8d8.jpg,"3955 Main St, City, ST 15196",58.21,2025-03-28,sample_b1d0cdbe07bf437d965f6ba70cedd8d8.txt,Staples
+Business Services,44ed1b2d7a5c47d2b7fd53f3508011b3,sample_44ed1b2d7a5c47d2b7fd53f3508011b3.jpg,"5480 Main St, City, ST 90241",42.56,2025-05-17,sample_44ed1b2d7a5c47d2b7fd53f3508011b3.txt,FedEx Office
+General,198e414f687c4b3e88ae44fbfae550b5,sample_198e414f687c4b3e88ae44fbfae550b5.jpg,"8669 Main St, City, ST 24898",95.67,2024-11-02,sample_198e414f687c4b3e88ae44fbfae550b5.txt,Subway
+Food & Dining,1109a5e3680949b9847f6529e4f58fd1,sample_1109a5e3680949b9847f6529e4f58fd1.jpg,"3415 Main St, City, ST 95931",21.1,2025-08-09,sample_1109a5e3680949b9847f6529e4f58fd1.txt,McDonald's
+General,43ddda71c57b47999ba942241610157d,sample_43ddda71c57b47999ba942241610157d.jpg,"9667 Main St, City, ST 36982",63.04,2025-02-02,sample_43ddda71c57b47999ba942241610157d.txt,Walgreens
+Electronics,0f30a56c60ba42c39cbf6e456a1f1764,sample_0f30a56c60ba42c39cbf6e456a1f1764.jpg,"400 Main St, City, ST 19666",378.53,2025-07-03,sample_0f30a56c60ba42c39cbf6e456a1f1764.txt,Best Buy
+General,72c170095b734dbe9bf527b176012bd2,sample_72c170095b734dbe9bf527b176012bd2.jpg,"9387 Main St, City, ST 40189",25.9,2025-04-02,sample_72c170095b734dbe9bf527b176012bd2.txt,Lowe's
+General,606ea77f3bdf498ead0ef03d0be65b00,sample_606ea77f3bdf498ead0ef03d0be65b00.jpg,"3323 Main St, City, ST 48603",98.79,2025-03-23,sample_606ea77f3bdf498ead0ef03d0be65b00.txt,Subway
+Retail,ab300f25327d45a2a0d51ba1076c7265,sample_ab300f25327d45a2a0d51ba1076c7265.jpg,"8888 Main St, City, ST 54977",115.3,2025-01-03,sample_ab300f25327d45a2a0d51ba1076c7265.txt,Walmart Supercenter
+General,0a076e89dffd43bb8325b6cc60732aee,sample_0a076e89dffd43bb8325b6cc60732aee.jpg,"9562 Main St, City, ST 80820",29.19,2025-09-02,sample_0a076e89dffd43bb8325b6cc60732aee.txt,Subway
+Retail,af1ecef99115497abda68a6d4cf2a144,sample_af1ecef99115497abda68a6d4cf2a144.jpg,"9359 Main St, City, ST 10177",207.28,2024-10-30,sample_af1ecef99115497abda68a6d4cf2a144.txt,Costco Wholesale
+General,c82140a0a7a7499585d3fd2574d7939a,sample_c82140a0a7a7499585d3fd2574d7939a.jpg,"9699 Main St, City, ST 86645",86.67,2024-11-17,sample_c82140a0a7a7499585d3fd2574d7939a.txt,Office Depot
+General,0388b97d318c4787866cd96c3083a84f,sample_0388b97d318c4787866cd96c3083a84f.jpg,"4888 Main St, City, ST 62578",54.07,2025-08-30,sample_0388b97d318c4787866cd96c3083a84f.txt,Lowe's
+Healthcare,0374eb447e394ea583dc15ee8d7599ab,sample_0374eb447e394ea583dc15ee8d7599ab.jpg,"7315 Main St, City, ST 51857",60.39,2025-09-22,sample_0374eb447e394ea583dc15ee8d7599ab.txt,CVS Pharmacy
+General,a996eb4a6aad42acbfd7fc61dd6e8a23,sample_a996eb4a6aad42acbfd7fc61dd6e8a23.jpg,"7300 Main St, City, ST 42287",17.39,2025-03-25,sample_a996eb4a6aad42acbfd7fc61dd6e8a23.txt,7-Eleven
+Food & Dining,c6a73dbc0a28424d9f25af161e62894a,sample_c6a73dbc0a28424d9f25af161e62894a.jpg,"7480 Main St, City, ST 98558",12.4,2025-05-19,sample_c6a73dbc0a28424d9f25af161e62894a.txt,Starbucks Coffee
+General,2b8e678052494c4086a9b0696df1bf6e,sample_2b8e678052494c4086a9b0696df1bf6e.jpg,"6775 Main St, City, ST 66268",26.8,2025-10-03,sample_2b8e678052494c4086a9b0696df1bf6e.txt,Walgreens

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Roasters Supply
+Date: 2025-04-20
+Amount: $373.55
+Invoice #: 50963
+
+[Synthetic receipt for hamilton_coffee]

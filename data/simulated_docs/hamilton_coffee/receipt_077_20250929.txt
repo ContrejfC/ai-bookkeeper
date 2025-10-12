@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: AT&T
+Date: 2025-09-29
+Amount: $31.61
+Invoice #: 18799
+
+[Synthetic receipt for hamilton_coffee]

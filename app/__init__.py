@@ -1,0 +1,2 @@
+"""AI Bookkeeper application package."""
+

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Amazon Business
+Date: 2025-06-13
+Amount: $333.17
+Invoice #: 23424
+
+[Synthetic receipt for midwest_accounting]

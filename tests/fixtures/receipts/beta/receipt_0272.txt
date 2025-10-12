@@ -1,0 +1,1 @@
+Salecsforce Service Receipt Date: 09/21/2025 Job #: JOB-7087 Customer: ABC Company Address: 8776 Business Pkwy Services Provided: Labo $ 454.30 Equipment $ 120.26 qEuipment $ 330.25 Cons,ulting $ 261.05 Labor $ 260.15 Labor: $855.61 fMaterials: $570.40 Subtotal: $1426.01 Tax: $99.82 Total: $1525.83 aPdpmvent Reeceived: $1525.83 Method: Check Authorized by: bo Johnson

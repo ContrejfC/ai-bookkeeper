@@ -1,0 +1,1 @@
+QuickyBooks Service Receipt Dat: 12/07/2024 Job #: JOB-7451 Customer: XYZ Corp Address: 2530 Busness Pkwy Services Provdied: Equ.ipemnt $ 393.57 Equipment $ 475.37 Labo: $521.36 Materials: $347.58 Subttal: $868.94 Tax: $60.83 Total: $92977 Payment receyived: $929.77 Method: Check Authorized by: John Smith

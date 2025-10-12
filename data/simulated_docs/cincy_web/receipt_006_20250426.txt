@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Slack
+Date: 2025-04-26
+Amount: $91.40
+Invoice #: 20082
+
+[Synthetic receipt for cincy_web]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Amazon Business
+Date: 2025-01-07
+Amount: $413.12
+Invoice #: 97177
+
+[Synthetic receipt for hamilton_coffee]

@@ -1,0 +1,1 @@
+AWS Service Receizpt hDate: 12/14/2024 Job #: JOB-8024 customer: ABC Company Address: 4087 Business Pkwy Services Proyxvidde: Equipent $ 363.79 Consutling $ 403.66 Consulting $ 317.04 L,abor: $650.69 Materials: $433.80 Subtotal: $1084.49 Tax: $75.91 Total: $1160.40 Paymen Receied: $1160.40 Mehod: Cash Authorzied by: John Smith

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Dotloop
+Date: 2024-12-14
+Amount: $455.17
+Invoice #: 75225
+
+[Synthetic receipt for contreras_realestate]

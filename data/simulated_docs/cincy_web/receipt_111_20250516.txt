@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: AWS
+Date: 2025-05-16
+Amount: $161.62
+Invoice #: 43913
+
+[Synthetic receipt for cincy_web]

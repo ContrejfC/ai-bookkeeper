@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Office Depot
+Date: 2025-08-29
+Amount: $134.31
+Invoice #: 39949
+
+[Synthetic receipt for hamilton_coffee]

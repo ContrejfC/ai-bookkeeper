@@ -1,0 +1,1 @@
+INVOICE From: Microsoft 4662 Elm St Tol,edo, OH 15221 Phone: (462) 513-2708 Invoice #: INV-53882 Date: 04/22/2025 Dsue Date: 05/22/2025 Bill To: XYZ Crp Descripion Amount ---------------------------------------- Consulting $ 281.18 ---------------------------------------- Subttal: $281.18 Tax: $19.68 Total Due: $300.86 Ple,ase remt payment by 05/22/2025

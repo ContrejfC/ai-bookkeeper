@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Cincinnati Water Works
+Date: 2024-12-12
+Amount: $392.39
+Invoice #: 32760
+
+[Synthetic receipt for liberty_childcare]

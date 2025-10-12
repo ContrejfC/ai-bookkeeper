@@ -1,0 +1,1 @@
+Verion Service Receipt Date: 07/27/2025 Job #: JOB-2736 Customer: XYZ Corp Address: 5093 Business Pkwy Services Provdide: Consulting $ 303.03 Labor: $181.82 Materials: $121.21 Subtotal: $303.03 Tax: $21.21 Total: $324.24 aPyment Receievd: $324.24 Method: Debit wCard Authorized by: Bob Johns;ojn

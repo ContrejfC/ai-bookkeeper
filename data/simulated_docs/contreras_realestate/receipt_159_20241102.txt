@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Office Depot
+Date: 2024-11-02
+Amount: $284.64
+Invoice #: 53934
+
+[Synthetic receipt for contreras_realestate]

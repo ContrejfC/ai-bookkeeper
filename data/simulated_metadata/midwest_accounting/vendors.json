@@ -1,0 +1,27 @@
+{
+  "business_type": "professional_services",
+  "vendors": {
+    "saas": [
+      "QuickBooks",
+      "Thomson Reuters",
+      "CCH",
+      "Practice CS"
+    ],
+    "insurance": [
+      "Professional Liability Ins",
+      "Errors & Omissions"
+    ],
+    "marketing": [
+      "Google Ads",
+      "LinkedIn",
+      "Chamber of Commerce"
+    ],
+    "misc": [
+      "Office Depot",
+      "FedEx",
+      "Amazon Business"
+    ]
+  },
+  "transaction_count": 289,
+  "receipt_count": 183
+}

@@ -1,0 +1,1 @@
+Veizon Service Receipt qDate: 05/25/2025 Job #: JOB-5218 Customer: XYZ Corp Address: 6452 Business Pkwy Services Providred: Conslting $ 478.01 Materials $ 238.73 Materilas $ 416.06 Consulitng $ 63.47 Labor: $717.76 Materials: $478.51 Subtotal: $1196.27 Tax: $83.74 Total: $1280.01 Payment Receixved: $1280.01 Method: Debift  Card Authorized by: Bob JOHNON

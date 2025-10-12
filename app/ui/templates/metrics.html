@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Metrics Dashboard - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div x-data="{ period: '{{ period }}' }">
+    <!-- Header -->
+    <div class="px-4 sm:px-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-gray-900">Metrics Dashboard</h1>
+            
+            <!-- Period Selector -->
+            <div class="flex space-x-2">
+                <a href="/metrics?period=7d" 
+                   class="px-4 py-2 text-sm font-medium rounded-md {% if period == '7d' %}bg-indigo-600 text-white{% else %}bg-white text-gray-700 hover:bg-gray-50{% endif %} border">
+                    7 Days
+                </a>
+                <a href="/metrics?period=30d" 
+                   class="px-4 py-2 text-sm font-medium rounded-md {% if period == '30d' %}bg-indigo-600 text-white{% else %}bg-white text-gray-700 hover:bg-gray-50{% endif %} border">
+                    30 Days
+                </a>
+                <a href="/metrics?period=90d" 
+                   class="px-4 py-2 text-sm font-medium rounded-md {% if period == '90d' %}bg-indigo-600 text-white{% else %}bg-white text-gray-700 hover:bg-gray-50{% endif %} border">
+                    90 Days
+                </a>
+            </div>
+        </div>
+        
+        <!-- Metadata -->
+        <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+            <span>Window: {{ metrics.window_start_ts[:10] }} to {{ metrics.window_end_ts[:10] }}</span>
+            <span>|</span>
+            <span>Population: {{ metrics.population_n }} transactions</span>
+            <span>|</span>
+            <span>Schema: v{{ metrics.schema_version }}</span>
+        </div>
+    </div>
+
+    <!-- Validation Banner -->
+    {% if not counts_reconcile %}
+    <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                    <strong>Warning:</strong> Reason counts don't reconcile. 
+                    Total not_auto_post_counts: {{ total_not_auto_posted }}, 
+                    Expected from review_rate: {{ expected_not_auto_posted }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Core Metrics Grid -->
+    <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Automation Rate -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Automation Rate</dt>
+                            <dd class="text-3xl font-semibold text-gray-900">{{ "%.1f"|format(metrics.automation_rate * 100) }}%</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-Post Rate -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Auto-Post Rate</dt>
+                            <dd class="text-3xl font-semibold text-gray-900">{{ "%.1f"|format(metrics.auto_post_rate * 100) }}%</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Rate -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Review Rate</dt>
+                            <dd class="text-3xl font-semibold text-gray-900">{{ "%.1f"|format(metrics.review_rate * 100) }}%</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reconciliation Rate -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Reconciliation</dt>
+                            <dd class="text-3xl font-semibold text-gray-900">{{ "%.1f"|format(metrics.reconciliation_rate * 100) }}%</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Quality -->
+    <div class="mt-6 bg-white shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Model Quality</h2>
+        </div>
+        <div class="px-6 py-5">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Brier Score</dt>
+                    <dd class="mt-1 text-2xl font-semibold text-gray-900">{{ "%.3f"|format(metrics.brier_score) }}</dd>
+                    <dd class="mt-1 text-xs text-gray-500">Target ≤ 0.15</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">ECE (Calibrated)</dt>
+                    <dd class="mt-1 text-2xl font-semibold text-gray-900">{{ "%.3f"|format(metrics.ece_calibrated) }}</dd>
+                    <dd class="mt-1 text-xs text-gray-500">Method: {{ metrics.calibration_method }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Gating Threshold</dt>
+                    <dd class="mt-1 text-2xl font-semibold text-gray-900">{{ "%.2f"|format(metrics.gating_threshold) }}</dd>
+                    <dd class="mt-1 text-xs text-gray-500">Auto-post if p ≥ threshold</dd>
+                </div>
+            </div>
+            
+            <!-- ECE Reliability Chart (Mini) -->
+            <div class="mt-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-3">Reliability Diagram (ECE Bins)</h3>
+                <div class="flex items-end space-x-1 h-32">
+                    {% for bin in metrics.ece_bins %}
+                    <div class="flex-1 group relative">
+                        <div class="bg-indigo-200 hover:bg-indigo-300 rounded-t transition-all cursor-help" 
+                             style="height: {{ (bin.count / 500 * 100)|int }}%">
+                        </div>
+                        <!-- Tooltip -->
+                        <div class="invisible group-hover:visible absolute z-10 w-40 px-3 py-2 text-xs text-white bg-gray-900 rounded-lg shadow-lg bottom-full mb-2 left-1/2 transform -translate-x-1/2">
+                            <strong>{{ bin.bin }}</strong><br>
+                            Pred: {{ "%.3f"|format(bin.pred) }}<br>
+                            Obs: {{ "%.3f"|format(bin.obs) }}<br>
+                            Count: {{ bin.count }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-between mt-2 text-xs text-gray-500">
+                    <span>0.0</span>
+                    <span>0.5</span>
+                    <span>1.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Reasons -->
+    <div class="mt-6 bg-white shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Review Reasons Breakdown</h2>
+        </div>
+        <div class="px-6 py-5">
+            <div class="space-y-4">
+                {% for reason, count in metrics.not_auto_post_counts.items() %}
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-sm font-medium text-gray-700">{{ reason.replace('_', ' ').title() }}</span>
+                        <span class="text-sm font-semibold text-gray-900">{{ count }}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ (count / 150 * 100)|int }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Drift & Costs -->
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- Drift -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Data Drift</h2>
+            </div>
+            <div class="px-6 py-5">
+                <dl class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">PSI (Vendor)</dt>
+                        <dd class="text-sm font-semibold text-gray-900">{{ "%.3f"|format(metrics.psi_vendor) }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">PSI (Amount)</dt>
+                        <dd class="text-sm font-semibold text-gray-900">{{ "%.3f"|format(metrics.psi_amount) }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">KS (Vendor)</dt>
+                        <dd class="text-sm font-semibold text-gray-900">{{ "%.3f"|format(metrics.ks_vendor) }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">KS (Amount)</dt>
+                        <dd class="text-sm font-semibold text-gray-900">{{ "%.3f"|format(metrics.ks_amount) }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- LLM Costs -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">LLM Costs</h2>
+            </div>
+            <div class="px-6 py-5">
+                <dl class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">Calls per Transaction</dt>
+                        <dd class="text-sm font-semibold text-gray-900">{{ "%.3f"|format(metrics.llm_calls_per_txn) }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">Unit Cost per Transaction</dt>
+                        <dd class="text-sm font-semibold text-gray-900">${{ "%.4f"|format(metrics.unit_cost_per_txn) }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">Tenant Spend (30d)</dt>
+                        <dd class="text-sm font-semibold text-gray-900">${{ "%.2f"|format(metrics.llm_budget_status.tenant_spend_usd) }} / ${{ "%.2f"|format(metrics.llm_budget_status.tenant_cap_usd) }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm font-medium text-gray-500">Global Spend (30d)</dt>
+                        <dd class="text-sm font-semibold text-gray-900">${{ "%.2f"|format(metrics.llm_budget_status.global_spend_usd) }} / ${{ "%.2f"|format(metrics.llm_budget_status.global_cap_usd) }}</dd>
+                    </div>
+                    {% if metrics.llm_budget_status.fallback_active %}
+                    <div class="pt-3 border-t border-gray-200">
+                        <div class="rounded-md bg-red-50 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Fallback Active</h3>
+                                    <p class="mt-1 text-xs text-red-700">LLM budget exceeded. Using Rules/ML only.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

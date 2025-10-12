@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Sysco
+Date: 2024-12-13
+Amount: $69.34
+Invoice #: 16094
+
+[Synthetic receipt for liberty_childcare]

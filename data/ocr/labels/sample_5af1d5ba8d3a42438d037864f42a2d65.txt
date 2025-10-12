@@ -1,0 +1,6 @@
+{
+  "company": "Target",
+  "date": "2025-04-11",
+  "total": 35.32,
+  "address": "3028 Main St, City, ST 22752"
+}

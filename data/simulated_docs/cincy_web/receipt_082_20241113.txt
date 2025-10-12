@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Staples
+Date: 2024-11-13
+Amount: $323.28
+Invoice #: 80040
+
+[Synthetic receipt for cincy_web]

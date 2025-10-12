@@ -1,0 +1,1 @@
+AWS Service eceipt Date: 11/03/2024 Jbo #: JB-5534 Customr: ABC Company Address: 5835 Business Pkwy Sevrices Provided: Equipment $ 427.18 Service ee $ 166.30 Labor $ 112.01 Office Supplies $ 78.73 Labor: $470.53 matuerils: $313.69 Subtotal: $784.22 Tax: $54.90 Total: $839.12 Payment Received: $839.12 Method: Cash Authorzied by: John Smith

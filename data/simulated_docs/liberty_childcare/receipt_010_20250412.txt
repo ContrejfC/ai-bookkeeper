@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Duke Energy
+Date: 2025-04-12
+Amount: $60.01
+Invoice #: 16000
+
+[Synthetic receipt for liberty_childcare]

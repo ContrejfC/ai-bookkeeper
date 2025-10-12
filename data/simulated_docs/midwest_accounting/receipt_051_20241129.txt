@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Errors & Omissions
+Date: 2024-11-29
+Amount: $187.15
+Invoice #: 44018
+
+[Synthetic receipt for midwest_accounting]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Lakeshore Learning
+Date: 2025-03-13
+Amount: $142.73
+Invoice #: 31516
+
+[Synthetic receipt for liberty_childcare]

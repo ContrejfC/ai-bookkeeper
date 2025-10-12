@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Figma
+Date: 2025-09-27
+Amount: $279.48
+Invoice #: 62378
+
+[Synthetic receipt for cincy_web]

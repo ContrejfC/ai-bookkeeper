@@ -1,0 +1,13 @@
+{
+  "model_name": "classifier_open",
+  "model_type": "LogisticRegression",
+  "trained_at": "2025-10-08T23:58:25.698876",
+  "train_accuracy": 0.9993425378040762,
+  "test_accuracy": 0.994750656167979,
+  "precision": 0.9952278692436173,
+  "recall": 0.994750656167979,
+  "f1_score": 0.9948610590342872,
+  "train_samples": 1521,
+  "test_samples": 381,
+  "duration": 0.29352283477783203
+}

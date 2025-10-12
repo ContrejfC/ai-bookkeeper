@@ -1,0 +1,1 @@
+Mcirosofft Service eceipt Date: 08/03/2025 Job #: JOB-2131 Customre: XYZ CORP Address: 9935 Business Pkwy Services Provided: Equipmeent $ 73.08 Labor: $43.85 Materials: $29.23 Subtotal: $73.08 Tax: $5.12 Toytal: $78.20 Payment Received: $78.20 Method: Credit Card Authorizeld by: John Smith

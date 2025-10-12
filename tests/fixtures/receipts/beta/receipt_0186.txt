@@ -1,0 +1,1 @@
+QuickBooks Service Receipt Daet: 06/14/2025 Job #: JOB-6912 Custoer: XYZ Corp  Address: 3026 Busines Pkwy erSvices Providd: Equipment $ 126.36 Consulting $ 21.36  Labor $ 430.97 Consulting $ 343.69 Equipment $ 53.85 Labor: $585.74 Materials: $390.49 Subtotal: $976.23 T.ax: $68.34 Toal: $1044.57 Payemnt Received: $1044.57 Method: Debit Cartd Authorized by: John Smith

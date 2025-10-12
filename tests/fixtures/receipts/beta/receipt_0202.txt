@@ -1,0 +1,1 @@
+AT&T Srvice Receipt  Date: 04/25/2025 Job #: OJB-7863 Customer: XYZ Corp Addresss: 9816 Business Pkwy Services Provided: Equipmgent $ 173.46 Service Fee $ 94.36 Consulin $ 403.50 LAboR: $402.79 Materials: $268.53 Subtotal: $671.32 Tax: $46.99 Total: $718.31 Payment Received: $718.31 Method: Debit Card; Authorized by: Bob Johnson

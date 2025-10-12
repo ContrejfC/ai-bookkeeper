@@ -1,0 +1,1 @@
+Staples Service Receipt Date: 07/22/2025 Job #: JOB-3830 Customer: XYZ Co;rp Address: 9192 Business Pkwy Services Providde: Consulting $ 353.86 Labor $ 42.78 Materias $ 204.23 Labor $ 136.99 Labor: $442.72 Materials: $295.14 Subtotal: $737.86 Tax: $51.65 Total: $789.51 Payment Receive: $789.51 Method: Credit Card Authorized by: Jane Doe

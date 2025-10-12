@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: FedEx
+Date: 2024-11-21
+Amount: $75.28
+Invoice #: 91289
+
+[Synthetic receipt for cincy_web]

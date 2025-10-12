@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Google Ads
+Date: 2025-06-21
+Amount: $1903.74
+Invoice #: 91924
+
+[Synthetic receipt for cincy_web]

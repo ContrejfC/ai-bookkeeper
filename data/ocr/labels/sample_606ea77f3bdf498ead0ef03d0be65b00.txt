@@ -1,0 +1,6 @@
+{
+  "company": "Subway",
+  "date": "2025-03-23",
+  "total": 98.79,
+  "address": "3323 Main St, City, ST 48603"
+}

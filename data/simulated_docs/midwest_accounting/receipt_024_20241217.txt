@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: FedEx
+Date: 2024-12-17
+Amount: $331.10
+Invoice #: 97282
+
+[Synthetic receipt for midwest_accounting]

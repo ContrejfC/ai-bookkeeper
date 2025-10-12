@@ -1,0 +1,1 @@
+QuikBooks Serovice Receipt dta: 02/17/2025 Job #: OB-8321 Customer: XYZ Corp Address: 6949 Buiness Pky Services Provided: Equipment $ 230.42 Labor: $138.25 M;aterials: $92.17 Subtotal: $230.42 Tax: $16.13 Total: $246.55 Payment Received: $246.55 Method: Cas Authoried by: Jane Do

@@ -1,0 +1,5 @@
+# Environment variables for Acme Corp
+TENANT_ID=pilot-acme-corp-082aceed
+API_TOKEN=sk_pilot_tsECx_xcUBc-LxNRxwy628BySucqbtdxjoyMGEOL3BI
+AUTOPOST_ENABLED=False
+AUTOPOST_THRESHOLD=0.9

@@ -1,0 +1,16 @@
+# secrets
+.env
+.env.*
+!*.sample
+
+# local data
+*.db
+logs/
+artifacts/
+reports/
+
+__pycache__/
+*.pyc
+node_modules/
+playwright-report/
+test-results/

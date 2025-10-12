@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Realtor.com
+Date: 2025-08-28
+Amount: $421.37
+Invoice #: 64206
+
+[Synthetic receipt for contreras_realestate]

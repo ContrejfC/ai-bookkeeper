@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Log - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div x-data="{ 
+    showFilters: false,
+    exportingCSV: false
+}">
+    <!-- Header -->
+    <div class="px-4 sm:px-0">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Audit Log</h1>
+                <p class="mt-1 text-sm text-gray-500">
+                    Complete decision history with traceability
+                </p>
+            </div>
+            <div class="flex space-x-3">
+                <button @click="showFilters = !showFilters"
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                    </svg>
+                    Filters
+                </button>
+                <button @click="exportingCSV = true; setTimeout(() => exportingCSV = false, 2000)"
+                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span x-text="exportingCSV ? 'Exporting...' : 'Export CSV'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Panel -->
+    <div x-show="showFilters" x-cloak class="mt-4 bg-white shadow rounded-lg p-4">
+        <form method="get" action="/audit" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Date From</label>
+                <input type="date" name="date_from" value="{{ filters.date_from or '' }}" 
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Date To</label>
+                <input type="date" name="date_to" value="{{ filters.date_to or '' }}" 
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Tenant</label>
+                <select name="tenant_id" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option value="">All</option>
+                    <option value="pilot-acme-corp-082aceed">Acme Corp</option>
+                    <option value="pilot-beta-accounting-inc-31707447">Beta Inc</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Vendor</label>
+                <input type="text" name="vendor" value="{{ filters.vendor or '' }}" 
+                       placeholder="Search vendor..."
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Action</label>
+                <select name="action" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option value="">All</option>
+                    <option value="auto_posted">Auto-Posted</option>
+                    <option value="reviewed">Reviewed</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button type="submit" 
+                        class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    Apply
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Audit Log Table -->
+    <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for entry in audit_entries %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ entry.timestamp[:19] }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                        {{ entry.tenant_name or entry.tenant_id[:20] }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                        {{ entry.txn_id or '—' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ entry.vendor_normalized or '—' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                     {% if entry.action == 'auto_posted' %}bg-green-100 text-green-800
+                                     {% elif entry.action == 'reviewed' %}bg-yellow-100 text-yellow-800
+                                     {% elif entry.action == 'approved' %}bg-blue-100 text-blue-800
+                                     {% elif entry.action == 'rejected' %}bg-red-100 text-red-800
+                                     {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ entry.action }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {% if entry.not_auto_post_reason %}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                            {{ entry.not_auto_post_reason }}
+                        </span>
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {% if entry.calibrated_p %}
+                        {{ "%.2f"|format(entry.calibrated_p) }}
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ entry.user_email or entry.user_id or 'system' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        {% if entry.txn_id %}
+                        <a href="/explain/{{ entry.txn_id }}" 
+                           target="_blank"
+                           class="text-indigo-600 hover:text-indigo-900">
+                            View Decision
+                        </a>
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if audit_entries|length == 0 %}
+        <div class="text-center py-12">
+            <p class="text-gray-500">No audit entries match your filters.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if total_entries > 50 %}
+    <div class="mt-6 flex items-center justify-between bg-white px-4 py-3 sm:px-6 rounded-lg shadow">
+        <div class="flex flex-1 justify-between sm:hidden">
+            <a href="?page={{ page - 1 }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Previous
+            </a>
+            <a href="?page={{ page + 1 }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Next
+            </a>
+        </div>
+        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Showing <span class="font-medium">{{ (page - 1) * 50 + 1 }}</span> to <span class="font-medium">{{ min(page * 50, total_entries) }}</span> of <span class="font-medium">{{ total_entries }}</span> entries
+                </p>
+            </div>
+            <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                    {% if page > 1 %}
+                    <a href="?page={{ page - 1 }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Previous
+                    </a>
+                    {% endif %}
+                    {% if page * 50 < total_entries %}
+                    <a href="?page={{ page + 1 }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Next
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

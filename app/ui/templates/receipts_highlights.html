@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Receipt Highlights - AI Bookkeeper{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 max-w-7xl" x-data="receiptsViewer()">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold">Receipt Highlights</h1>
+        <p class="text-gray-600">View receipts with field detection overlays</p>
+    </div>
+    
+    <!-- Controls -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <label class="flex items-center cursor-pointer">
+                    <input type="checkbox" x-model="showOverlays" class="mr-2">
+                    <span class="font-medium">Show Overlays</span>
+                </label>
+                
+                <span class="text-sm text-gray-500" x-show="selectedReceipt">
+                    Receipt: <span x-text="selectedReceipt?.id"></span>
+                </span>
+            </div>
+            
+            <!-- Legend -->
+            <div class="flex items-center gap-4 text-sm">
+                <span class="font-medium">Legend:</span>
+                <div class="flex items-center gap-1">
+                    <div class="w-4 h-4 bg-blue-200 border-2 border-blue-500"></div>
+                    <span>Date</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-4 h-4 bg-green-200 border-2 border-green-500"></div>
+                    <span>Amount</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-4 h-4 bg-purple-200 border-2 border-purple-500"></div>
+                    <span>Vendor</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-4 h-4 bg-yellow-200 border-2 border-yellow-500"></div>
+                    <span>Total</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Left: Receipt List -->
+        <div class="col-span-1">
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-4 border-b">
+                    <h2 class="text-lg font-semibold">Receipts</h2>
+                    <p class="text-sm text-gray-600" x-text="`${receipts.length} total`"></p>
+                </div>
+                
+                <div class="overflow-y-auto" style="max-height: 700px;">
+                    <template x-for="receipt in receipts" :key="receipt.id">
+                        <div @click="selectReceipt(receipt)"
+                             class="p-3 border-b cursor-pointer hover:bg-gray-50 transition-colors"
+                             :class="selectedReceipt?.id === receipt.id ? 'bg-indigo-50 border-l-4 border-indigo-500' : ''">
+                            <p class="font-medium text-sm truncate" x-text="receipt.vendor"></p>
+                            <p class="text-xs text-gray-600" x-text="receipt.date || 'No date'"></p>
+                            <p class="text-xs text-gray-600" x-show="receipt.amount">
+                                $<span x-text="receipt.amount?.toFixed(2)"></span>
+                            </p>
+                        </div>
+                    </template>
+                    
+                    <div x-show="receipts.length === 0" class="p-4 text-center text-gray-500">
+                        No receipts found
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right: PDF Viewer with Overlays -->
+        <div class="col-span-3">
+            <div class="bg-white rounded-lg shadow p-4">
+                <div x-show="!selectedReceipt" class="text-center py-20 text-gray-500">
+                    ← Select a receipt to view
+                </div>
+                
+                <!-- PDF Container -->
+                <div x-show="selectedReceipt" class="relative">
+                    <!-- PDF Display (simplified - in production use PDF.js) -->
+                    <div class="relative border rounded" style="width: 100%; height: 800px; background: #f5f5f5;">
+                        <!-- Iframe for PDF -->
+                        <iframe x-show="selectedReceipt" 
+                                :src="`/api/receipts/${selectedReceipt?.id}/pdf`"
+                                class="w-full h-full"
+                                style="border: none;">
+                        </iframe>
+                        
+                        <!-- Overlay Layer -->
+                        <div x-show="showOverlays && selectedReceipt" 
+                             class="absolute inset-0 pointer-events-none"
+                             style="z-index: 10;">
+                            <template x-for="field in fields" :key="field.name">
+                                <div class="absolute pointer-events-auto cursor-pointer"
+                                     :style="`left: ${field.bbox.x * 100}%; top: ${field.bbox.y * 100}%; width: ${field.bbox.w * 100}%; height: ${field.bbox.h * 100}%;`"
+                                     :class="getFieldClass(field.name)"
+                                     @mouseenter="hoveredField = field"
+                                     @mouseleave="hoveredField = null">
+                                </div>
+                            </template>
+                        </div>
+                        
+                        <!-- Tooltip -->
+                        <div x-show="hoveredField"
+                             class="absolute bg-gray-900 text-white px-3 py-2 rounded shadow-lg text-sm z-20"
+                             :style="`left: ${(hoveredField?.bbox.x || 0) * 100 + 2}%; top: ${(hoveredField?.bbox.y || 0) * 100 - 5}%;`">
+                            <div class="font-medium capitalize" x-text="hoveredField?.name"></div>
+                            <div x-text="hoveredField?.value"></div>
+                            <div class="text-xs text-gray-300">
+                                Confidence: <span x-text="((hoveredField?.confidence || 0) * 100).toFixed(0)"></span>%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Field Summary -->
+                    <div x-show="selectedReceipt" class="mt-4 grid grid-cols-2 gap-3">
+                        <template x-for="field in fields" :key="field.name">
+                            <div class="p-3 rounded"
+                                 :class="getFieldBgClass(field.name)">
+                                <div class="text-sm font-medium capitalize text-gray-700" x-text="field.name"></div>
+                                <div class="text-lg font-semibold" x-text="field.value"></div>
+                                <div class="text-xs text-gray-600">
+                                    Confidence: <span x-text="((field.confidence || 0) * 100).toFixed(0)"></span>%
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading State -->
+    <div x-show="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+            <p class="mt-4 text-gray-700">Loading receipts...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function receiptsViewer() {
+    return {
+        receipts: [],
+        selectedReceipt: null,
+        fields: [],
+        showOverlays: true,
+        hoveredField: null,
+        loading: false,
+        
+        async init() {
+            await this.loadReceipts();
+        },
+        
+        async loadReceipts() {
+            this.loading = true;
+            try {
+                const response = await fetch('/api/receipts');
+                const data = await response.json();
+                this.receipts = data.receipts || [];
+                
+                // Auto-select first receipt
+                if (this.receipts.length > 0) {
+                    await this.selectReceipt(this.receipts[0]);
+                }
+            } catch (error) {
+                console.error('Error loading receipts:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        
+        async selectReceipt(receipt) {
+            this.selectedReceipt = receipt;
+            this.fields = [];
+            this.hoveredField = null;
+            
+            // Load field bboxes
+            try {
+                const response = await fetch(`/api/receipts/${receipt.id}/fields`);
+                const data = await response.json();
+                this.fields = data.fields || [];
+            } catch (error) {
+                console.error('Error loading fields:', error);
+            }
+        },
+        
+        getFieldClass(fieldName) {
+            const classes = {
+                'date': 'bg-blue-200 bg-opacity-30 border-2 border-blue-500',
+                'amount': 'bg-green-200 bg-opacity-30 border-2 border-green-500',
+                'vendor': 'bg-purple-200 bg-opacity-30 border-2 border-purple-500',
+                'total': 'bg-yellow-200 bg-opacity-30 border-2 border-yellow-500'
+            };
+            return classes[fieldName] || 'bg-gray-200 bg-opacity-30 border-2 border-gray-500';
+        },
+        
+        getFieldBgClass(fieldName) {
+            const classes = {
+                'date': 'bg-blue-50',
+                'amount': 'bg-green-50',
+                'vendor': 'bg-purple-50',
+                'total': 'bg-yellow-50'
+            };
+            return classes[fieldName] || 'bg-gray-50';
+        }
+    }
+}
+</script>
+{% endblock %}
+

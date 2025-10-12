@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: QuickBooks
+Date: 2025-03-26
+Amount: $336.75
+Invoice #: 87748
+
+[Synthetic receipt for midwest_accounting]

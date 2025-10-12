@@ -1,0 +1,1 @@
+Digital Ocean Service Receipt Dat: 03/12/2025 Job #: JOB-7323 Customer: ABC Compa.ny Address: 2249 Business Pkwy Services  Provided: Consulting $ 373.65 Labor: $224.19 Materials: $149.46 Subtotal: $373.65 Tax: $26.16 Total: $399.81 Prayment Received: $399.81 Method: CHEcK Auhorized by: John Smith

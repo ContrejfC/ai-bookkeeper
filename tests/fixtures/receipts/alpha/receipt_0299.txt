@@ -1,0 +1,1 @@
+QuickBooks Service Receipt Date,: 12/03/2024 Job #: JOoB-1731 Csustomer: XYZ Corkp Address: 4884 Business Pkwy Sevrices Provided: Labor $ 269.43 Service Fee $ 311.83 Labor: $348.76 Materials: $232.50 ubtoital: $581.26 Tax: $40.69 Ttal: $621.95 Payment Received: $621.95 Method: Debti Card Authorized by: Jane Doe

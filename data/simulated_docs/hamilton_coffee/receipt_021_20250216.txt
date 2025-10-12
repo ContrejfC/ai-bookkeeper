@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Cincinnati Gas Electric
+Date: 2025-02-16
+Amount: $435.57
+Invoice #: 49535
+
+[Synthetic receipt for hamilton_coffee]

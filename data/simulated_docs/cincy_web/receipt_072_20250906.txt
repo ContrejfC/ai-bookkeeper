@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Amazon Business
+Date: 2025-09-06
+Amount: $96.74
+Invoice #: 96332
+
+[Synthetic receipt for cincy_web]

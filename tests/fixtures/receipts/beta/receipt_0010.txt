@@ -1,0 +1,1 @@
+QuickBooks Service eceipt pDate: 10/15/2024 kpJob #: JOB-7020 Ccustomer: Johnson LLC Address: 2066 Business Pkwy Services Provided: Labor $ 31.20 Lbaor: $18.72 Materials: $12.48 Subtotal: $31.20 Tax: $2.18 Total: $33.38 Payment Received: $33.38 Method: Check Authorized by: Bob Johnson

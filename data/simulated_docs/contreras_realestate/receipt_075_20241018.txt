@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: FedEx
+Date: 2024-10-18
+Amount: $144.02
+Invoice #: 63066
+
+[Synthetic receipt for contreras_realestate]

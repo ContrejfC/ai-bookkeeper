@@ -1,0 +1,6 @@
+{
+  "company": "CVS Pharmacy",
+  "date": "2025-09-22",
+  "total": 60.39,
+  "address": "7315 Main St, City, ST 51857"
+}

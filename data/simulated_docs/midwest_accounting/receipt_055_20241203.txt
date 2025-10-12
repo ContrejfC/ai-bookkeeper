@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Google Ads
+Date: 2024-12-03
+Amount: $1891.68
+Invoice #: 29154
+
+[Synthetic receipt for midwest_accounting]

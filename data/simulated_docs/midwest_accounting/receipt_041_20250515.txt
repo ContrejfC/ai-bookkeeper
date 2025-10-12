@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: CCH
+Date: 2025-05-15
+Amount: $395.85
+Invoice #: 67156
+
+[Synthetic receipt for midwest_accounting]

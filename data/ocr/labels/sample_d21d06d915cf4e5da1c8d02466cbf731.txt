@@ -1,0 +1,6 @@
+{
+  "company": "Walgreens",
+  "date": "2025-03-08",
+  "total": 37.91,
+  "address": "3889 Main St, City, ST 64116"
+}

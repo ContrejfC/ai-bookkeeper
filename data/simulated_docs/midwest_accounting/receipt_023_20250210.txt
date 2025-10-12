@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Thomson Reuters
+Date: 2025-02-10
+Amount: $90.18
+Invoice #: 95696
+
+[Synthetic receipt for midwest_accounting]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Google Ads
+Date: 2025-08-31
+Amount: $767.96
+Invoice #: 51614
+
+[Synthetic receipt for contreras_realestate]

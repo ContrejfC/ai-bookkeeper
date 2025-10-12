@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: CoreLogic
+Date: 2025-07-12
+Amount: $224.62
+Invoice #: 23994
+
+[Synthetic receipt for contreras_realestate]

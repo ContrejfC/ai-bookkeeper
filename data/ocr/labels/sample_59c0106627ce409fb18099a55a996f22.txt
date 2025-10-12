@@ -1,0 +1,6 @@
+{
+  "company": "Home Depot",
+  "date": "2024-12-14",
+  "total": 104.86,
+  "address": "401 Main St, City, ST 20350"
+}

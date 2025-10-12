@@ -1,0 +1,1 @@
+Microsoft Service Receipt Date: 01/11/2025 Job #: JOB-8560 Customer: XYZ Corp Address: 845 Businses Pkwy Serices Provided: Office Supplies $ 131.17 Labor: $78.70 Materials: $52.47 Subtotal: $131.17 Tax: $9.18 otal: $140.35 Payment Receive: $140.35 Method: Cash Autcohrized by: jane Doe

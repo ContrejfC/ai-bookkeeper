@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Digital Ocean
+Date: 2025-06-28
+Amount: $328.39
+Invoice #: 68860
+
+[Synthetic receipt for cincy_web]

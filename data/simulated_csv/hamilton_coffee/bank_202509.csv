@@ -1,0 +1,27 @@
+date,amount,description,counterparty,currency
+2025-09-01,1167.88,Wire Transfer Payment,Wire Transfer,USD
+2025-09-01,3015.94,Stripe Payment,Stripe,USD
+2025-09-01,-429.86,Duke Energy ****9742,Duke Energy,USD
+2025-09-01,-42.05,Clover ****2121,Clover,USD
+2025-09-01,-119.63,Cincinnati Gas Electric ****7302,Cincinnati Gas Electric,USD
+2025-09-01,-75.66,Square ****7248,Square,USD
+2025-09-07,-200.08,Square ****5295,Square,USD
+2025-09-07,-136.07,Amazon Business ****1410,Amazon Business,USD
+2025-09-08,-474.47,Coffee Bean Co ****5986,Coffee Bean Co,USD
+2025-09-10,-398.59,Roasters Supply ****6994,Roasters Supply,USD
+2025-09-12,-473.49,Uber Eats ****5835,Uber Eats,USD
+2025-09-13,6231.66,Square Payment,Square,USD
+2025-09-13,-380.05,Duke Energy ****3877,Duke Energy,USD
+2025-09-18,-91.86,Java Imports ****4696,Java Imports,USD
+2025-09-19,-71.17,Java Imports ****9807,Java Imports,USD
+2025-09-20,-458.91,Clover ****3695,Clover,USD
+2025-09-22,3689.17,Stripe Payment,Stripe,USD
+2025-09-22,-415.65,AT&T ****7086,AT&T,USD
+2025-09-23,-180.8,Clover ****4626,Clover,USD
+2025-09-24,2640.79,PayPal Payment,PayPal,USD
+2025-09-24,2082.98,Square Payment,Square,USD
+2025-09-24,-326.82,Java Imports ****8606,Java Imports,USD
+2025-09-25,6033.46,Stripe Payment,Stripe,USD
+2025-09-26,-333.39,Cincinnati Gas Electric ****2911,Cincinnati Gas Electric,USD
+2025-09-27,-185.89,Uber Eats ****2886,Uber Eats,USD
+2025-09-29,-31.61,AT&T ****9791,AT&T,USD

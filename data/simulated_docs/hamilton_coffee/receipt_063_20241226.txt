@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Cafe Equipment LLC
+Date: 2024-12-26
+Amount: $299.99
+Invoice #: 64239
+
+[Synthetic receipt for hamilton_coffee]

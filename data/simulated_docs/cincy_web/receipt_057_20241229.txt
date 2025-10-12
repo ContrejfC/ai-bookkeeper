@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Amazon Business
+Date: 2024-12-29
+Amount: $137.83
+Invoice #: 82102
+
+[Synthetic receipt for cincy_web]

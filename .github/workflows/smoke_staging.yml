@@ -1,0 +1,144 @@
+name: Staging Smoke Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"  # Every 6 hours
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    
+    env:
+      BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+    
+    steps:
+      - name: Check BASE_URL is set
+        run: |
+          if [ -z "${BASE_URL}" ]; then
+            echo "❌ STAGING_BASE_URL secret is not set."
+            echo "Set it in: GitHub repo → Settings → Secrets → Actions"
+            exit 1
+          fi
+          echo "✅ STAGING_BASE_URL configured: ${BASE_URL}"
+      
+      - name: Create artifacts directory
+        run: mkdir -p artifacts/staging-smoke
+      
+      - name: Curl /healthz
+        run: |
+          set -euo pipefail
+          echo "🏥 Testing /healthz endpoint..."
+          curl -fsS "${BASE_URL}/healthz" -o artifacts/staging-smoke/staging-healthz.json
+          echo "✅ /healthz returned 200 OK"
+          cat artifacts/staging-smoke/staging-healthz.json
+      
+      - name: Curl /readyz
+        run: |
+          set -euo pipefail
+          echo "🚦 Testing /readyz endpoint..."
+          curl -fsS "${BASE_URL}/readyz" -o artifacts/staging-smoke/staging-readyz.json
+          echo "✅ /readyz returned 200 OK"
+          cat artifacts/staging-smoke/staging-readyz.json
+      
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+      
+      - name: Validate JSON structure
+        run: |
+          set -euo pipefail
+          echo "🔍 Validating JSON responses..."
+          
+          # Check files exist and are non-empty
+          test -s artifacts/staging-smoke/staging-healthz.json || {
+            echo "❌ staging-healthz.json is empty"
+            exit 1
+          }
+          
+          test -s artifacts/staging-smoke/staging-readyz.json || {
+            echo "❌ staging-readyz.json is empty"
+            exit 1
+          }
+          
+          # Validate JSON format
+          jq -e 'type=="object"' artifacts/staging-smoke/staging-healthz.json > /dev/null || {
+            echo "❌ staging-healthz.json is not valid JSON object"
+            exit 1
+          }
+          
+          jq -e 'type=="object"' artifacts/staging-smoke/staging-readyz.json > /dev/null || {
+            echo "❌ staging-readyz.json is not valid JSON object"
+            exit 1
+          }
+          
+          # Validate healthz schema
+          jq -e '.status' artifacts/staging-smoke/staging-healthz.json > /dev/null || {
+            echo "❌ healthz missing 'status' field"
+            exit 1
+          }
+          
+          jq -e '.database_status' artifacts/staging-smoke/staging-healthz.json > /dev/null || {
+            echo "⚠️  healthz missing 'database_status' field (optional)"
+          }
+          
+          # Validate readyz schema
+          jq -e '.status' artifacts/staging-smoke/staging-readyz.json > /dev/null || {
+            echo "❌ readyz missing 'status' field"
+            exit 1
+          }
+          
+          jq -e '.checks' artifacts/staging-smoke/staging-readyz.json > /dev/null || {
+            echo "⚠️  readyz missing 'checks' field (optional)"
+          }
+          
+          # Check for migration/database info
+          jq -e '.checks.migrations // .checks.database // .current_migration // .alembic_version' \
+            artifacts/staging-smoke/staging-readyz.json > /dev/null || {
+            echo "⚠️  readyz missing migration info (non-fatal)"
+          }
+          
+          echo "✅ JSON validation passed"
+      
+      - name: Display results summary
+        if: always()
+        run: |
+          echo ""
+          echo "=== Smoke Test Summary ==="
+          echo ""
+          echo "📊 /healthz Response:"
+          jq . artifacts/staging-smoke/staging-healthz.json 2>/dev/null || cat artifacts/staging-smoke/staging-healthz.json
+          echo ""
+          echo "📊 /readyz Response:"
+          jq . artifacts/staging-smoke/staging-readyz.json 2>/dev/null || cat artifacts/staging-smoke/staging-readyz.json
+          echo ""
+          echo "=== End Summary ==="
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: staging-smoke
+          path: artifacts/staging-smoke/*
+          retention-days: 30
+      
+      - name: Set summary
+        if: always()
+        run: |
+          echo "### Staging Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Base URL:** ${BASE_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f artifacts/staging-smoke/staging-healthz.json ]; then
+            echo "#### /healthz" >> $GITHUB_STEP_SUMMARY
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat artifacts/staging-smoke/staging-healthz.json >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f artifacts/staging-smoke/staging-readyz.json ]; then
+            echo "#### /readyz" >> $GITHUB_STEP_SUMMARY
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat artifacts/staging-smoke/staging-readyz.json >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+

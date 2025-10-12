@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Facebook Ads
+Date: 2025-07-31
+Amount: $513.39
+Invoice #: 10463
+
+[Synthetic receipt for contreras_realestate]

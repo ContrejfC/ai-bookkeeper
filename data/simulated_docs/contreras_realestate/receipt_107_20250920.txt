@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Zillow Premier Agent
+Date: 2025-09-20
+Amount: $176.68
+Invoice #: 49918
+
+[Synthetic receipt for contreras_realestate]

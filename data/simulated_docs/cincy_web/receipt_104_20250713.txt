@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: LinkedIn Sales Nav
+Date: 2025-07-13
+Amount: $189.43
+Invoice #: 94769
+
+[Synthetic receipt for cincy_web]

@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Microsoft 365
+Date: 2025-09-30
+Amount: $48.04
+Invoice #: 30203
+
+[Synthetic receipt for cincy_web]

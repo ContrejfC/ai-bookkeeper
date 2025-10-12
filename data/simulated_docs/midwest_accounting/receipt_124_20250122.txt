@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Google Ads
+Date: 2025-01-22
+Amount: $599.09
+Invoice #: 28220
+
+[Synthetic receipt for midwest_accounting]

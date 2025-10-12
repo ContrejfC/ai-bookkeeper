@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Toast POS
+Date: 2025-08-05
+Amount: $435.91
+Invoice #: 72781
+
+[Synthetic receipt for hamilton_coffee]

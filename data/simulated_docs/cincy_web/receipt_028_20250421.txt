@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Staples
+Date: 2025-04-21
+Amount: $286.18
+Invoice #: 95332
+
+[Synthetic receipt for cincy_web]

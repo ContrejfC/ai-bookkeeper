@@ -1,0 +1,6 @@
+{
+  "company": "McDonald's",
+  "date": "2024-12-21",
+  "total": 9.49,
+  "address": "3644 Main St, City, ST 66034"
+}

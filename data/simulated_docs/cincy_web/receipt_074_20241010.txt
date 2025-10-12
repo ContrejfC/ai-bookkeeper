@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: GitHub
+Date: 2024-10-10
+Amount: $99.77
+Invoice #: 65460
+
+[Synthetic receipt for cincy_web]

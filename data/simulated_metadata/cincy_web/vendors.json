@@ -1,0 +1,29 @@
+{
+  "business_type": "services",
+  "vendors": {
+    "saas": [
+      "AWS",
+      "Digital Ocean",
+      "GitHub",
+      "Adobe Creative Cloud",
+      "Figma"
+    ],
+    "marketing": [
+      "Google Ads",
+      "Facebook Ads",
+      "LinkedIn Sales Nav"
+    ],
+    "tools": [
+      "Slack",
+      "Zoom",
+      "Microsoft 365"
+    ],
+    "misc": [
+      "Amazon Business",
+      "Staples",
+      "FedEx"
+    ]
+  },
+  "transaction_count": 357,
+  "receipt_count": 119
+}

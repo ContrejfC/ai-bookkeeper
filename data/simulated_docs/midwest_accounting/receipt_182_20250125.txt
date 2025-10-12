@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Errors & Omissions
+Date: 2025-01-25
+Amount: $283.65
+Invoice #: 90341
+
+[Synthetic receipt for midwest_accounting]

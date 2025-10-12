@@ -1,0 +1,27 @@
+{
+  "business_type": "realestate",
+  "vendors": {
+    "marketing": [
+      "Zillow Premier Agent",
+      "Realtor.com",
+      "Google Ads",
+      "Facebook Ads"
+    ],
+    "mls": [
+      "MLS Cincinnati",
+      "CoreLogic"
+    ],
+    "tools": [
+      "Dotloop",
+      "DocuSign",
+      "Matterport"
+    ],
+    "misc": [
+      "Office Depot",
+      "FedEx",
+      "Vistaprint"
+    ]
+  },
+  "transaction_count": 358,
+  "receipt_count": 196
+}

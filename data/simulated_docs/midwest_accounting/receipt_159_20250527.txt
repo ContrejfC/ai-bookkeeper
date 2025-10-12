@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Professional Liability Ins
+Date: 2025-05-27
+Amount: $262.35
+Invoice #: 15672
+
+[Synthetic receipt for midwest_accounting]

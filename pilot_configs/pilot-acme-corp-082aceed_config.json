@@ -1,0 +1,105 @@
+{
+  "tenant": {
+    "tenant_id": "pilot-acme-corp-082aceed",
+    "tenant_name": "Acme Corp",
+    "tier": "starter",
+    "created_at": "2025-10-11T15:14:54.936437",
+    "status": "active",
+    "config": {
+      "autopost_enabled": false,
+      "autopost_threshold": 0.9,
+      "coldstart_min_labels": 3,
+      "llm_tenant_cap_usd": 50,
+      "max_transactions_per_month": 500
+    },
+    "features": {
+      "ml_classifier": true,
+      "llm_fallback": false,
+      "auto_rule_promotion": true,
+      "drift_detection": false,
+      "calibration": true
+    },
+    "coa_preset": "standard_small_business"
+  },
+  "coa": [
+    {
+      "code": "1000",
+      "name": "Checking Account",
+      "type": "Asset"
+    },
+    {
+      "code": "1200",
+      "name": "Accounts Receivable",
+      "type": "Asset"
+    },
+    {
+      "code": "1500",
+      "name": "Inventory",
+      "type": "Asset"
+    },
+    {
+      "code": "2000",
+      "name": "Accounts Payable",
+      "type": "Liability"
+    },
+    {
+      "code": "2100",
+      "name": "Credit Card",
+      "type": "Liability"
+    },
+    {
+      "code": "3000",
+      "name": "Owner's Equity",
+      "type": "Equity"
+    },
+    {
+      "code": "4000",
+      "name": "Sales Revenue",
+      "type": "Revenue"
+    },
+    {
+      "code": "5000",
+      "name": "Cost of Goods Sold",
+      "type": "Expense"
+    },
+    {
+      "code": "6000",
+      "name": "Operating Expenses",
+      "type": "Expense"
+    },
+    {
+      "code": "6100",
+      "name": "Rent",
+      "type": "Expense"
+    },
+    {
+      "code": "6200",
+      "name": "Utilities",
+      "type": "Expense"
+    },
+    {
+      "code": "6300",
+      "name": "Office Supplies",
+      "type": "Expense"
+    },
+    {
+      "code": "7000",
+      "name": "Other Income",
+      "type": "Revenue"
+    },
+    {
+      "code": "8000",
+      "name": "Other Expenses",
+      "type": "Expense"
+    }
+  ],
+  "user": {
+    "user_id": "user-77c001f9850780c9",
+    "email": "pilot+pilot-acme-corp-082aceed@example.com",
+    "role": "admin",
+    "tenant_id": "pilot-acme-corp-082aceed",
+    "created_at": "2025-10-11T15:14:54.936690",
+    "api_token_hash": "030f1c0e3bf6c8a492622b19470428998a077173e59cffd085c1e2c8ea658160"
+  },
+  "api_token": "sk_pilot_tsECx_xcUBc-LxNRxwy628BySucqbtdxjoyMGEOL3BI"
+}

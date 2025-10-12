@@ -1,0 +1,6 @@
+{
+  "company": "Shell Gas Station",
+  "date": "2025-09-02",
+  "total": 83.29,
+  "address": "8593 Main St, City, ST 50298"
+}

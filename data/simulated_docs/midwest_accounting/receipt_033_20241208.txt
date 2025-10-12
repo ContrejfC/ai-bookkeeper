@@ -1,0 +1,7 @@
+RECEIPT
+Vendor: Office Depot
+Date: 2024-12-08
+Amount: $290.82
+Invoice #: 46335
+
+[Synthetic receipt for midwest_accounting]

@@ -1,0 +1,1 @@
+Microsoft Srevice Receipt Date: 05/19/2025 Job #: JOB-8174 Custom;er: abc Company Address: 760 Business Pkwy Services Provided: Service eFe $ 125.80 Materials $ 223.34 Labor: $209.48 Materials: $139.66 Subtvoatl: $349.14 Tax: $24.44 Total: $373.58 Payment Received: $373.58 Method: Cash Authoirzed by: Jane Doe

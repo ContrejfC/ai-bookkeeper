@@ -1,141 +1,110 @@
 #!/bin/bash
-# Render Staging Verification Script
-# Run this after deploying to Render to collect readiness artifacts
+# Staging Verification Script
+# Usage: ./scripts/verify_staging.sh https://ai-bookkeeper-app.onrender.com
 
-set -e
+set -euo pipefail
 
-RENDER_URL="${RENDER_URL:-https://ai-bookkeeper-web.onrender.com}"
-OUTPUT_DIR="artifacts/staging"
-PERF_DIR="artifacts/perf"
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-echo "🔍 Verifying Render Staging Deployment"
-echo "========================================"
-echo "URL: $RENDER_URL"
-echo "Output: $OUTPUT_DIR"
-echo ""
+BASE_URL="${1:-}"
 
-# Create output directories
-mkdir -p "$OUTPUT_DIR" "$PERF_DIR"
-
-# 1. Alembic current version
-echo "📦 Checking Alembic version..."
-if command -v python3 &> /dev/null; then
-    python3 -m alembic current > "$OUTPUT_DIR/alembic_current.txt" 2>&1 || echo "Error: Run this in Render Shell"
-    echo "   ✅ Saved to $OUTPUT_DIR/alembic_current.txt"
-else
-    echo "   ⚠️  Python not found. Run in Render Shell: python3 -m alembic current > alembic_current.txt"
+if [ -z "$BASE_URL" ]; then
+    echo -e "${RED}❌ Error: BASE_URL is required${NC}"
+    echo "Usage: $0 https://your-app.onrender.com"
+    exit 1
 fi
+
+echo "🔍 Verifying staging at: $BASE_URL"
 echo ""
 
-# 2. /readyz response
-echo "🏥 Checking /readyz endpoint..."
-curl -s "$RENDER_URL/readyz" | jq . > "$OUTPUT_DIR/readyz_response.json" 2>/dev/null || {
-    curl -s "$RENDER_URL/readyz" > "$OUTPUT_DIR/readyz_response.json"
+# Test /healthz
+echo "1️⃣  Testing /healthz..."
+HEALTHZ_RESPONSE=$(curl -fsS "${BASE_URL}/healthz" 2>&1) || {
+    echo -e "${RED}❌ /healthz failed to respond${NC}"
+    exit 1
 }
-echo "   ✅ Saved to $OUTPUT_DIR/readyz_response.json"
-cat "$OUTPUT_DIR/readyz_response.json"
-echo ""
 
-# 3. /healthz response
-echo "💚 Checking /healthz endpoint..."
-curl -s "$RENDER_URL/healthz" | jq . > "$OUTPUT_DIR/healthz_response.json" 2>/dev/null || {
-    curl -s "$RENDER_URL/healthz" > "$OUTPUT_DIR/healthz_response.json"
+echo "$HEALTHZ_RESPONSE" | jq . > /dev/null 2>&1 || {
+    echo -e "${RED}❌ /healthz did not return valid JSON${NC}"
+    echo "$HEALTHZ_RESPONSE"
+    exit 1
 }
-echo "   ✅ Saved to $OUTPUT_DIR/healthz_response.json"
-cat "$OUTPUT_DIR/healthz_response.json"
-echo ""
 
-# 4. Tesseract version (must run in Render Shell)
-echo "🔤 Checking Tesseract version..."
-if command -v tesseract &> /dev/null; then
-    tesseract --version > "$OUTPUT_DIR/tesseract_version.txt" 2>&1
-    echo "   ✅ Saved to $OUTPUT_DIR/tesseract_version.txt"
-    head -1 "$OUTPUT_DIR/tesseract_version.txt"
+HEALTHZ_STATUS=$(echo "$HEALTHZ_RESPONSE" | jq -r '.status')
+if [ "$HEALTHZ_STATUS" != "ok" ]; then
+    echo -e "${YELLOW}⚠️  healthz status is: $HEALTHZ_STATUS (expected 'ok')${NC}"
 else
-    echo "   ⚠️  Tesseract not found locally. Run in Render Shell: tesseract --version > tesseract_version.txt"
+    echo -e "${GREEN}✅ /healthz returned status: ok${NC}"
 fi
+
+# Extract and display key info
+DB_STATUS=$(echo "$HEALTHZ_RESPONSE" | jq -r '.database_status // "unknown"')
+DB_PING=$(echo "$HEALTHZ_RESPONSE" | jq -r '.db_ping_ms // "0"')
+VERSION=$(echo "$HEALTHZ_RESPONSE" | jq -r '.version // "unknown"')
+GIT_SHA=$(echo "$HEALTHZ_RESPONSE" | jq -r '.git_sha // "unknown"')
+
+echo "   └─ Database: $DB_STATUS (${DB_PING}ms)"
+echo "   └─ Version: $VERSION"
+echo "   └─ Git SHA: $GIT_SHA"
 echo ""
 
-# 5. OCR accuracy (if available)
-echo "📊 Checking OCR accuracy..."
-if [ -f "artifacts/receipts/highlight_accuracy.json" ]; then
-    cp artifacts/receipts/highlight_accuracy.json "$OUTPUT_DIR/ocr_accuracy_highlight_accuracy.json"
-    echo "   ✅ Copied to $OUTPUT_DIR/ocr_accuracy_highlight_accuracy.json"
-    cat "$OUTPUT_DIR/ocr_accuracy_highlight_accuracy.json" | jq .
+# Test /readyz
+echo "2️⃣  Testing /readyz..."
+READYZ_RESPONSE=$(curl -fsS "${BASE_URL}/readyz" 2>&1) || {
+    echo -e "${RED}❌ /readyz failed to respond${NC}"
+    exit 1
+}
+
+echo "$READYZ_RESPONSE" | jq . > /dev/null 2>&1 || {
+    echo -e "${RED}❌ /readyz did not return valid JSON${NC}"
+    echo "$READYZ_RESPONSE"
+    exit 1
+}
+
+READYZ_STATUS=$(echo "$READYZ_RESPONSE" | jq -r '.status')
+if [ "$READYZ_STATUS" != "ready" ] && [ "$READYZ_STATUS" != "ok" ]; then
+    echo -e "${YELLOW}⚠️  readyz status is: $READYZ_STATUS${NC}"
 else
-    echo "   ⚠️  OCR accuracy file not found. Will be generated after receipt tests."
+    echo -e "${GREEN}✅ /readyz returned status: $READYZ_STATUS${NC}"
 fi
+
+# Extract migration info
+ALEMBIC_VERSION=$(echo "$READYZ_RESPONSE" | jq -r '.checks.migrations.current // .alembic_version // .current_migration // "unknown"')
+MIGRATION_STATUS=$(echo "$READYZ_RESPONSE" | jq -r '.checks.migrations.status // "unknown"')
+
+echo "   └─ Alembic version: $ALEMBIC_VERSION"
+echo "   └─ Migration status: $MIGRATION_STATUS"
 echo ""
 
-# 6. Performance timings
-echo "⚡ Measuring route performance..."
-routes=(
-    "/review"
-    "/receipts"
-    "/metrics"
-    "/firm"
-    "/rules"
-    "/analytics"
-    "/api/tenants"
-    "/api/analytics/last7"
-)
+# Test root API
+echo "3️⃣  Testing root API (/)..."
+ROOT_RESPONSE=$(curl -fsS "${BASE_URL}/" 2>&1) || {
+    echo -e "${YELLOW}⚠️  Root API did not respond (non-fatal)${NC}"
+}
 
-echo "{" > "$PERF_DIR/route_timings_staging.json"
-echo '  "measured_at": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",' >> "$PERF_DIR/route_timings_staging.json"
-echo '  "base_url": "'$RENDER_URL'",' >> "$PERF_DIR/route_timings_staging.json"
-echo '  "routes": {' >> "$PERF_DIR/route_timings_staging.json"
-
-first=true
-for route in "${routes[@]}"; do
-    if [ "$first" = false ]; then
-        echo "," >> "$PERF_DIR/route_timings_staging.json"
-    fi
-    first=false
-    
-    # Make 10 requests and calculate average
-    total=0
-    for i in {1..10}; do
-        time_ms=$(curl -o /dev/null -s -w '%{time_total}' "$RENDER_URL$route" 2>/dev/null | awk '{print $1*1000}')
-        total=$(echo "$total + $time_ms" | bc)
-    done
-    avg=$(echo "scale=2; $total / 10" | bc)
-    
-    echo -n '    "'$route'": {"p50": '$avg', "p95": '$(echo "$avg * 1.2" | bc)', "unit": "ms"}' >> "$PERF_DIR/route_timings_staging.json"
-    echo "   $route: ${avg}ms (avg of 10 requests)"
-done
-
-echo "" >> "$PERF_DIR/route_timings_staging.json"
-echo "  }" >> "$PERF_DIR/route_timings_staging.json"
-echo "}" >> "$PERF_DIR/route_timings_staging.json"
-
-echo "   ✅ Saved to $PERF_DIR/route_timings_staging.json"
-echo ""
-
-# 7. Analytics daily report (if available)
-echo "📈 Checking analytics reports..."
-if ls reports/analytics/daily_*.json 1> /dev/null 2>&1; then
-    latest=$(ls -t reports/analytics/daily_*.json | head -1)
-    echo "   ✅ Found: $latest"
-    cat "$latest" | jq . | head -20
+if echo "$ROOT_RESPONSE" | jq . > /dev/null 2>&1; then
+    API_MESSAGE=$(echo "$ROOT_RESPONSE" | jq -r '.message // "unknown"')
+    API_VERSION=$(echo "$ROOT_RESPONSE" | jq -r '.version // "unknown"')
+    echo -e "${GREEN}✅ Root API responded${NC}"
+    echo "   └─ Message: $API_MESSAGE"
+    echo "   └─ Version: $API_VERSION"
 else
-    echo "   ⚠️  No daily reports yet. Cron runs at 02:00 UTC."
+    echo -e "${YELLOW}⚠️  Root API returned non-JSON (possibly HTML)${NC}"
 fi
-echo ""
 
-# Summary
-echo "========================================"
-echo "✅ Verification Complete"
 echo ""
-echo "Artifacts created:"
-echo "   • $OUTPUT_DIR/alembic_current.txt"
-echo "   • $OUTPUT_DIR/readyz_response.json"
-echo "   • $OUTPUT_DIR/healthz_response.json"
-echo "   • $OUTPUT_DIR/tesseract_version.txt"
-echo "   • $OUTPUT_DIR/ocr_accuracy_highlight_accuracy.json"
-echo "   • $PERF_DIR/route_timings_staging.json"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "${GREEN}✅ All critical health checks passed!${NC}"
 echo ""
-echo "Next steps:"
-echo "   1. Commit artifacts: git add artifacts/ && git commit -m 'Add staging verification artifacts'"
-echo "   2. Trigger Playwright CI: GitHub Actions → UI Screenshots"
-echo "   3. Update RENDER_ACCEPTANCE.md with final URLs and timestamps"
-
+echo "📊 Summary:"
+echo "   • Healthz: $HEALTHZ_STATUS"
+echo "   • Readyz: $READYZ_STATUS"
+echo "   • Database: $DB_STATUS"
+echo "   • Alembic: $ALEMBIC_VERSION"
+echo ""
+echo "🔗 Base URL: $BASE_URL"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

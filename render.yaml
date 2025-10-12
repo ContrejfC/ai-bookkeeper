@@ -21,3 +21,7 @@ services:
         value: "0.90"
       - key: OCR_PROVIDER
         value: tesseract
+    
+    # Run migrations automatically on deploy
+    preDeployCommand: "alembic current"
+    postDeployCommand: "alembic upgrade head"

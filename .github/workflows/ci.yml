@@ -40,7 +40,11 @@ jobs:
         # Run ONLY the tests for features added in this PR (legal pages + core parsers)
         # This focuses CI on validating new functionality rather than fixing old broken tests
         
-        echo "=== Running Legal Pages Tests (17 tests - main feature of this PR) ==="
+        echo "=== Running Home Page Tests (18 tests - pilot-ready marketing landing) ==="
+        pytest tests/test_home_page.py -v --tb=short
+        
+        echo ""
+        echo "=== Running Legal Pages Tests (17 tests) ==="
         pytest tests/test_legal_support_pages.py -v --tb=short
         
         echo ""
@@ -49,11 +53,12 @@ jobs:
         
         echo ""
         echo "=== Test Summary ==="
-        pytest tests/test_legal_support_pages.py tests/test_csv_parser.py --tb=no -q
+        pytest tests/test_home_page.py tests/test_legal_support_pages.py tests/test_csv_parser.py --tb=no -q
         
         echo ""
-        echo "✅ Legal pages tests validate the core functionality of this PR"
-        echo "✅ CSV parser tests validate basic data ingestion still works"
+        echo "✅ Home page: Public marketing landing with Sign in CTA"
+        echo "✅ Legal pages: Terms, Privacy, DPA, Support"
+        echo "✅ CSV parser: Basic data ingestion works"
     
     - name: Upload coverage reports
       uses: codecov/codecov-action@v3

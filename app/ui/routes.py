@@ -24,6 +24,43 @@ templates = Jinja2Templates(directory="app/ui/templates")
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Home Page (Public Marketing Landing)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+@router.get("/", response_class=HTMLResponse)
+async def home_page(request: Request):
+    """
+    Public marketing landing page with Sign in CTA.
+    
+    No authentication required. Shows product features, how it works,
+    security details, pricing tiers, and FAQ.
+    
+    SEO: Controlled by SEO_INDEX env var (0=noindex for staging, 1=index for prod)
+    """
+    # Get SEO setting from environment
+    seo_index_str = os.getenv("SEO_INDEX", "0")
+    seo_index = seo_index_str == "1"
+    
+    # Log page view for analytics (non-blocking, PII-free)
+    try:
+        from app.analytics.sink import log_page_view
+        log_page_view(
+            path="/",
+            tenant_id=None,  # Public page, no tenant
+            user_role=None,  # Not authenticated
+            metadata={"referrer": request.headers.get("referer", "direct")}
+        )
+    except Exception:
+        # Analytics logging is non-fatal; continue if it fails
+        pass
+    
+    return templates.TemplateResponse("home.html", {
+        "request": request,
+        "seo_index": seo_index
+    })
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Review Page (Reason-Aware)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

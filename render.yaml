@@ -21,21 +21,3 @@ services:
         value: "0.90"
       - key: OCR_PROVIDER
         value: tesseract
-
-  - type: worker
-    name: ai-bookkeeper-worker
-    runtime: docker
-    plan: free
-    envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: REDIS_URL
-        sync: false
-      - key: JWT_SECRET_KEY
-        sync: false
-      - key: OCR_PROVIDER
-        value: tesseract
-      - key: AUTOPOST_ENABLED
-        value: "false"
-      - key: GATING_THRESHOLD
-        value: "0.90"

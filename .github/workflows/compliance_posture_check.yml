@@ -1,0 +1,78 @@
+name: Compliance Posture Check
+
+on:
+  schedule:
+    # Run every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  posture-check:
+    name: SSO/MFA Verification
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Run SSO/MFA posture check
+        id: posture_check
+        env:
+          GITHUB_ORG: ${{ secrets.COMPLIANCE_GITHUB_ORG || '' }}
+          GITHUB_TOKEN: ${{ secrets.COMPLIANCE_GITHUB_TOKEN || '' }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY || '' }}
+        run: |
+          python scripts/check_mfa_sso.py 2>&1 | tee posture_check.log
+          exit_code=${PIPESTATUS[0]}
+          
+          # Save for summary
+          echo "EXIT_CODE=$exit_code" >> $GITHUB_OUTPUT
+          
+          exit $exit_code
+        continue-on-error: true
+      
+      - name: Upload posture check log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-posture-${{ github.run_number }}
+          path: posture_check.log
+          retention-days: 90
+      
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "### Compliance Posture Check 🔐" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.posture_check.outputs.EXIT_CODE }}" = "0" ]; then
+            echo "✅ **Status**: PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Status**: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Results:**" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          cat posture_check.log >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note**: Configure secrets \`COMPLIANCE_GITHUB_ORG\` and \`COMPLIANCE_GITHUB_TOKEN\` to enable full checks." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Fail if posture check failed
+        if: steps.posture_check.outputs.EXIT_CODE != '0'
+        run: |
+          echo "::error::Compliance posture check failed"
+          exit 1
+

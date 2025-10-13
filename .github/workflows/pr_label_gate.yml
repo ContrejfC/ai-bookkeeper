@@ -1,0 +1,131 @@
+name: Change Control Gate
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, labeled, unlabeled]
+
+jobs:
+  check-change-control:
+    name: Verify Change Control Requirements
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check for linked issue
+        id: check_issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body || '';
+            
+            // Check if PR body contains a URL (linked issue/ticket)
+            const urlRegex = /https?:\/\/[^\s]+/;
+            const hasUrl = urlRegex.test(prBody);
+            
+            // Check if PR body has "Issue URL:" section filled
+            const hasIssueSection = /Issue URL:\s*https?:\/\//.test(prBody);
+            
+            if (!hasUrl && !hasIssueSection) {
+              core.setFailed('❌ PR must include a linked issue/ticket URL');
+              core.summary.addHeading('Change Control Gate Failed', 2);
+              core.summary.addRaw('This PR is missing a linked issue or ticket URL.');
+              core.summary.addRaw('\n\nPlease update the PR description to include:');
+              core.summary.addList([
+                'A link to the GitHub issue, Jira ticket, or work item',
+                'Or add the label `change-control-exempt` for hotfixes'
+              ]);
+              await core.summary.write();
+              return;
+            }
+            
+            core.info('✓ Linked issue/ticket URL found');
+            core.summary.addHeading('Change Control Gate Passed', 2);
+            core.summary.addRaw('✓ PR includes linked issue/ticket URL');
+            await core.summary.write();
+      
+      - name: Check for has-ticket label
+        id: check_label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels.map(l => l.name);
+            
+            // Check for exemption label first
+            if (labels.includes('change-control-exempt')) {
+              core.warning('⚠️ Change control EXEMPTED via label (hotfix)');
+              core.summary.addHeading('Change Control Exemption', 2);
+              core.summary.addRaw('⚠️ This PR is exempt from change control requirements.');
+              core.summary.addRaw('\n\n**Note:** Exemption logged for audit trail.');
+              await core.summary.write();
+              return;
+            }
+            
+            // Otherwise, check for has-ticket label
+            if (!labels.includes('has-ticket') && !labels.includes('change-control-exempt')) {
+              core.setFailed('❌ PR must have label `has-ticket` or `change-control-exempt`');
+              core.summary.addHeading('Label Required', 2);
+              core.summary.addRaw('Please add one of these labels:');
+              core.summary.addList([
+                '`has-ticket` - for normal PRs with linked issues',
+                '`change-control-exempt` - for emergency hotfixes (use sparingly)'
+              ]);
+              await core.summary.write();
+              return;
+            }
+            
+            core.info('✓ Required label found');
+      
+      - name: Check for required sections
+        id: check_sections
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body || '';
+            const labels = context.payload.pull_request.labels.map(l => l.name);
+            
+            // Skip if exempted
+            if (labels.includes('change-control-exempt')) {
+              core.info('⚠️ Exempted from section checks');
+              return;
+            }
+            
+            // Check for required sections
+            const requiredSections = [
+              'Issue URL:',
+              'Risk/Impact',
+              'Rollback Plan',
+              'Tests/Evidence'
+            ];
+            
+            const missingSections = requiredSections.filter(section => 
+              !prBody.includes(section)
+            );
+            
+            if (missingSections.length > 0) {
+              core.setFailed(`❌ PR template missing required sections: ${missingSections.join(', ')}`);
+              core.summary.addHeading('PR Template Incomplete', 2);
+              core.summary.addRaw('The following required sections are missing:');
+              core.summary.addList(missingSections);
+              core.summary.addRaw('\n\nPlease use the PR template and fill in all required sections.');
+              await core.summary.write();
+              return;
+            }
+            
+            core.info('✓ All required sections present');
+      
+      - name: Log change control check
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels.map(l => l.name);
+            const exempted = labels.includes('change-control-exempt');
+            
+            console.log('=== Change Control Audit Log ===');
+            console.log(`PR: #${context.payload.pull_request.number}`);
+            console.log(`Title: ${context.payload.pull_request.title}`);
+            console.log(`Author: ${context.payload.pull_request.user.login}`);
+            console.log(`Exempted: ${exempted}`);
+            console.log(`Labels: ${labels.join(', ')}`);
+            console.log(`Timestamp: ${new Date().toISOString()}`);
+            console.log('================================');
+

@@ -9,6 +9,7 @@ Extends existing API with UI routes for:
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 # Import existing API routes (if they exist)
 # from app.api.main import app as api_app
@@ -18,6 +19,18 @@ app = FastAPI(
     title="AI Bookkeeper",
     version="0.9.0-rc",
     description="Production-grade AI-powered bookkeeping automation"
+)
+
+# Add CORS middleware for Next.js frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",  # Next.js dev server
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Import UI routes

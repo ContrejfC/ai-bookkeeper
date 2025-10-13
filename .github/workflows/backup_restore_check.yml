@@ -1,0 +1,68 @@
+name: Backup & Restore Check
+
+on:
+  workflow_dispatch:  # Manual trigger only
+    inputs:
+      database_url:
+        description: 'Database URL (optional, uses default if not provided)'
+        required: false
+        type: string
+
+jobs:
+  backup-restore:
+    name: Backup & Restore Evidence
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install PostgreSQL client (if needed)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client sqlite3
+      
+      - name: Run backup & restore check
+        env:
+          DATABASE_URL: ${{ inputs.database_url || secrets.DATABASE_URL || 'sqlite:///./aibookkeeper.db' }}
+        run: |
+          chmod +x scripts/backup_restore_check.sh
+          ./scripts/backup_restore_check.sh
+      
+      - name: Upload backup artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-evidence-${{ github.run_number }}
+          path: |
+            artifacts/compliance/db_backup_*.sql
+            artifacts/compliance/backup_restore_*.txt
+          retention-days: 90
+      
+      - name: Display evidence report
+        if: always()
+        run: |
+          if [ -f artifacts/compliance/backup_restore_*.txt ]; then
+            echo "### Backup & Restore Evidence 📦" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat artifacts/compliance/backup_restore_*.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Check result
+        run: |
+          # Exit code from script determines success
+          if [ -f artifacts/compliance/backup_restore_*.txt ]; then
+            if grep -q "PASS" artifacts/compliance/backup_restore_*.txt; then
+              echo "✓ Backup & restore check passed"
+              exit 0
+            else
+              echo "✗ Backup & restore check failed"
+              exit 1
+            fi
+          else
+            echo "✗ Evidence report not generated"
+            exit 1
+          fi
+

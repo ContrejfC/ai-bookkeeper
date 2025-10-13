@@ -1,0 +1,64 @@
+name: Weekly Access Snapshot
+
+on:
+  schedule:
+    # Run every Sunday at 02:00 UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  access-snapshot:
+    name: Generate Access Snapshot
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run access snapshot job
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'sqlite:///./aibookkeeper.db' }}
+          GITHUB_ORG: ${{ secrets.GITHUB_ORG || '' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || '' }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY || '' }}
+        run: |
+          python jobs/dump_access_snapshot.py
+      
+      - name: Upload snapshot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: access-snapshot-${{ github.run_number }}
+          path: |
+            reports/compliance/access_snapshot_*.json
+            reports/compliance/access_snapshot_*.csv
+          retention-days: 90
+      
+      - name: Check for evidence index
+        run: |
+          if [ -f artifacts/compliance/EVIDENCE_INDEX.md ]; then
+            echo "✓ Evidence index updated"
+            cat artifacts/compliance/EVIDENCE_INDEX.md | head -n 20
+          fi
+      
+      - name: Summary
+        run: |
+          echo "### Access Snapshot Generated 📊" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Weekly access snapshot completed successfully." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Artifacts:**" >> $GITHUB_STEP_SUMMARY
+          echo "- JSON: \`reports/compliance/access_snapshot_$(date +%Y%m%d).json\`" >> $GITHUB_STEP_SUMMARY
+          echo "- CSV: \`reports/compliance/access_snapshot_$(date +%Y%m%d).csv\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Retention: 90 days" >> $GITHUB_STEP_SUMMARY
+

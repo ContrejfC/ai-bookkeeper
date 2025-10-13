@@ -659,3 +659,269 @@ Once pushed to GitHub, access workflows at:
 **Version:** 1.0  
 **Status:** ✅ Production-ready
 
+
+---
+
+## SOC 2 Compliance Workflows
+
+**Added:** 2025-10-13 (v0.9.2)
+
+### Overview
+
+Automated compliance workflows for SOC 2 evidence generation:
+1. **Weekly Access Snapshot** - User/tenant access reports
+2. **Backup & Restore Check** - Database backup verification
+3. **Data Retention Report** - Monthly retention policy execution
+4. **Compliance Posture Check** - SSO/MFA verification
+5. **PR Label Gate** - Change control enforcement
+
+### Workflow 1: Weekly Access Snapshot
+
+**Schedule:** Every Sunday at 02:00 UTC  
+**File:** `.github/workflows/compliance_weekly.yml`
+
+**What It Does:**
+- Generates snapshot of all app users, roles, and tenant assignments
+- Exports tenant config flags (autopost_enabled, threshold)
+- Optionally includes GitHub org members and Render team
+- Saves artifacts: `access_snapshot_YYYYMMDD.{csv,json}`
+
+**Required Secrets:**
+- `DATABASE_URL` (optional, defaults to SQLite)
+
+**Optional Secrets:**
+- `GITHUB_ORG` - GitHub organization name
+- `GITHUB_TOKEN` - GitHub API token (org:read scope)
+- `RENDER_API_KEY` - Render API key
+
+**Manual Trigger:**
+```bash
+gh workflow run compliance_weekly.yml
+```
+
+**Download Artifacts:**
+```bash
+gh run download <run-id> -n access-snapshot-<number>
+```
+
+**Use Case:**
+Quarterly access reviews for auditors. CSV format for easy spreadsheet review.
+
+### Workflow 2: Backup & Restore Check
+
+**Schedule:** Manual only  
+**File:** `.github/workflows/backup_restore_check.yml`
+
+**What It Does:**
+- Performs database backup (pg_dump or SQLite dump)
+- Restores to temporary schema/database
+- Verifies data integrity (row counts)
+- Runs smoke test (/healthz)
+- Generates evidence report with PASS/FAIL status
+
+**Required Secrets:**
+- `DATABASE_URL` - Database connection string
+
+**Manual Trigger:**
+```bash
+gh workflow run backup_restore_check.yml
+```
+
+**Download Evidence:**
+```bash
+gh run download <run-id> -n backup-evidence-<number>
+```
+
+**Use Case:**
+Disaster recovery readiness verification. Provide evidence report to auditors quarterly.
+
+### Workflow 3: Data Retention Report
+
+**Schedule:** Monthly (1st of month at 03:00 UTC)  
+**File:** `.github/workflows/data_retention_report.yml`
+
+**What It Does:**
+- Scans receipts, analytics logs, app logs
+- Identifies files older than retention periods
+- DRY-RUN by default (reports but doesn't delete)
+- Generates report: `data_retention_YYYYMMDD.txt`
+
+**Retention Policies:**
+- Receipts: 365 days (default)
+- Analytics logs: 365 days (default)
+- Application logs: 30 days (default)
+
+**Manual Trigger (dry-run):**
+```bash
+gh workflow run data_retention_report.yml
+```
+
+**Manual Trigger (live delete):**
+```bash
+gh workflow run data_retention_report.yml -f delete_enabled=true
+```
+
+**Download Report:**
+```bash
+gh run download <run-id> -n data-retention-report-<number>
+```
+
+**Use Case:**
+Evidence of data retention policy enforcement. Provide monthly reports to auditors.
+
+### Workflow 4: Compliance Posture Check
+
+**Schedule:** Every Monday at 08:00 UTC  
+**File:** `.github/workflows/compliance_posture_check.yml`
+
+**What It Does:**
+- Checks GitHub org MFA requirement
+- Verifies all GitHub members have MFA enabled
+- Provides guidance for Render team SSO/MFA
+- Fails workflow if MFA not enforced
+
+**Required Secrets:**
+- `COMPLIANCE_GITHUB_ORG` - GitHub organization name
+- `COMPLIANCE_GITHUB_TOKEN` - GitHub token (admin:org scope)
+
+**Optional Secrets:**
+- `RENDER_API_KEY` - Render API key (for future SSO checks)
+
+**Manual Trigger:**
+```bash
+gh workflow run compliance_posture_check.yml
+```
+
+**Download Log:**
+```bash
+gh run download <run-id> -n compliance-posture-<number>
+```
+
+**Use Case:**
+Continuous security posture monitoring. Evidence of MFA enforcement for auditors.
+
+### Workflow 5: PR Label Gate
+
+**Trigger:** On PR open, edit, label change  
+**File:** `.github/workflows/pr_label_gate.yml`
+
+**What It Does:**
+- Verifies PR body contains linked issue/ticket URL
+- Requires label `has-ticket` or `change-control-exempt`
+- Checks for required template sections (Risk, Rollback, Tests)
+- Logs all PRs and exemptions for audit trail
+
+**How to Pass PR Checks:**
+
+1. **Use PR template** (auto-populated when creating PR)
+2. **Fill required sections:**
+   - Linked Issue/Ticket URL (must include actual URL)
+   - Risk/Impact Assessment
+   - Rollback Plan
+   - Tests/Evidence
+3. **Add label:** `has-ticket` (or `change-control-exempt` for hotfixes)
+
+**Exemptions:**
+- Add label `change-control-exempt` for emergency hotfixes
+- All exemptions are logged in workflow output for audit trail
+- Use sparingly (auditors will review exemption logs)
+
+**Troubleshooting:**
+- ❌ "PR must include linked issue URL" → Add full URL to "Issue URL:" section
+- ❌ "PR must have label has-ticket" → Add label in PR sidebar
+- ❌ "PR template missing required sections" → Ensure all headers present
+
+### Weekly Access Review Process
+
+**Cadence:** Weekly (or as required by audit schedule)
+
+**Steps:**
+1. **Download Snapshot:**
+   ```bash
+   gh run list --workflow=compliance_weekly.yml --limit 1
+   gh run download <run-id> -n access-snapshot-<number>
+   ```
+
+2. **Review CSV:**
+   - Open `access_snapshot_YYYYMMDD.csv` in spreadsheet
+   - Filter by section: `app_user`, `tenant_setting`, `github_member`
+   - Verify:
+     - All users have appropriate roles
+     - No unexpected tenant assignments
+     - Autopost settings are correct (false by default)
+     - Thresholds are ≥0.90
+
+3. **Document Review:**
+   - Create issue: "Weekly Access Review - YYYY-MM-DD"
+   - Note any anomalies or required actions
+   - Close with "Reviewed, no issues" or action items
+
+4. **Quarterly Sign-Off:**
+   - Compile last 12 weekly reviews
+   - Provide to auditors as evidence package
+   - Include CSV snapshots + review issue links
+
+### Backup/Restore Quarterly Verification
+
+**Cadence:** Quarterly
+
+**Steps:**
+1. **Trigger Check:**
+   ```bash
+   gh workflow run backup_restore_check.yml
+   ```
+
+2. **Wait for Completion:**
+   ```bash
+   gh run watch
+   ```
+
+3. **Download Evidence:**
+   ```bash
+   gh run download <run-id> -n backup-evidence-<number>
+   ```
+
+4. **Review Report:**
+   - Open `backup_restore_<timestamp>.txt`
+   - Verify "RESULT: PASS"
+   - Check row counts match between backup and restore
+   - Confirm smoke test (/healthz) passed
+
+5. **Archive for Auditors:**
+   - Save report with timestamp
+   - Add to quarterly evidence package
+
+### Required GitHub Secrets (Compliance)
+
+| Secret Name | Purpose | Required |
+|-------------|---------|----------|
+| `DATABASE_URL` | Database connection for backups | ✅ Yes |
+| `GITHUB_ORG` | GitHub org for access snapshots | ⚠️ Optional |
+| `GITHUB_TOKEN` | GitHub API token (org:read) | ⚠️ Optional |
+| `COMPLIANCE_GITHUB_ORG` | GitHub org for posture checks | ⚠️ Optional |
+| `COMPLIANCE_GITHUB_TOKEN` | GitHub token (admin:org) | ⚠️ Optional |
+| `RENDER_API_KEY` | Render API for team access | ⚠️ Optional |
+
+**Notes:**
+- All workflows degrade gracefully if optional secrets are missing
+- `GITHUB_TOKEN` requires `org:read` scope (for member lists)
+- `COMPLIANCE_GITHUB_TOKEN` requires `admin:org` scope (for MFA checks)
+- Never use personal access tokens with broad permissions
+
+### Troubleshooting
+
+**Issue:** Access snapshot shows "SKIPPED: no creds"
+- **Fix:** Add `GITHUB_ORG` and `GITHUB_TOKEN` secrets
+
+**Issue:** Backup/restore fails with "pg_dump not found"
+- **Fix:** Workflow auto-installs postgres-client; check logs for errors
+
+**Issue:** Data retention report shows 0 files scanned
+- **Fix:** Directories may not exist; run locally to populate
+
+**Issue:** Posture check fails with 403
+- **Fix:** Ensure `COMPLIANCE_GITHUB_TOKEN` has `admin:org` scope
+
+**Issue:** PR gate fails even with ticket URL
+- **Fix:** Ensure URL is in "Issue URL:" section (not just PR description)
+- **Fix:** Add label `has-ticket` via PR sidebar

@@ -632,3 +632,73 @@ After rollback, verify:
 **Last Updated:** 2025-10-11  
 **Version:** 1.0 (Production-ready)
 
+
+---
+
+## SOC 2 Compliance: Log Drain Configuration
+
+**Added:** 2025-10-13 (v0.9.2)
+
+### External Log Aggregation
+
+The application supports shipping logs to external log aggregation services (e.g., Datadog, Logtail, Splunk) for compliance and monitoring.
+
+#### Configure Log Drain
+
+1. **Choose Provider:**
+   - Datadog: https://www.datadoghq.com/
+   - Logtail (Better Stack): https://betterstack.com/logtail
+   - Splunk: https://www.splunk.com/
+   - Any HTTPS endpoint accepting JSON-lines
+
+2. **Get Credentials:**
+   - Create account with provider
+   - Generate API key or token
+   - Get HTTPS ingestion endpoint URL
+
+3. **Add to Render Environment:**
+   ```bash
+   # In Render Dashboard → Environment
+   LOG_DRAIN_URL=https://logs.provider.com/ingest
+   LOG_DRAIN_API_KEY=your-api-key-here
+   LOG_LEVEL=INFO  # Optional: DEBUG|INFO|WARNING|ERROR
+   ```
+
+4. **Verify:**
+   - Deploy application
+   - Check Render logs for: "Log drain enabled: https://logs..."
+   - Verify logs appear in provider dashboard
+
+#### PII Redaction
+
+All logs automatically redact PII:
+- Email addresses → `[EMAIL_REDACTED]`
+- SSN → `[SSN_REDACTED]`
+- Credit card numbers → `[CARD_REDACTED]`
+- Phone numbers → `[PHONE_REDACTED]`
+- API keys, secrets, tokens → `[REDACTED]`
+
+#### Graceful Degradation
+
+If log drain is unreachable:
+- Retries 3 times with exponential backoff
+- Falls back to stdout (Render logs)
+- Application continues running normally
+
+#### Testing
+
+```bash
+# Local test with mock drain
+export LOG_DRAIN_URL=https://httpbin.org/post
+export LOG_DRAIN_API_KEY=test-key
+python -m uvicorn app.api.main:app --reload
+
+# Check logs for PII redaction
+tail -f logs/app.log | grep REDACTED
+```
+
+**Security Notes:**
+- Never commit `LOG_DRAIN_API_KEY` to repository
+- Use Render's secret management for API keys
+- Verify provider is SOC 2 compliant for sensitive data
+- Logs are shipped over HTTPS with retry/jitter

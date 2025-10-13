@@ -7,6 +7,138 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.2] - 2025-10-13
+
+### 🔒 SOC 2 Minimum Viable Controls
+
+This release adds minimum viable SOC 2 controls that generate durable evidence with zero regressions to core app behavior. All safety guardrails remain intact (AUTOPOST=false, threshold ≥0.90, /healthz & /readyz unchanged).
+
+---
+
+### Added
+
+#### Centralized Logging with PII Redaction
+- **Module:** `app/ops/logging.py` - JSON structured logging with automatic PII redaction
+- Redacts: emails, SSN, card numbers, phone numbers, API keys, secrets
+- Optional external log drain (HTTPS with retry/jitter)
+- Graceful degradation to stdout when drain unavailable
+- Environment: `LOG_LEVEL`, `LOG_DRAIN_URL`, `LOG_DRAIN_API_KEY`
+
+#### Weekly Access Snapshot
+- **Job:** `jobs/dump_access_snapshot.py` - Generates compliance evidence snapshot
+- Exports: App users (email hash, role, tenants), tenant settings, GitHub org members, Render team
+- Outputs: `reports/compliance/access_snapshot_YYYYMMDD.{csv,json}`
+- **CI:** `.github/workflows/compliance_weekly.yml` - Runs Sunday 02:00 UTC
+- Artifacts retained 90 days
+
+#### Change-Control Guardrails
+- **PR Template:** `.github/pull_request_template.md` - Required sections: Linked Issue, Risk, Rollback, Tests
+- **CI Gate:** `.github/workflows/pr_label_gate.yml` - Enforces template compliance and labels
+- Exemptions: Label `change-control-exempt` for hotfixes (logged for audit trail)
+- All PRs logged with exemption tracking
+
+#### Backup & Restore Evidence
+- **Script:** `scripts/backup_restore_check.sh` - Database backup verification
+- Performs: pg_dump/sqlite dump, test restore to temp schema, data verification, smoke test
+- Outputs: `artifacts/compliance/db_backup_<timestamp>.sql`, evidence report with PASS/FAIL
+- **CI:** `.github/workflows/backup_restore_check.yml` - Manual trigger workflow
+
+#### Data Retention Job
+- **Job:** `jobs/data_retention.py` - Enforces retention policy
+- Policies: Receipts (365d), Analytics logs (365d), App logs (30d)
+- Safety: Dry-run by default, set `RETENTION_DELETE=true` to enable deletions
+- Outputs: `reports/compliance/data_retention_YYYYMMDD.txt`
+- **CI:** `.github/workflows/data_retention_report.yml` - Monthly (1st at 03:00 UTC)
+
+#### Admin Audit Exports API
+- **Module:** `app/api/admin_compliance.py` - Owner-only audit export endpoints
+- `GET /api/admin/audit/export.jsonl` - Streaming JSONL export (max 365 days)
+- `GET /api/admin/audit/export.csv` - Streaming CSV export (max 365 days)
+- `GET /api/admin/compliance/status` - Compliance posture status
+- RBAC: Owner-only (403 for staff)
+
+#### SSO/MFA Verification
+- **Script:** `scripts/check_mfa_sso.py` - Security posture verification
+- Checks: GitHub org MFA requirement, member MFA status, SSO guidance
+- Human-readable report with PASS/FAIL/SKIP status
+- **CI:** `.github/workflows/compliance_posture_check.yml` - Weekly (Monday 08:00 UTC)
+- Exit 0 on success/skip, 1 on failure
+
+#### Evidence Index
+- **File:** `artifacts/compliance/EVIDENCE_INDEX.md` - Auto-updated by jobs
+- Links to latest evidence artifacts (newest first)
+- Simplifies evidence gathering for auditors
+
+### Tests
+
+#### New Test Suites
+- `tests/test_logging_redaction.py` - PII redaction validation (12 tests)
+- `tests/test_logging_drain.py` - Log drain behavior (10 tests)
+- `tests/test_access_snapshot.py` - Access snapshot generation (9 tests)
+- `tests/test_data_retention.py` - Retention policy enforcement (10 tests)
+- `tests/test_admin_audit_exports.py` - Admin API RBAC & exports (11 tests)
+
+**Total:** 52 new tests covering all compliance controls
+
+### Documentation
+
+#### New Documentation
+- `SOC2_MIN_CONTROLS_README.md` - Complete guide for using compliance controls
+- `artifacts/compliance/EVIDENCE_INDEX.md` - Evidence artifact index
+- `.github/pull_request_template.md` - PR template with required sections
+
+#### Updated Documentation
+- `RENDER_DEPLOYMENT.md` - Added log drain configuration section
+- `CI_RUNBOOK.md` - Added compliance workflows section
+- `STAGING_GO_LIVE_CHECKLIST.md` - Added compliance verification checklist
+- `CHANGELOG.md` - This file
+
+### CI/CD
+
+#### New Workflows
+- `.github/workflows/pr_label_gate.yml` - Change control enforcement
+- `.github/workflows/compliance_weekly.yml` - Weekly access snapshots
+- `.github/workflows/backup_restore_check.yml` - Backup/restore verification
+- `.github/workflows/data_retention_report.yml` - Monthly retention reports
+- `.github/workflows/compliance_posture_check.yml` - Weekly SSO/MFA checks
+
+All workflows degrade gracefully when optional secrets are missing (no failures on free tier).
+
+### Security
+
+- **PII Redaction:** All logs, exports, and artifacts automatically strip PII
+- **RBAC:** Admin compliance endpoints restricted to owner role
+- **Audit Trail:** All PRs logged with exemption tracking
+- **Log Shipping:** HTTPS with retry, exponential backoff, and jitter
+- **Secrets:** No secrets in repository; all via environment variables
+
+### Guardrails Verification
+
+✅ **Safety Defaults Intact:**
+- AUTOPOST=false by default (unchanged)
+- Gating threshold ≥0.90 (unchanged)
+- /healthz & /readyz schemas unchanged (only consumed, not modified)
+- No PII in logs, exports, or artifacts
+- Render free-tier compatible (graceful degradation)
+
+### Changed
+
+- None (additive-only release, zero breaking changes)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
+### Fixed
+
+- None
+
+---
+
 ## [0.9.1] - 2025-10-12
 
 ### 🚀 Cloud Upgrade + UX Polish + Legal Pages

@@ -398,3 +398,104 @@ alembic upgrade head
 _________________________________________________________________
 _________________________________________________________________
 
+
+---
+
+## SOC 2 Compliance Verification
+
+**Added:** 2025-10-13 (v0.9.2)
+
+### Backup & Restore Evidence
+
+- [ ] Run backup/restore check script
+  ```bash
+  ./scripts/backup_restore_check.sh
+  ```
+- [ ] Verify evidence report: `artifacts/compliance/backup_restore_<timestamp>.txt`
+- [ ] Confirm "RESULT: PASS" in report
+- [ ] Check row counts match between backup and restore
+- [ ] Archive evidence report for auditors
+
+### Access Control Snapshot
+
+- [ ] Generate access snapshot
+  ```bash
+  python jobs/dump_access_snapshot.py
+  ```
+- [ ] Review CSV: `reports/compliance/access_snapshot_YYYYMMDD.csv`
+- [ ] Verify all users have appropriate roles
+- [ ] Confirm autopost settings (false by default)
+- [ ] Check gating thresholds (≥0.90)
+
+### Data Retention Policy
+
+- [ ] Run retention report (dry-run)
+  ```bash
+  python jobs/data_retention.py
+  ```
+- [ ] Review report: `reports/compliance/data_retention_YYYYMMDD.txt`
+- [ ] Verify retention policies:
+  - Receipts: 365 days
+  - Analytics logs: 365 days
+  - Application logs: 30 days
+
+### Security Posture
+
+- [ ] Run SSO/MFA check
+  ```bash
+  python scripts/check_mfa_sso.py
+  ```
+- [ ] Verify GitHub org MFA requirement enabled
+- [ ] Confirm all team members have MFA enabled
+- [ ] Verify Render team SSO/MFA (manual check)
+
+### Change Control
+
+- [ ] PR template present: `.github/pull_request_template.md`
+- [ ] PR label gate enabled: `.github/workflows/pr_label_gate.yml`
+- [ ] Test PR creation with template
+- [ ] Verify gate enforces required sections
+
+### Logging & Monitoring
+
+- [ ] Log drain configured (if using external aggregation)
+  - `LOG_DRAIN_URL` set in Render environment
+  - `LOG_DRAIN_API_KEY` set (if required)
+- [ ] Verify PII redaction in logs
+  ```bash
+  tail -f logs/app.log | grep REDACTED
+  ```
+- [ ] Test log shipping to external provider (if configured)
+
+### CI/CD Evidence Collection
+
+- [ ] Weekly access snapshot workflow enabled
+- [ ] Monthly data retention workflow scheduled
+- [ ] Weekly compliance posture check enabled
+- [ ] GitHub secrets configured:
+  - `DATABASE_URL`
+  - `GITHUB_ORG` (optional)
+  - `GITHUB_TOKEN` (optional)
+  - `COMPLIANCE_GITHUB_TOKEN` (optional)
+
+### Evidence Archive
+
+- [ ] Create evidence package directory
+- [ ] Include access snapshots (last 90 days)
+- [ ] Include backup/restore reports (quarterly)
+- [ ] Include data retention reports (monthly)
+- [ ] Include compliance posture check results
+- [ ] Document evidence location for auditors
+
+### Guardrails Verification
+
+- [ ] Confirm AUTOPOST=false by default
+- [ ] Verify gating threshold ≥0.90 enforced
+- [ ] Test /healthz endpoint (schema unchanged)
+- [ ] Test /readyz endpoint (schema unchanged)
+- [ ] Verify no PII in logs, exports, or artifacts
+
+**Sign-Off:**
+- Date: _________________
+- Verified By: _________________
+- Evidence Package Location: _________________

@@ -177,17 +177,23 @@ export default function SignupPage() {
           </CardBody>
         </form>
 
-        <Divider />
+          <Divider className="bg-emerald-500/20" />
 
-        <CardFooter className="flex flex-col gap-2 py-4">
-          <p className="text-sm opacity-60 text-center">
-            Already have an account?{" "}
-            <Link href="/login" size="sm" className="font-semibold">
-              Sign in
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+          <CardFooter className="flex flex-col gap-2 py-4">
+            <motion.p 
+              className="text-sm text-slate-400 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              Already have an account?{" "}
+              <Link href="/login" size="sm" className="text-emerald-400 hover:text-emerald-300 font-semibold">
+                Sign in
+              </Link>
+            </motion.p>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </div>
   );
 }

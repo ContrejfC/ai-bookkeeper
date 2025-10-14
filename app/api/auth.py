@@ -8,6 +8,7 @@ Endpoints:
 """
 import os
 from fastapi import APIRouter, Depends, HTTPException, Response, Cookie, Header
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -161,7 +162,7 @@ async def login(
     )
 
 
-@router.post("/signup", response_model=SignupResponse)
+@router.post("/signup")
 async def signup(
     request: SignupRequest,
     response: Response,
@@ -223,19 +224,22 @@ async def signup(
             max_age=COOKIE_MAX_AGE
         )
         
-        return SignupResponse(
-            success=True,
-            user_id=new_user.user_id,
-            email=new_user.email,
-            role=new_user.role,
-            message="Account created successfully! Welcome to AI Bookkeeper."
-        )
+        return {
+            "success": True,
+            "user_id": new_user.user_id,
+            "email": new_user.email,
+            "role": new_user.role,
+            "message": "Account created successfully! Welcome to AI Bookkeeper."
+        }
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Signup error: {type(e).__name__}: {str(e)}")
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Error: {type(e).__name__} - {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"{type(e).__name__}: {str(e)}"}
+        )
 
 
 @router.get("/signup/test")

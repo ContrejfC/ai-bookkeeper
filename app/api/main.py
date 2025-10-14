@@ -1039,7 +1039,7 @@ async def create_admin_user(db: Session = Depends(get_db)):
     """Temporary endpoint to create admin user for production."""
     try:
         from app.db.models import UserDB
-        from app.auth.security import hash_password
+        from app.auth.security import get_password_hash
         
         # Check if admin user already exists
         existing = db.query(UserDB).filter(UserDB.email == "admin@example.com").first()
@@ -1054,7 +1054,7 @@ async def create_admin_user(db: Session = Depends(get_db)):
         
         # Create new admin user
         user_id = f"user-admin-{uuid.uuid4().hex[:8]}"
-        password_hash = hash_password("admin123")
+        password_hash = get_password_hash("admin123")
         
         admin_user = UserDB(
             user_id=user_id,

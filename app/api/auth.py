@@ -185,10 +185,15 @@ async def signup(
     # Create user
     from app.auth.security import get_password_hash
     import uuid
+    import logging
+    
+    logger = logging.getLogger(__name__)
     
     try:
+        logger.info(f"Creating user with email: {request.email}")
         user_id = f"user-{uuid.uuid4().hex[:8]}"
         password_hash = get_password_hash(request.password)
+        logger.info(f"Password hashed successfully for user_id: {user_id}")
         
         new_user = UserDB(
             user_id=user_id,
@@ -201,6 +206,7 @@ async def signup(
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+        logger.info(f"User created successfully: {user_id}")
         
         # Auto-login the user after signup
         token = create_access_token(
@@ -209,6 +215,7 @@ async def signup(
             role=new_user.role,
             tenant_ids=[]
         )
+        logger.info(f"Token created for user: {user_id}")
         
         # Set cookie for UI clients
         response.set_cookie(
@@ -227,7 +234,10 @@ async def signup(
             role=new_user.role,
             message="Account created successfully! Welcome to AI Bookkeeper."
         )
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Signup error: {str(e)}", exc_info=True)
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Signup failed: {str(e)}")
 

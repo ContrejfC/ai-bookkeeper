@@ -197,8 +197,7 @@ async def signup(
             email=request.email,
             password_hash=password_hash,
             role="owner",  # New users are owners by default
-            is_active=True,
-            created_at=datetime.utcnow()
+            is_active=True
         )
         
         db.add(new_user)

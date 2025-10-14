@@ -242,6 +242,12 @@ async def signup(
         raise HTTPException(status_code=500, detail=f"Signup failed: {str(e)}")
 
 
+@router.get("/signup/test")
+async def test_signup_route():
+    """Test endpoint to verify signup route works."""
+    return {"message": "Signup route is working", "status": "ok"}
+
+
 @router.post("/logout")
 async def logout(response: Response):
     """

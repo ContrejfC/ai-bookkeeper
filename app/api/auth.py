@@ -173,20 +173,20 @@ async def signup(
     Creates a new user with owner role and sets up authentication.
     Note: Auto-deploys to production on commit.
     """
+    # Check if user already exists
+    existing_user = db.query(UserDB).filter(UserDB.email == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User with this email already exists")
+    
+    # Validate password strength
+    if len(request.password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    
+    # Create user
+    from app.auth.security import get_password_hash
+    import uuid
+    
     try:
-        # Check if user already exists
-        existing_user = db.query(UserDB).filter(UserDB.email == request.email).first()
-        if existing_user:
-            raise HTTPException(status_code=400, detail="User with this email already exists")
-        
-        # Validate password strength
-        if len(request.password) < 8:
-            raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
-        
-        # Create user
-        from app.auth.security import get_password_hash
-        import uuid
-        
         user_id = f"user-{uuid.uuid4().hex[:8]}"
         # Truncate password to 72 bytes for bcrypt compatibility
         password_to_hash = request.password[:72]
@@ -203,6 +203,7 @@ async def signup(
         
         db.add(new_user)
         db.commit()
+        db.refresh(new_user)
         
         # Auto-login the user after signup
         token = create_access_token(

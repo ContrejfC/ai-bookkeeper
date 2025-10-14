@@ -172,59 +172,65 @@ async def signup(
     
     Creates a new user with owner role and sets up authentication.
     """
-    # Check if user already exists
-    existing_user = db.query(UserDB).filter(UserDB.email == request.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="User with this email already exists")
-    
-    # Validate password strength
-    if len(request.password) < 8:
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
-    
-    # Create user
-    from app.auth.security import get_password_hash
-    import uuid
-    
-    user_id = f"user-{uuid.uuid4().hex[:8]}"
-    password_hash = get_password_hash(request.password)
-    
-    new_user = UserDB(
-        user_id=user_id,
-        email=request.email,
-        password_hash=password_hash,
-        role="owner",  # New users are owners by default
-        is_active=True,
-        created_at=datetime.utcnow()
-    )
-    
-    db.add(new_user)
-    db.commit()
-    
-    # Auto-login the user after signup
-    token = create_access_token(
-        user_id=new_user.user_id,
-        email=new_user.email,
-        role=new_user.role,
-        tenant_ids=[]
-    )
-    
-    # Set cookie for UI clients
-    response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=True,  # HTTPS only in production
-        samesite="lax",
-        max_age=COOKIE_MAX_AGE
-    )
-    
-    return SignupResponse(
-        success=True,
-        user_id=new_user.user_id,
-        email=new_user.email,
-        role=new_user.role,
-        message="Account created successfully! Welcome to AI Bookkeeper."
-    )
+    try:
+        # Check if user already exists
+        existing_user = db.query(UserDB).filter(UserDB.email == request.email).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="User with this email already exists")
+        
+        # Validate password strength
+        if len(request.password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+        
+        # Create user
+        from app.auth.security import get_password_hash
+        import uuid
+        
+        user_id = f"user-{uuid.uuid4().hex[:8]}"
+        # Truncate password to 72 bytes for bcrypt compatibility
+        password_to_hash = request.password[:72]
+        password_hash = get_password_hash(password_to_hash)
+        
+        new_user = UserDB(
+            user_id=user_id,
+            email=request.email,
+            password_hash=password_hash,
+            role="owner",  # New users are owners by default
+            is_active=True,
+            created_at=datetime.utcnow()
+        )
+        
+        db.add(new_user)
+        db.commit()
+        
+        # Auto-login the user after signup
+        token = create_access_token(
+            user_id=new_user.user_id,
+            email=new_user.email,
+            role=new_user.role,
+            tenant_ids=[]
+        )
+        
+        # Set cookie for UI clients
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=True,  # HTTPS only in production
+            samesite="lax",
+            max_age=COOKIE_MAX_AGE
+        )
+        
+        return SignupResponse(
+            success=True,
+            user_id=new_user.user_id,
+            email=new_user.email,
+            role=new_user.role,
+            message="Account created successfully! Welcome to AI Bookkeeper."
+        )
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Signup failed: {str(e)}")
 
 
 @router.post("/logout")

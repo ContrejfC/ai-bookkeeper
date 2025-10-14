@@ -20,7 +20,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [useMagicLink, setUseMagicLink] = useState(true); // Dev mode default
+  const [useMagicLink, setUseMagicLink] = useState(false); // Default to password login
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
       if (result.success) {
         // Redirect to dashboard
-        router.push("/");
+        router.push("/dashboard");
       } else {
         setError("Login failed. Please check your credentials.");
       }
@@ -94,7 +94,7 @@ export default function LoginPage() {
               AI Bookkeeper
             </h1>
             <p className="text-sm text-slate-400">Sign in to your account</p>
-          </CardHeader>
+        </CardHeader>
 
           <Divider className="bg-emerald-500/20" />
 
@@ -116,16 +116,16 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Input
-                  label="Email"
-                  type="email"
+            <Input
+              label="Email"
+              type="email"
                   placeholder="you@example.com"
-                  value={email}
-                  onValueChange={setEmail}
-                  isRequired
+              value={email}
+              onValueChange={setEmail}
+              isRequired
                   size="lg"
                   variant="bordered"
-                  autoComplete="email"
+              autoComplete="email"
                   classNames={{
                     input: "bg-slate-800/50 text-slate-200",
                     inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
@@ -140,16 +140,16 @@ export default function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  <Input
-                    label="Password"
-                    type="password"
+            <Input
+              label="Password"
+              type="password"
                     placeholder="Enter your password"
-                    value={password}
-                    onValueChange={setPassword}
+              value={password}
+              onValueChange={setPassword}
                     isRequired={!useMagicLink}
                     size="lg"
                     variant="bordered"
-                    autoComplete="current-password"
+              autoComplete="current-password"
                     classNames={{
                       input: "bg-slate-800/50 text-slate-200",
                       inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
@@ -198,7 +198,7 @@ export default function LoginPage() {
                   {loading ? "Signing in..." : "Sign in"}
                 </Button>
               </motion.div>
-            </CardBody>
+        </CardBody>
           </form>
 
           <Divider className="bg-emerald-500/20" />
@@ -223,8 +223,8 @@ export default function LoginPage() {
             >
               By signing in, you agree to our Terms of Service and Privacy Policy
             </motion.p>
-          </CardFooter>
-        </Card>
+        </CardFooter>
+      </Card>
         </motion.div>
       </div>
     </div>

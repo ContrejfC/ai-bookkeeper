@@ -66,8 +66,91 @@ const stats = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-success/5 relative overflow-hidden">
-      {/* Animated Background Blobs */}
+      {/* Flowing Pattern Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Animated SVG Pattern */}
+        <motion.svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 1200 800"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2 }}
+        >
+          <defs>
+            <linearGradient id="flowGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="#ec4899" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.2" />
+            </linearGradient>
+            <linearGradient id="flowGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#ef4444" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.25" />
+            </linearGradient>
+            <linearGradient id="flowGradient3" x1="50%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.25" />
+            </linearGradient>
+          </defs>
+          
+          {/* Flowing Curve 1 */}
+          <motion.path
+            d="M0,400 Q200,200 400,400 T800,400 T1200,300"
+            stroke="url(#flowGradient1)"
+            strokeWidth="2"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.8 }}
+            transition={{ duration: 3, ease: "easeInOut" }}
+          />
+          
+          {/* Flowing Curve 2 */}
+          <motion.path
+            d="M0,300 Q300,500 600,300 T1200,400"
+            stroke="url(#flowGradient2)"
+            strokeWidth="1.5"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.6 }}
+            transition={{ duration: 4, ease: "easeInOut", delay: 0.5 }}
+          />
+          
+          {/* Flowing Curve 3 */}
+          <motion.path
+            d="M0,500 Q150,300 350,500 Q550,700 750,500 Q950,300 1200,500"
+            stroke="url(#flowGradient3)"
+            strokeWidth="1"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.4 }}
+            transition={{ duration: 5, ease: "easeInOut", delay: 1 }}
+          />
+          
+          {/* Additional flowing lines */}
+          <motion.path
+            d="M0,600 Q250,400 500,600 Q750,800 1000,600 T1200,650"
+            stroke="url(#flowGradient1)"
+            strokeWidth="1"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.3 }}
+            transition={{ duration: 6, ease: "easeInOut", delay: 1.5 }}
+          />
+          
+          <motion.path
+            d="M0,200 Q400,600 800,200 T1200,250"
+            stroke="url(#flowGradient2)"
+            strokeWidth="0.8"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.2 }}
+            transition={{ duration: 7, ease: "easeInOut", delay: 2 }}
+          />
+        </motion.svg>
+
+        {/* Animated Blobs Overlay */}
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
           animate={{
@@ -106,6 +189,29 @@ export default function LandingPage() {
             ease: "easeInOut"
           }}
         />
+        
+        {/* Floating Particles */}
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-primary/20 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [-20, 20, -20],
+              opacity: [0.2, 0.8, 0.2],
+              scale: [0.5, 1.5, 0.5],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
       </div>
 
       {/* Content */}

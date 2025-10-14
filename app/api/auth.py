@@ -171,8 +171,13 @@ async def signup(
     Create a new user account.
     
     Creates a new user with owner role and sets up authentication.
-    Note: Auto-deploys to production on commit.
     """
+    import uuid
+    import logging
+    from app.auth.security import get_password_hash
+    
+    logger = logging.getLogger(__name__)
+    
     # Check if user already exists
     existing_user = db.query(UserDB).filter(UserDB.email == request.email).first()
     if existing_user:
@@ -182,47 +187,38 @@ async def signup(
     if len(request.password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
     
-    # Create user
-    from app.auth.security import get_password_hash
-    import uuid
-    import logging
-    
-    logger = logging.getLogger(__name__)
-    
     try:
-        logger.info(f"Creating user with email: {request.email}")
+        logger.info(f"Creating user: {request.email}")
         user_id = f"user-{uuid.uuid4().hex[:8]}"
         password_hash = get_password_hash(request.password)
-        logger.info(f"Password hashed successfully for user_id: {user_id}")
         
         new_user = UserDB(
             user_id=user_id,
             email=request.email,
             password_hash=password_hash,
-            role="owner",  # New users are owners by default
+            role="owner",
             is_active=True
         )
         
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        logger.info(f"User created successfully: {user_id}")
+        logger.info(f"User created: {user_id}")
         
-        # Auto-login the user after signup
+        # Create access token
         token = create_access_token(
             user_id=new_user.user_id,
             email=new_user.email,
             role=new_user.role,
             tenant_ids=[]
         )
-        logger.info(f"Token created for user: {user_id}")
         
-        # Set cookie for UI clients
+        # Set cookie
         response.set_cookie(
             key="access_token",
             value=token,
             httponly=True,
-            secure=True,  # HTTPS only in production
+            secure=True,
             samesite="lax",
             max_age=COOKIE_MAX_AGE
         )
@@ -237,9 +233,9 @@ async def signup(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Signup error: {str(e)}", exc_info=True)
+        logger.error(f"Signup error: {type(e).__name__}: {str(e)}")
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Signup failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {type(e).__name__} - {str(e)}")
 
 
 @router.get("/signup/test")

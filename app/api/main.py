@@ -1034,52 +1034,30 @@ async def healthz():
     }
 
 
-@app.post("/api/admin/create-admin-user")
-async def create_admin_user(db: Session = Depends(get_db)):
-    """Temporary endpoint to create admin user for production."""
+@app.get("/api/admin/check-user")
+async def check_admin_user(db: Session = Depends(get_db)):
+    """Check if admin user exists."""
     try:
         from app.db.models import UserDB
-        from app.auth.security import get_password_hash
         
-        # Check if admin user already exists
+        # Check if admin user exists
         existing = db.query(UserDB).filter(UserDB.email == "admin@example.com").first()
         if existing:
             return {
-                "success": True,
-                "message": "Admin user already exists",
+                "exists": True,
                 "user_id": existing.user_id,
                 "email": existing.email,
-                "role": existing.role
+                "role": existing.role,
+                "is_active": existing.is_active
+            }
+        else:
+            return {
+                "exists": False,
+                "message": "Admin user not found"
             }
         
-        # Create new admin user
-        user_id = f"user-admin-{uuid.uuid4().hex[:8]}"
-        password_hash = get_password_hash("admin123")
-        
-        admin_user = UserDB(
-            user_id=user_id,
-            email="admin@example.com",
-            password_hash=password_hash,
-            role="owner",
-            is_active=True
-        )
-        
-        db.add(admin_user)
-        db.commit()
-        
-        return {
-            "success": True,
-            "message": "Admin user created successfully",
-            "user_id": user_id,
-            "email": "admin@example.com",
-            "password": "admin123",
-            "role": "owner"
-        }
-        
     except Exception as e:
-        db.rollback()
         return {
-            "success": False,
             "error": str(e),
             "error_type": type(e).__name__
         }

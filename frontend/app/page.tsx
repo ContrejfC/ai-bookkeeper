@@ -1,4 +1,7 @@
+"use client";
+
 import AppShell from "@/components/layout/AppShell";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
 
 const Metric = ({ label, value }: {label: string; value: string}) => (
@@ -10,7 +13,8 @@ const Metric = ({ label, value }: {label: string; value: string}) => (
 
 export default function Page() {
   return (
-    <AppShell>
+    <ProtectedRoute>
+      <AppShell>
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -39,6 +43,7 @@ export default function Page() {
         </Card>
       </div>
     </AppShell>
+    </ProtectedRoute>
   );
 }
 

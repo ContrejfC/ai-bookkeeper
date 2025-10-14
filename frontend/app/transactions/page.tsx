@@ -1,6 +1,7 @@
 "use client";
 
 import AppShell from "@/components/layout/AppShell";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Input, Select, SelectItem, Button, Modal, ModalContent, ModalHeader,
@@ -38,8 +39,9 @@ export default function TransactionsPage() {
   const selectedTxns = SAMPLE.filter(t => selected.has(t.id));
 
   return (
-    <AppShell>
-      <div className="flex flex-col gap-4">
+    <ProtectedRoute>
+      <AppShell>
+        <div className="flex flex-col gap-4">
         <div>
           <h1 className="text-3xl font-bold">Transactions</h1>
           <p className="text-sm opacity-60 mt-1">Review and approve transactions</p>
@@ -142,8 +144,9 @@ export default function TransactionsPage() {
             )}
           </ModalContent>
         </Modal>
-      </div>
-    </AppShell>
+        </div>
+      </AppShell>
+    </ProtectedRoute>
   );
 }
 

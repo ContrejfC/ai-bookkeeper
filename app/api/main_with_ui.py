@@ -33,8 +33,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Import API routes
+from app.api import auth as auth_api
+from app.api import tenants as tenants_api
+from app.api import admin_compliance as compliance_api
+
 # Import UI routes
 from app.ui import routes as ui_routes
+
+# Include API routes
+app.include_router(auth_api.router, tags=["auth"])
+app.include_router(tenants_api.router, tags=["tenants"])
+app.include_router(compliance_api.router, tags=["compliance"])
 
 # Include UI routes
 app.include_router(ui_routes.router, tags=["ui"])

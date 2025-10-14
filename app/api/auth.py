@@ -80,26 +80,24 @@ async def login(
     if not user.is_active:
         raise HTTPException(status_code=401, detail="User account is inactive")
     
-    # Authentication validation
-    if AUTH_MODE == "dev":
-        # Dev mode: allow magic link bypass
-        if request.magic_token != "dev":
+    # Authentication validation - support both magic token and password
+    if request.magic_token:
+        # Magic token mode (dev bypass)
+        if AUTH_MODE == "dev" and request.magic_token == "dev":
+            pass  # Allow
+        else:
             raise HTTPException(status_code=401, detail="Invalid magic token")
-    else:
-        # Prod mode: validate password
-        if not request.password:
-            raise HTTPException(status_code=401, detail="Password required")
-        
-        # TODO: Implement password hashing (bcrypt)
-        # For now, raise error if password_hash is None
+    elif request.password:
+        # Password mode
         if not user.password_hash:
             raise HTTPException(status_code=401, detail="Password authentication not configured")
         
-        # Placeholder password check (implement bcrypt in production)
-        # from passlib.hash import bcrypt
-        # if not bcrypt.verify(request.password, user.password_hash):
-        #     raise HTTPException(status_code=401, detail="Invalid credentials")
-        raise HTTPException(status_code=501, detail="Password auth not yet implemented")
+        # Verify password using bcrypt
+        from app.auth.passwords import verify_password
+        if not verify_password(request.password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+    else:
+        raise HTTPException(status_code=401, detail="Password or magic_token required")
     
     # Get user's assigned tenants (for staff)
     tenant_ids = []

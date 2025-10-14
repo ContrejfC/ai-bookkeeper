@@ -86,11 +86,12 @@ export function isAuthenticated(): boolean {
  * Login user with email and password (or magic token for dev mode)
  */
 export async function login(email: string, password?: string, magicToken?: string): Promise<LoginResponse> {
-  const response = await fetch('/api/auth/login', {
+  const response = await fetch('/api/auth/login?use_cookie=false', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include', // Include cookies if backend sets them
     body: JSON.stringify({
       email,
       password: password || undefined,
@@ -99,13 +100,19 @@ export async function login(email: string, password?: string, magicToken?: strin
   });
 
   if (!response.ok) {
-    throw new Error('Login failed');
+    const errorData = await response.json().catch(() => ({ detail: 'Login failed' }));
+    throw new Error(errorData.detail || 'Login failed');
   }
 
   const data: LoginResponse = await response.json();
   
-  if (data.success && data.token) {
-    setToken(data.token);
+  if (data.success) {
+    // Store token if provided (use_cookie=false mode)
+    if (data.token) {
+      setToken(data.token);
+    }
+    
+    // Store user info
     setUser({
       user_id: data.user_id,
       email: data.email,

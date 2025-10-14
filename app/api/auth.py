@@ -188,9 +188,7 @@ async def signup(
     
     try:
         user_id = f"user-{uuid.uuid4().hex[:8]}"
-        # Truncate password to 72 bytes for bcrypt compatibility
-        password_to_hash = request.password[:72]
-        password_hash = get_password_hash(password_to_hash)
+        password_hash = get_password_hash(request.password)
         
         new_user = UserDB(
             user_id=user_id,

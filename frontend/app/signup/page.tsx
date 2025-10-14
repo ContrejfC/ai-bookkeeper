@@ -88,94 +88,159 @@ export default function SignupPage() {
             <p className="text-sm text-slate-400">Start automating your bookkeeping</p>
           </CardHeader>
 
-        <Divider />
+          <Divider className="bg-emerald-500/20" />
 
-        <form onSubmit={handleSubmit}>
-          <CardBody className="gap-4 py-6">
-            {error && (
-              <div className="px-4 py-3 rounded-xl bg-danger/10 text-danger text-sm">
-                {error}
-              </div>
-            )}
+          <form onSubmit={handleSubmit}>
+            <CardBody className="gap-4 py-6">
+              {error && (
+                <motion.div 
+                  className="px-4 py-3 rounded-xl bg-red-500/10 text-red-400 text-sm border border-red-500/20"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {error}
+                </motion.div>
+              )}
 
-            <Input
-              label="Full Name"
-              type="text"
-              placeholder="John Doe"
-              value={fullName}
-              onValueChange={setFullName}
-              isRequired
-              size="lg"
-              variant="bordered"
-              autoComplete="name"
-            />
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Input
+                  label="Full Name"
+                  type="text"
+                  placeholder="John Doe"
+                  value={fullName}
+                  onValueChange={setFullName}
+                  isRequired
+                  size="lg"
+                  variant="bordered"
+                  autoComplete="name"
+                  classNames={{
+                    input: "bg-slate-800/50 text-slate-200",
+                    inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
+                    label: "text-slate-300"
+                  }}
+                />
+              </motion.div>
 
-            <Input
-              label="Email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onValueChange={setEmail}
-              isRequired
-              size="lg"
-              variant="bordered"
-              autoComplete="email"
-            />
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Input
+                  label="Email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onValueChange={setEmail}
+                  isRequired
+                  size="lg"
+                  variant="bordered"
+                  autoComplete="email"
+                  classNames={{
+                    input: "bg-slate-800/50 text-slate-200",
+                    inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
+                    label: "text-slate-300"
+                  }}
+                />
+              </motion.div>
 
-            <Input
-              label="Password"
-              type="password"
-              placeholder="At least 8 characters"
-              value={password}
-              onValueChange={setPassword}
-              isRequired
-              size="lg"
-              variant="bordered"
-              autoComplete="new-password"
-              description="Minimum 8 characters"
-            />
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="At least 8 characters"
+                  value={password}
+                  onValueChange={setPassword}
+                  isRequired
+                  size="lg"
+                  variant="bordered"
+                  autoComplete="new-password"
+                  description="Minimum 8 characters"
+                  classNames={{
+                    input: "bg-slate-800/50 text-slate-200",
+                    inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
+                    label: "text-slate-300",
+                    description: "text-slate-400"
+                  }}
+                />
+              </motion.div>
 
-            <Input
-              label="Confirm Password"
-              type="password"
-              placeholder="Re-enter your password"
-              value={confirmPassword}
-              onValueChange={setConfirmPassword}
-              isRequired
-              size="lg"
-              variant="bordered"
-              autoComplete="new-password"
-            />
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Input
+                  label="Confirm Password"
+                  type="password"
+                  placeholder="Re-enter your password"
+                  value={confirmPassword}
+                  onValueChange={setConfirmPassword}
+                  isRequired
+                  size="lg"
+                  variant="bordered"
+                  autoComplete="new-password"
+                  classNames={{
+                    input: "bg-slate-800/50 text-slate-200",
+                    inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
+                    label: "text-slate-300"
+                  }}
+                />
+              </motion.div>
 
-            <Checkbox
-              isSelected={acceptedTerms}
-              onValueChange={setAcceptedTerms}
-              size="sm"
-            >
-              <span className="text-sm">
-                I agree to the{" "}
-                <Link href="#" size="sm">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="#" size="sm">
-                  Privacy Policy
-                </Link>
-              </span>
-            </Checkbox>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <Checkbox
+                  isSelected={acceptedTerms}
+                  onValueChange={setAcceptedTerms}
+                  size="sm"
+                  classNames={{
+                    wrapper: "before:border-emerald-500/30",
+                    icon: "text-emerald-500"
+                  }}
+                >
+                  <span className="text-sm text-slate-300">
+                    I agree to the{" "}
+                    <Link href="#" size="sm" className="text-emerald-400 hover:text-emerald-300">
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="#" size="sm" className="text-emerald-400 hover:text-emerald-300">
+                      Privacy Policy
+                    </Link>
+                  </span>
+                </Checkbox>
+              </motion.div>
 
-            <Button
-              type="submit"
-              color="primary"
-              size="lg"
-              className="w-full font-semibold"
-              isLoading={loading}
-              isDisabled={!email || !password || !confirmPassword || !fullName || !acceptedTerms}
-            >
-              {loading ? "Creating account..." : "Create account"}
-            </Button>
-          </CardBody>
-        </form>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full font-semibold bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300"
+                  isLoading={loading}
+                  isDisabled={!email || !password || !confirmPassword || !fullName || !acceptedTerms}
+                >
+                  {loading ? "Creating account..." : "Create account"}
+                </Button>
+              </motion.div>
+            </CardBody>
+          </form>
 
           <Divider className="bg-emerald-500/20" />
 

@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="AI Bookkeeper",
     description="AI-powered bookkeeping with automated journal entry posting",
-    version="0.2.0-beta"
+    version="0.2.1-beta"
 )
 
 # ============================================================================

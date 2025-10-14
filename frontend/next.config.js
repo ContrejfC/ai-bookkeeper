@@ -5,7 +5,9 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*', // Proxy to FastAPI backend
+        destination: process.env.NODE_ENV === 'production' 
+          ? 'https://ai-bookkeeper-app.onrender.com/api/:path*'
+          : 'http://localhost:8000/api/:path*',
       },
     ];
   },

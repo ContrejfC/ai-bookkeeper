@@ -171,6 +171,7 @@ async def signup(
     Create a new user account.
     
     Creates a new user with owner role and sets up authentication.
+    Note: Auto-deploys to production on commit.
     """
     try:
         # Check if user already exists

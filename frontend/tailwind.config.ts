@@ -23,8 +23,8 @@ const config: Config = {
     themes: {
       light: {
         colors: {
-          primary: { DEFAULT: "#0ea5e9" },   // sky-500
-          success: { DEFAULT: "#16a34a" },   // green-600
+          primary: { DEFAULT: "#10b981" },   // emerald-500
+          success: { DEFAULT: "#059669" },   // emerald-600
           warning: { DEFAULT: "#f59e0b" },   // amber-500
           danger:  { DEFAULT: "#ef4444" }    // red-500
         },
@@ -34,10 +34,13 @@ const config: Config = {
       },
       dark: {
         colors: {
-          primary: { DEFAULT: "#0ea5e9" },
-          success: { DEFAULT: "#22c55e" },
-          warning: { DEFAULT: "#fbbf24" },
-          danger:  { DEFAULT: "#f87171" }
+          primary: { DEFAULT: "#10b981" },   // emerald-500
+          success: { DEFAULT: "#059669" },   // emerald-600
+          warning: { DEFAULT: "#fbbf24" },   // amber-400
+          danger:  { DEFAULT: "#f87171" }    // red-400
+        },
+        layout: {
+          radius: { small: "0.375rem", medium: "0.75rem", large: "1rem" }
         }
       }
     }

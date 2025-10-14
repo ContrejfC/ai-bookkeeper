@@ -13,6 +13,8 @@ import {
   Link,
 } from "@nextui-org/react";
 import { login } from "@/lib/auth";
+import { motion } from "framer-motion";
+import FlowingBackground from "@/components/background/FlowingBackground";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -50,96 +52,161 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-success/10 p-4">
-      <Card className="w-full max-w-md rounded-2xl">
-        <CardHeader className="flex flex-col gap-2 items-center pt-8 pb-4">
-          <div className="text-4xl mb-2">📒</div>
-          <h1 className="text-2xl font-bold">AI Bookkeeper</h1>
-          <p className="text-sm opacity-60">Sign in to your account</p>
-        </CardHeader>
-
-        <Divider />
-
-        <form onSubmit={handleSubmit}>
-          <CardBody className="gap-4 py-6">
-            {error && (
-              <div className="px-4 py-3 rounded-xl bg-danger/10 text-danger text-sm">
-                {error}
-              </div>
-            )}
-
-            <Input
-              label="Email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onValueChange={setEmail}
-              isRequired
-              size="lg"
-              variant="bordered"
-              autoComplete="email"
-            />
-
-            {!useMagicLink && (
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onValueChange={setPassword}
-                isRequired={!useMagicLink}
-                size="lg"
-                variant="bordered"
-                autoComplete="current-password"
-              />
-            )}
-
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={useMagicLink}
-                  onChange={(e) => setUseMagicLink(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <span className="opacity-60">
-                  Dev mode (magic link)
-                </span>
-              </label>
-              {!useMagicLink && (
-                <Link href="#" size="sm" className="opacity-60">
-                  Forgot password?
-                </Link>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              color="primary"
-              size="lg"
-              className="w-full font-semibold"
-              isLoading={loading}
-              isDisabled={!email || (!useMagicLink && !password)}
+    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 overflow-hidden">
+      <FlowingBackground />
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 w-full max-w-md"
+      >
+        <Card className="w-full rounded-2xl bg-slate-900/90 backdrop-blur-xl border border-emerald-500/20 shadow-2xl shadow-emerald-500/10">
+          <CardHeader className="flex flex-col gap-2 items-center pt-8 pb-4">
+            <motion.div 
+              className="text-4xl mb-2"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              {loading ? "Signing in..." : "Sign in"}
-            </Button>
-          </CardBody>
-        </form>
+              📒
+            </motion.div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              AI Bookkeeper
+            </h1>
+            <p className="text-sm text-slate-400">Sign in to your account</p>
+          </CardHeader>
 
-        <Divider />
+          <Divider className="bg-emerald-500/20" />
 
-        <CardFooter className="flex flex-col gap-2 py-4">
-          <p className="text-sm opacity-60 text-center">
-            Don&apos;t have an account?{" "}
-            <Link href="#" size="sm">
-              Contact your administrator
-            </Link>
-          </p>
-          <p className="text-xs opacity-40 text-center mt-2">
-            By signing in, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </CardFooter>
-      </Card>
+          <form onSubmit={handleSubmit}>
+            <CardBody className="gap-4 py-6">
+              {error && (
+                <motion.div 
+                  className="px-4 py-3 rounded-xl bg-red-500/10 text-red-400 text-sm border border-red-500/20"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {error}
+                </motion.div>
+              )}
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Input
+                  label="Email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onValueChange={setEmail}
+                  isRequired
+                  size="lg"
+                  variant="bordered"
+                  autoComplete="email"
+                  classNames={{
+                    input: "bg-slate-800/50 text-slate-200",
+                    inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
+                    label: "text-slate-300"
+                  }}
+                />
+              </motion.div>
+
+              {!useMagicLink && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <Input
+                    label="Password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onValueChange={setPassword}
+                    isRequired={!useMagicLink}
+                    size="lg"
+                    variant="bordered"
+                    autoComplete="current-password"
+                    classNames={{
+                      input: "bg-slate-800/50 text-slate-200",
+                      inputWrapper: "bg-slate-800/50 border-emerald-500/30 hover:border-emerald-400/50 focus-within:border-emerald-400",
+                      label: "text-slate-300"
+                    }}
+                  />
+                </motion.div>
+              )}
+
+              <motion.div 
+                className="flex items-center justify-between text-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={useMagicLink}
+                    onChange={(e) => setUseMagicLink(e.target.checked)}
+                    className="w-4 h-4 rounded border-emerald-500/30 bg-slate-800 text-emerald-500 focus:ring-emerald-500/50"
+                  />
+                  <span className="text-slate-400">
+                    Dev mode (magic link)
+                  </span>
+                </label>
+                {!useMagicLink && (
+                  <Link href="#" size="sm" className="text-emerald-400 hover:text-emerald-300">
+                    Forgot password?
+                  </Link>
+                )}
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full font-semibold bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300"
+                  isLoading={loading}
+                  isDisabled={!email || (!useMagicLink && !password)}
+                >
+                  {loading ? "Signing in..." : "Sign in"}
+                </Button>
+              </motion.div>
+            </CardBody>
+          </form>
+
+          <Divider className="bg-emerald-500/20" />
+
+          <CardFooter className="flex flex-col gap-2 py-4">
+            <motion.p 
+              className="text-sm text-slate-400 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              Don&apos;t have an account?{" "}
+              <Link href="#" size="sm" className="text-emerald-400 hover:text-emerald-300">
+                Contact your administrator
+              </Link>
+            </motion.p>
+            <motion.p 
+              className="text-xs text-slate-500 text-center mt-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              By signing in, you agree to our Terms of Service and Privacy Policy
+            </motion.p>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </div>
   );
 }

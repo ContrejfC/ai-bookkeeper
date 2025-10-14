@@ -13,6 +13,8 @@ import {
   Link,
   Checkbox,
 } from "@nextui-org/react";
+import { motion } from "framer-motion";
+import FlowingBackground from "@/components/background/FlowingBackground";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -61,13 +63,30 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-success/10 p-4">
-      <Card className="w-full max-w-md rounded-2xl">
-        <CardHeader className="flex flex-col gap-2 items-center pt-8 pb-4">
-          <div className="text-4xl mb-2">📒</div>
-          <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="text-sm opacity-60">Start automating your bookkeeping</p>
-        </CardHeader>
+    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 overflow-hidden">
+      <FlowingBackground />
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 w-full max-w-md"
+      >
+        <Card className="w-full rounded-2xl bg-slate-900/90 backdrop-blur-xl border border-emerald-500/20 shadow-2xl shadow-emerald-500/10">
+          <CardHeader className="flex flex-col gap-2 items-center pt-8 pb-4">
+            <motion.div 
+              className="text-4xl mb-2"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              📒
+            </motion.div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              Create your account
+            </h1>
+            <p className="text-sm text-slate-400">Start automating your bookkeeping</p>
+          </CardHeader>
 
         <Divider />
 

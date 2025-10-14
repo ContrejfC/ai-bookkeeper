@@ -8,6 +8,8 @@ import {
   ModalBody, ModalFooter, useDisclosure, Chip
 } from "@nextui-org/react";
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { TransactionIcon } from "@/components/icons";
 
 type Txn = {
   id: string; date: string; payee: string; amount: number;
@@ -41,44 +43,86 @@ export default function TransactionsPage() {
   return (
     <ProtectedRoute>
       <AppShell>
-        <div className="flex flex-col gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Transactions</h1>
-          <p className="text-sm opacity-60 mt-1">Review and approve transactions</p>
-        </div>
-
-        <div className="flex flex-wrap gap-2 items-center">
-          <Input
-            size="sm"
-            placeholder="Search payee…"
-            value={q}
-            onValueChange={setQ}
-            className="w-60"
-          />
-          <Select
-            size="sm"
-            selectedKeys={[status]}
-            onChange={(e) => setStatus((e.target.value as any) || "all")}
-            labelPlacement="outside-left"
-            className="w-44"
-            label="Status"
+        <div className="space-y-8">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            {["all","proposed","approved","posted"].map(s=>(
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </Select>
-          <Button color="primary" size="sm" isDisabled={!canApprove} onPress={approve.onOpen}>
-            Approve & Post ({selected.size})
-          </Button>
-        </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              Transactions
+            </h1>
+            <p className="text-slate-400 mt-2">Review and approve AI-categorized transactions</p>
+          </motion.div>
 
-        <Table
-          aria-label="Transactions"
-          selectionMode="multiple"
-          selectedKeys={selected}
-          onSelectionChange={(keys)=> setSelected(new Set(keys as Set<string>))}
-          className="rounded-2xl"
-        >
+          {/* Filters */}
+          <motion.div 
+            className="flex flex-wrap gap-4 items-center p-4 rounded-2xl bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-emerald-500/20"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <div className="flex items-center gap-2">
+              <TransactionIcon />
+              <span className="text-sm font-medium text-slate-300">Filters</span>
+            </div>
+            <Input
+              size="sm"
+              placeholder="Search payee…"
+              value={q}
+              onValueChange={setQ}
+              className="w-60"
+              classNames={{
+                input: "bg-slate-800/50 border-emerald-500/20",
+                inputWrapper: "bg-slate-800/50 border-emerald-500/20 hover:border-emerald-400/40"
+              }}
+            />
+            <Select
+              size="sm"
+              selectedKeys={[status]}
+              onChange={(e) => setStatus((e.target.value as any) || "all")}
+              labelPlacement="outside-left"
+              className="w-44"
+              label="Status"
+              classNames={{
+                trigger: "bg-slate-800/50 border-emerald-500/20 hover:border-emerald-400/40",
+                value: "text-slate-200"
+              }}
+            >
+              {["all","proposed","approved","posted"].map(s=>(
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </Select>
+            <Button 
+              color="primary" 
+              size="sm" 
+              isDisabled={!canApprove} 
+              onPress={approve.onOpen}
+              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white disabled:opacity-50"
+            >
+              Approve & Post ({selected.size})
+            </Button>
+          </motion.div>
+
+          {/* Transactions Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Table
+              aria-label="Transactions"
+              selectionMode="multiple"
+              selectedKeys={selected}
+              onSelectionChange={(keys)=> setSelected(new Set(keys as Set<string>))}
+              className="rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-emerald-500/20"
+              classNames={{
+                wrapper: "bg-slate-800/30",
+                thead: "bg-slate-900/50",
+                tbody: "bg-slate-800/30"
+              }}
+            >
           <TableHeader>
             <TableColumn>Date</TableColumn>
             <TableColumn>Payee</TableColumn>
@@ -92,11 +136,20 @@ export default function TransactionsPage() {
               <TableRow key={t.id}>
                 <TableCell>{t.date}</TableCell>
                 <TableCell>{t.payee}</TableCell>
-                <TableCell className={t.amount < 0 ? "text-danger" : "text-success"}>
+                <TableCell className={t.amount < 0 ? "text-red-400" : "text-emerald-400 font-semibold"}>
                   {t.amount.toLocaleString(undefined, { style: "currency", currency: "USD" })}
                 </TableCell>
                 <TableCell>
-                  <Chip size="sm" color={t.status === "proposed" ? "warning" : t.status === "approved" ? "primary" : "success"}>
+                  <Chip 
+                    size="sm" 
+                    className={
+                      t.status === "proposed" 
+                        ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" 
+                        : t.status === "approved" 
+                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                        : "bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
+                    }
+                  >
                     {t.status}
                   </Chip>
                 </TableCell>
@@ -105,9 +158,22 @@ export default function TransactionsPage() {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+            </Table>
+          </motion.div>
 
-        <Modal isOpen={approve.isOpen} onOpenChange={approve.onOpenChange} placement="center">
+          {/* Approve Modal */}
+          <Modal 
+            isOpen={approve.isOpen} 
+            onOpenChange={approve.onOpenChange} 
+            placement="center"
+            classNames={{
+              backdrop: "bg-black/80 backdrop-blur-sm",
+              base: "bg-slate-900 border border-emerald-500/20",
+              header: "border-b border-emerald-500/20",
+              body: "bg-slate-800/50",
+              footer: "border-t border-emerald-500/20"
+            }}
+          >
           <ModalContent>
             {(onClose)=>(
               <>
@@ -131,13 +197,22 @@ export default function TransactionsPage() {
                   </p>
                 </ModalBody>
                 <ModalFooter>
-                  <Button variant="light" onPress={onClose}>Cancel</Button>
-                  <Button color="primary" onPress={() => {
-                    alert(`Would approve ${selected.size} transactions`);
-                    setSelected(new Set());
-                    onClose();
-                  }}>
-                    Confirm
+                  <Button 
+                    variant="light" 
+                    onPress={onClose}
+                    className="text-slate-400 hover:text-slate-200"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white"
+                    onPress={() => {
+                      alert(`Would approve ${selected.size} transactions`);
+                      setSelected(new Set());
+                      onClose();
+                    }}
+                  >
+                    Confirm Approval
                   </Button>
                 </ModalFooter>
               </>

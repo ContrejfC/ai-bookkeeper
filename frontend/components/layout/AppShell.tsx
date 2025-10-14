@@ -12,7 +12,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <aside className="hidden lg:flex flex-col gap-2 p-4 border-r border-divider">
         <div className="text-sm font-semibold opacity-60">AI Bookkeeper</div>
         <nav className="flex flex-col gap-1">
-          <Link href="/" color="foreground">Dashboard</Link>
+          <Link href="/dashboard" color="foreground">Dashboard</Link>
           <Link href="/transactions" color="foreground">Transactions</Link>
           <Link href="/vendors" color="foreground">Vendors</Link>
           <Link href="/compliance" color="foreground">Compliance</Link>

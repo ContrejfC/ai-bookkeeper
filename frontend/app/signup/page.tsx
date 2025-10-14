@@ -63,15 +63,34 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 overflow-hidden">
+    <div className="min-h-screen relative flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 overflow-hidden">
       <FlowingBackground />
       
+      {/* Logo Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10 w-full max-w-md"
+        className="absolute top-6 left-6 z-20"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
       >
+        <Link 
+          href="/" 
+          className="flex items-center gap-2 text-emerald-400 hover:opacity-80 transition-opacity"
+        >
+          <span className="text-2xl">📒</span>
+          <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            AI Bookkeeper
+          </span>
+        </Link>
+      </motion.div>
+
+      <div className="flex-1 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 w-full max-w-md"
+        >
         <Card className="w-full rounded-2xl bg-slate-900/90 backdrop-blur-xl border border-emerald-500/20 shadow-2xl shadow-emerald-500/10">
           <CardHeader className="flex flex-col gap-2 items-center pt-8 pb-4">
             <motion.div 
@@ -258,7 +277,8 @@ export default function SignupPage() {
             </motion.p>
           </CardFooter>
         </Card>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }

@@ -1061,8 +1061,7 @@ async def create_admin_user(db: Session = Depends(get_db)):
             email="admin@example.com",
             password_hash=password_hash,
             role="owner",
-            is_active=True,
-            created_at=datetime.utcnow()
+            is_active=True
         )
         
         db.add(admin_user)
@@ -1079,5 +1078,9 @@ async def create_admin_user(db: Session = Depends(get_db)):
         
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Error creating admin user: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
 

@@ -1034,31 +1034,4 @@ async def healthz():
     }
 
 
-@app.get("/api/admin/check-user")
-async def check_admin_user(db: Session = Depends(get_db)):
-    """Check if admin user exists."""
-    try:
-        from app.db.models import UserDB
-        
-        # Check if admin user exists
-        existing = db.query(UserDB).filter(UserDB.email == "admin@example.com").first()
-        if existing:
-            return {
-                "exists": True,
-                "user_id": existing.user_id,
-                "email": existing.email,
-                "role": existing.role,
-                "is_active": existing.is_active
-            }
-        else:
-            return {
-                "exists": False,
-                "message": "Admin user not found"
-            }
-        
-    except Exception as e:
-        return {
-            "error": str(e),
-            "error_type": type(e).__name__
-        }
 

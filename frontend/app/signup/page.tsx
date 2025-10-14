@@ -49,10 +49,33 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // TODO: Implement signup API endpoint
-      // For now, show placeholder message
-      alert("Signup functionality coming soon! For now, use Dev@dev.com / Dev to login.");
-      router.push("/login");
+      // Call signup API
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+          full_name: fullName,
+          company_name: null
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Signup failed');
+      }
+
+      if (data.success) {
+        // Signup successful - user is automatically logged in
+        router.push('/');
+      } else {
+        throw new Error(data.message || 'Signup failed');
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Signup failed. Please try again."

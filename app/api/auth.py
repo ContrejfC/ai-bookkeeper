@@ -36,6 +36,14 @@ class LoginRequest(BaseModel):
     magic_token: Optional[str] = None  # For dev mode bypass
 
 
+class SignupRequest(BaseModel):
+    """Signup request body."""
+    email: EmailStr
+    password: str
+    full_name: str
+    company_name: Optional[str] = None
+
+
 class LoginResponse(BaseModel):
     """Login response."""
     success: bool
@@ -43,6 +51,15 @@ class LoginResponse(BaseModel):
     email: str
     role: str
     token: Optional[str] = None  # Only returned for API clients (non-cookie)
+
+
+class SignupResponse(BaseModel):
+    """Signup response."""
+    success: bool
+    user_id: str
+    email: str
+    role: str
+    message: str
 
 
 class UserInfo(BaseModel):
@@ -141,6 +158,72 @@ async def login(
         email=user.email,
         role=user.role,
         token=token if not use_cookie else None
+    )
+
+
+@router.post("/signup", response_model=SignupResponse)
+async def signup(
+    request: SignupRequest,
+    response: Response,
+    db: Session = Depends(get_db)
+):
+    """
+    Create a new user account.
+    
+    Creates a new user with owner role and sets up authentication.
+    """
+    # Check if user already exists
+    existing_user = db.query(UserDB).filter(UserDB.email == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User with this email already exists")
+    
+    # Validate password strength
+    if len(request.password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    
+    # Create user
+    from app.auth.security import get_password_hash
+    import uuid
+    
+    user_id = f"user-{uuid.uuid4().hex[:8]}"
+    password_hash = get_password_hash(request.password)
+    
+    new_user = UserDB(
+        user_id=user_id,
+        email=request.email,
+        password_hash=password_hash,
+        role="owner",  # New users are owners by default
+        is_active=True,
+        created_at=datetime.utcnow()
+    )
+    
+    db.add(new_user)
+    db.commit()
+    
+    # Auto-login the user after signup
+    token = create_access_token(
+        user_id=new_user.user_id,
+        email=new_user.email,
+        role=new_user.role,
+        tenant_ids=[]
+    )
+    
+    # Set cookie for UI clients
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=True,  # HTTPS only in production
+        samesite="lax",
+        max_age=COOKIE_MAX_AGE
+    )
+    
+    return SignupResponse(
+        success=True,
+        user_id=new_user.user_id,
+        email=new_user.email,
+        role=new_user.role,
+        message="Account created successfully! Welcome to AI Bookkeeper."
     )
 
 

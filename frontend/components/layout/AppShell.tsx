@@ -89,11 +89,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main */}
       <main className="flex flex-col bg-gradient-to-br from-slate-900/50 to-slate-800/30">
         <Navbar maxWidth="full" className="border-b border-divider bg-slate-900/80 backdrop-blur-sm">
-          <NavbarBrand className="text-emerald-400">
-            <span className="text-2xl">📒</span>
-            <span className="ml-2 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent font-bold">
-              AI Bookkeeper
-            </span>
+          <NavbarBrand>
+            <Link 
+              href="/" 
+              className="flex items-center gap-2 text-emerald-400 hover:opacity-80 transition-opacity"
+            >
+              <span className="text-2xl">📒</span>
+              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent font-bold">
+                AI Bookkeeper
+              </span>
+            </Link>
           </NavbarBrand>
           <NavbarContent justify="end">
             <NavbarItem><ThemeToggle /></NavbarItem>

@@ -17,39 +17,128 @@ const staggerContainer = {
   }
 };
 
+// SVG Icon Components
+const AIIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12">
+    <defs>
+      <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#10b981" />
+        <stop offset="100%" stopColor="#06b6d4" />
+      </linearGradient>
+    </defs>
+    <rect x="3" y="4" width="18" height="12" rx="2" fill="url(#aiGradient)" />
+    <rect x="5" y="7" width="14" height="6" rx="1" fill="white" opacity="0.9" />
+    <circle cx="8" cy="10" r="1" fill="url(#aiGradient)" />
+    <circle cx="16" cy="10" r="1" fill="url(#aiGradient)" />
+    <path d="M8 12h8" stroke="url(#aiGradient)" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12">
+    <defs>
+      <linearGradient id="searchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#059669" />
+        <stop offset="100%" stopColor="#0891b2" />
+      </linearGradient>
+    </defs>
+    <circle cx="11" cy="11" r="8" fill="url(#searchGradient)" />
+    <path d="m21 21-4.35-4.35" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="11" cy="11" r="3" fill="white" opacity="0.8" />
+  </svg>
+);
+
+const AutomationIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12">
+    <defs>
+      <linearGradient id="autoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#06b6d4" />
+        <stop offset="100%" stopColor="#0284c7" />
+      </linearGradient>
+    </defs>
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="url(#autoGradient)" />
+    <circle cx="12" cy="12" r="2" fill="white" opacity="0.9" />
+  </svg>
+);
+
+const AnalyticsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12">
+    <defs>
+      <linearGradient id="analyticsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#10b981" />
+        <stop offset="100%" stopColor="#059669" />
+      </linearGradient>
+    </defs>
+    <rect x="3" y="16" width="4" height="5" rx="1" fill="url(#analyticsGradient)" />
+    <rect x="8" y="12" width="4" height="9" rx="1" fill="url(#analyticsGradient)" />
+    <rect x="13" y="8" width="4" height="13" rx="1" fill="url(#analyticsGradient)" />
+    <rect x="18" y="4" width="4" height="17" rx="1" fill="url(#analyticsGradient)" />
+    <path d="M5 16h14" stroke="white" strokeWidth="1" opacity="0.6" />
+  </svg>
+);
+
+const SecurityIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12">
+    <defs>
+      <linearGradient id="securityGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#059669" />
+        <stop offset="100%" stopColor="#0891b2" />
+      </linearGradient>
+    </defs>
+    <path d="M12 2l8 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V6l8-4z" fill="url(#securityGradient)" />
+    <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const IntegrationIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12">
+    <defs>
+      <linearGradient id="integrationGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#0891b2" />
+        <stop offset="100%" stopColor="#0284c7" />
+      </linearGradient>
+    </defs>
+    <rect x="2" y="6" width="20" height="12" rx="2" fill="url(#integrationGradient)" />
+    <circle cx="8" cy="12" r="2" fill="white" opacity="0.9" />
+    <circle cx="16" cy="12" r="2" fill="white" opacity="0.9" />
+    <path d="M10 12h4" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    <path d="M3 9h3M3 15h3M18 9h3M18 15h3" stroke="white" strokeWidth="1" opacity="0.6" />
+  </svg>
+);
+
 const features = [
   {
-    icon: "🤖",
+    icon: AIIcon,
     title: "AI-Powered",
     description: "Machine learning categorizes transactions with calibrated confidence scores",
     gradient: "from-emerald-500/10 to-teal-500/10"
   },
   {
-    icon: "🔍",
+    icon: SearchIcon,
     title: "Explainable",
     description: "Every decision includes reasoning - know why the AI chose each category",
     gradient: "from-teal-500/10 to-cyan-500/10"
   },
   {
-    icon: "⚡",
+    icon: AutomationIcon,
     title: "Automated",
     description: "Automatic posting with safety thresholds and human-in-the-loop review",
     gradient: "from-cyan-500/10 to-blue-500/10"
   },
   {
-    icon: "📊",
+    icon: AnalyticsIcon,
     title: "Real-Time Insights",
     description: "Live metrics, automation rates, and financial reports at your fingertips",
     gradient: "from-green-500/10 to-emerald-500/10"
   },
   {
-    icon: "🔐",
+    icon: SecurityIcon,
     title: "Audit Ready",
     description: "Complete decision audit log, SOC 2 compliance, and evidence automation",
     gradient: "from-emerald-600/10 to-teal-600/10"
   },
   {
-    icon: "🚀",
+    icon: IntegrationIcon,
     title: "Integrations",
     description: "QuickBooks, Xero, and more - export to your favorite accounting software",
     gradient: "from-teal-600/10 to-cyan-600/10"
@@ -418,11 +507,11 @@ export default function LandingPage() {
                   <Card className={`rounded-2xl border border-divider/50 shadow-lg hover:shadow-2xl transition-shadow bg-gradient-to-br ${feature.gradient} backdrop-blur-sm h-full`}>
                     <CardBody className="p-6">
                       <motion.div
-                        className="text-5xl mb-4"
-                        whileHover={{ scale: 1.2, rotate: 10 }}
+                        className="mb-4 flex justify-center"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 400 }}
                       >
-                        {feature.icon}
+                        <feature.icon />
                       </motion.div>
                       <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                       <p className="text-foreground/60 text-sm leading-relaxed">

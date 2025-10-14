@@ -22,19 +22,19 @@ const features = [
     icon: "🤖",
     title: "AI-Powered",
     description: "Machine learning categorizes transactions with calibrated confidence scores",
-    gradient: "from-blue-500/10 to-cyan-500/10"
+    gradient: "from-emerald-500/10 to-teal-500/10"
   },
   {
     icon: "🔍",
     title: "Explainable",
     description: "Every decision includes reasoning - know why the AI chose each category",
-    gradient: "from-purple-500/10 to-pink-500/10"
+    gradient: "from-teal-500/10 to-cyan-500/10"
   },
   {
     icon: "⚡",
     title: "Automated",
     description: "Automatic posting with safety thresholds and human-in-the-loop review",
-    gradient: "from-yellow-500/10 to-orange-500/10"
+    gradient: "from-cyan-500/10 to-blue-500/10"
   },
   {
     icon: "📊",
@@ -46,13 +46,13 @@ const features = [
     icon: "🔐",
     title: "Audit Ready",
     description: "Complete decision audit log, SOC 2 compliance, and evidence automation",
-    gradient: "from-red-500/10 to-rose-500/10"
+    gradient: "from-emerald-600/10 to-teal-600/10"
   },
   {
     icon: "🚀",
     title: "Integrations",
     description: "QuickBooks, Xero, and more - export to your favorite accounting software",
-    gradient: "from-indigo-500/10 to-violet-500/10"
+    gradient: "from-teal-600/10 to-cyan-600/10"
   }
 ];
 
@@ -65,7 +65,7 @@ const stats = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-success/5 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-500/5 via-background to-cyan-500/5 relative overflow-hidden">
       {/* Flowing Pattern Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Animated SVG Pattern */}
@@ -80,18 +80,18 @@ export default function LandingPage() {
         >
           <defs>
             <linearGradient id="flowGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.3" />
-              <stop offset="50%" stopColor="#ec4899" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+              <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.3" />
             </linearGradient>
             <linearGradient id="flowGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2" />
-              <stop offset="50%" stopColor="#ef4444" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#059669" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="#0891b2" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#0284c7" stopOpacity="0.25" />
             </linearGradient>
             <linearGradient id="flowGradient3" x1="50%" y1="0%" x2="50%" y2="100%">
-              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#34d399" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.3" />
             </linearGradient>
           </defs>
           
@@ -152,7 +152,7 @@ export default function LandingPage() {
 
         {/* Animated Blobs Overlay */}
         <motion.div
-          className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
+          className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -164,7 +164,7 @@ export default function LandingPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-success/10 rounded-full blur-3xl"
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.6, 0.3],
@@ -177,7 +177,7 @@ export default function LandingPage() {
           }}
         />
         <motion.div
-          className="absolute top-1/2 left-1/2 w-96 h-96 bg-warning/5 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"
           animate={{
             x: [-100, 100, -100],
             y: [-50, 50, -50],
@@ -194,7 +194,7 @@ export default function LandingPage() {
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary/20 rounded-full"
+            className="absolute w-1 h-1 bg-emerald-500/20 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -230,7 +230,7 @@ export default function LandingPage() {
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 <span className="text-2xl">📒</span>
-                <span className="text-xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
                   AI Bookkeeper
                 </span>
               </motion.div>
@@ -288,7 +288,7 @@ export default function LandingPage() {
               transition={{ delay: 0.2 }}
               className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6"
             >
-              <span className="bg-gradient-to-r from-primary via-success to-warning bg-clip-text text-transparent animate-gradient bg-300%">
+              <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent animate-gradient bg-300%">
                 AI Bookkeeper
               </span>
             </motion.h1>
@@ -313,7 +313,7 @@ export default function LandingPage() {
                 href="/signup"
                 color="primary"
                 size="lg"
-                className="text-lg px-8 py-6 font-semibold shadow-2xl shadow-primary/30 hover:shadow-3xl hover:shadow-primary/40 hover:scale-110 transition-all"
+                className="text-lg px-8 py-6 font-semibold shadow-2xl shadow-emerald-500/30 hover:shadow-3xl hover:shadow-emerald-500/40 hover:scale-110 transition-all"
               >
                 Get Started Free
               </Button>
@@ -343,7 +343,7 @@ export default function LandingPage() {
                   transition={{ delay: 0.8 + i * 0.1 }}
                   className="flex items-center gap-2"
                 >
-                  <span className="text-success">✓</span>
+                  <span className="text-emerald-500">✓</span>
                   <span>{item}</span>
                 </motion.div>
               ))}
@@ -368,7 +368,7 @@ export default function LandingPage() {
                       transition={{ delay: 1.2 + i * 0.1, type: "spring" }}
                       className="text-center"
                     >
-                      <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent mb-2">
+                      <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent mb-2">
                         {stat.value}
                       </div>
                       <div className="text-sm text-foreground/60">{stat.label}</div>
@@ -463,7 +463,7 @@ export default function LandingPage() {
                 >
                   <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-success flex items-center justify-center text-white font-bold text-xl shadow-lg"
+                    className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-lg"
                   >
                     {item.step}
                   </motion.div>
@@ -499,8 +499,8 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="py-20 text-center"
           >
-            <Card className="rounded-3xl max-w-4xl mx-auto shadow-2xl border-2 border-primary/20 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-success/10 to-warning/10" />
+            <Card className="rounded-3xl max-w-4xl mx-auto shadow-2xl border-2 border-emerald-500/20 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10" />
               <CardBody className="p-12 relative">
                 <motion.div
                   initial={{ scale: 0.9 }}
@@ -524,7 +524,7 @@ export default function LandingPage() {
                         href="/signup"
                         color="primary"
                         size="lg"
-                        className="text-lg px-8 py-6 font-semibold shadow-xl shadow-primary/40"
+                        className="text-lg px-8 py-6 font-semibold shadow-xl shadow-emerald-500/40"
                       >
                         Start Free Trial
                       </Button>
@@ -553,8 +553,8 @@ export default function LandingPage() {
                     transition={{ delay: 0.3 }}
                     className="mt-6 text-sm text-foreground/60"
                   >
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20">
-                      <span className="text-success">✓</span>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    <span className="text-emerald-500">✓</span>
                       No credit card required • Free forever tier
                     </span>
                   </motion.div>
@@ -602,7 +602,7 @@ export default function LandingPage() {
                       <div className="text-4xl mb-4 opacity-20">"</div>
                       <p className="text-foreground/80 mb-6 italic">{testimonial.quote}</p>
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-success flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold">
                           {testimonial.author[0]}
                         </div>
                         <div>

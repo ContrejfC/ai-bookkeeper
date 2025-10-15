@@ -91,70 +91,78 @@ export default function VendorsPage() {
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
         <div>
-          <h1 className="text-3xl font-bold">Vendors</h1>
-          <p className="text-sm opacity-60 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold">Vendors</h1>
+          <p className="text-xs sm:text-sm opacity-60 mt-1">
             Vendor patterns and automation rules
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Card>
-            <CardHeader className="text-sm opacity-60">Total Vendors</CardHeader>
-            <CardBody className="text-2xl font-semibold">{stats.total}</CardBody>
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
+          <Card className="rounded-xl sm:rounded-2xl">
+            <CardHeader className="text-xs sm:text-sm opacity-60 pb-2">Total Vendors</CardHeader>
+            <CardBody className="text-xl sm:text-2xl font-semibold pt-0">{stats.total}</CardBody>
           </Card>
-          <Card>
-            <CardHeader className="text-sm opacity-60">With Rules</CardHeader>
-            <CardBody className="text-2xl font-semibold">
+          <Card className="rounded-xl sm:rounded-2xl">
+            <CardHeader className="text-xs sm:text-sm opacity-60 pb-2">With Rules</CardHeader>
+            <CardBody className="text-xl sm:text-2xl font-semibold pt-0">
               {stats.withRules}
-              <span className="text-sm font-normal opacity-60 ml-2">
+              <span className="text-xs sm:text-sm font-normal opacity-60 ml-2">
                 ({((stats.withRules / stats.total) * 100).toFixed(0)}%)
               </span>
             </CardBody>
           </Card>
-          <Card>
-            <CardHeader className="text-sm opacity-60">Avg Automation</CardHeader>
-            <CardBody className="text-2xl font-semibold">
+          <Card className="rounded-xl sm:rounded-2xl">
+            <CardHeader className="text-xs sm:text-sm opacity-60 pb-2">Avg Automation</CardHeader>
+            <CardBody className="text-xl sm:text-2xl font-semibold pt-0">
               {(stats.avgAutomation * 100).toFixed(1)}%
             </CardBody>
           </Card>
         </div>
 
-        <Card>
+        <Card className="rounded-xl sm:rounded-2xl">
           <CardHeader>
-            <div className="flex justify-between items-center w-full">
-              <h3 className="text-lg font-semibold">All Vendors</h3>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 w-full">
+              <h3 className="text-base sm:text-lg font-semibold">All Vendors</h3>
               <Input
                 size="sm"
                 placeholder="Search vendors..."
                 value={searchQuery}
                 onValueChange={setSearchQuery}
-                className="w-64"
+                className="w-full sm:w-64"
               />
             </div>
           </CardHeader>
-          <CardBody>
-            <Table aria-label="Vendors">
-              <TableHeader>
-                <TableColumn>Vendor Name</TableColumn>
-                <TableColumn>Normalized Pattern</TableColumn>
-                <TableColumn>Transactions</TableColumn>
-                <TableColumn>Automation Rate</TableColumn>
-                <TableColumn>Suggested Account</TableColumn>
-                <TableColumn>Rule Status</TableColumn>
-                <TableColumn>Last Seen</TableColumn>
-              </TableHeader>
+          <CardBody className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-6">
+            <div className="min-w-[640px] sm:min-w-0">
+              <Table 
+                aria-label="Vendors"
+                classNames={{
+                  wrapper: "p-0",
+                  th: "text-xs sm:text-sm",
+                  td: "text-xs sm:text-sm"
+                }}
+              >
+                <TableHeader>
+                  <TableColumn>Vendor Name</TableColumn>
+                  <TableColumn className="hidden md:table-cell">Normalized Pattern</TableColumn>
+                  <TableColumn className="hidden sm:table-cell">Transactions</TableColumn>
+                  <TableColumn>Automation Rate</TableColumn>
+                  <TableColumn className="hidden lg:table-cell">Suggested Account</TableColumn>
+                  <TableColumn>Rule Status</TableColumn>
+                  <TableColumn className="hidden md:table-cell">Last Seen</TableColumn>
+                </TableHeader>
               <TableBody emptyContent="No vendors found">
                 {filteredVendors.map((vendor) => (
                   <TableRow key={vendor.id}>
                     <TableCell className="font-semibold">{vendor.name}</TableCell>
-                    <TableCell className="font-mono text-xs opacity-70">
+                    <TableCell className="font-mono text-xs opacity-70 hidden md:table-cell whitespace-nowrap">
                       {vendor.normalized_name}
                     </TableCell>
-                    <TableCell>{vendor.transaction_count}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{vendor.transaction_count}</TableCell>
                     <TableCell>
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1 min-w-[80px]">
                         <Progress
                           size="sm"
                           value={vendor.automation_rate * 100}
@@ -171,27 +179,28 @@ export default function VendorsPage() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>{vendor.suggested_account}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{vendor.suggested_account}</TableCell>
                     <TableCell>
                       <Chip
                         size="sm"
                         color={vendor.has_rule ? "success" : "default"}
                         variant="flat"
                       >
-                        {vendor.has_rule ? "Has Rule" : "No Rule"}
+                        {vendor.has_rule ? "✓" : "–"}
                       </Chip>
                     </TableCell>
-                    <TableCell className="text-xs opacity-70">
+                    <TableCell className="text-xs opacity-70 hidden md:table-cell whitespace-nowrap">
                       {vendor.last_seen}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+              </Table>
+            </div>
           </CardBody>
         </Card>
 
-        <div className="bg-default-100 p-4 rounded text-sm opacity-80">
+        <div className="bg-default-100 p-3 sm:p-4 rounded-xl text-xs sm:text-sm opacity-80">
           <p className="font-semibold mb-2">About Vendor Patterns</p>
           <ul className="list-disc list-inside space-y-1">
             <li>

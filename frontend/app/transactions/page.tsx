@@ -50,20 +50,24 @@ export default function TransactionsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
               Transactions
             </h1>
-            <p className="text-slate-400 mt-2">Review and approve AI-categorized transactions</p>
+            <p className="text-sm sm:text-base text-slate-400 mt-2">Review and approve AI-categorized transactions</p>
           </motion.div>
 
           {/* Filters */}
           <motion.div 
-            className="flex flex-wrap gap-4 items-center p-4 rounded-2xl bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-emerald-500/20"
+            className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 items-stretch sm:items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-emerald-500/20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:hidden">
+              <TransactionIcon />
+              <span className="text-sm font-medium text-slate-300">Filters</span>
+            </div>
+            <div className="hidden sm:flex items-center gap-2">
               <TransactionIcon />
               <span className="text-sm font-medium text-slate-300">Filters</span>
             </div>
@@ -72,7 +76,7 @@ export default function TransactionsPage() {
               placeholder="Search payee…"
               value={q}
               onValueChange={setQ}
-              className="w-60"
+              className="w-full sm:w-60"
               classNames={{
                 input: "bg-slate-800/50 border-emerald-500/20",
                 inputWrapper: "bg-slate-800/50 border-emerald-500/20 hover:border-emerald-400/40"
@@ -83,7 +87,7 @@ export default function TransactionsPage() {
               selectedKeys={[status]}
               onChange={(e) => setStatus((e.target.value as any) || "all")}
               labelPlacement="outside-left"
-              className="w-44"
+              className="w-full sm:w-44"
               label="Status"
               classNames={{
                 trigger: "bg-slate-800/50 border-emerald-500/20 hover:border-emerald-400/40",
@@ -99,7 +103,7 @@ export default function TransactionsPage() {
               size="sm" 
               isDisabled={!canApprove} 
               onPress={approve.onOpen}
-              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white disabled:opacity-50"
+              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white disabled:opacity-50 w-full sm:w-auto"
             >
               Approve & Post ({selected.size})
             </Button>
@@ -110,33 +114,37 @@ export default function TransactionsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="overflow-x-auto -mx-3 sm:mx-0"
           >
-            <Table
-              aria-label="Transactions"
-              selectionMode="multiple"
-              selectedKeys={selected}
-              onSelectionChange={(keys)=> setSelected(new Set(keys as Set<string>))}
-              className="rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-emerald-500/20"
-              classNames={{
-                wrapper: "bg-slate-800/30",
-                thead: "bg-slate-900/50",
-                tbody: "bg-slate-800/30"
-              }}
-            >
-          <TableHeader>
-            <TableColumn>Date</TableColumn>
-            <TableColumn>Payee</TableColumn>
-            <TableColumn align="end">Amount</TableColumn>
-            <TableColumn>Status</TableColumn>
-            <TableColumn>Account</TableColumn>
-            <TableColumn>Category</TableColumn>
-          </TableHeader>
+            <div className="min-w-[640px] sm:min-w-0">
+              <Table
+                aria-label="Transactions"
+                selectionMode="multiple"
+                selectedKeys={selected}
+                onSelectionChange={(keys)=> setSelected(new Set(keys as Set<string>))}
+                className="rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-emerald-500/20"
+                classNames={{
+                  wrapper: "bg-slate-800/30 p-0",
+                  thead: "bg-slate-900/50",
+                  tbody: "bg-slate-800/30",
+                  th: "text-xs sm:text-sm",
+                  td: "text-xs sm:text-sm"
+                }}
+              >
+            <TableHeader>
+              <TableColumn>Date</TableColumn>
+              <TableColumn>Payee</TableColumn>
+              <TableColumn align="end">Amount</TableColumn>
+              <TableColumn>Status</TableColumn>
+              <TableColumn className="hidden sm:table-cell">Account</TableColumn>
+              <TableColumn className="hidden sm:table-cell">Category</TableColumn>
+            </TableHeader>
           <TableBody emptyContent={"No transactions"}>
             {data.map(t=>(
               <TableRow key={t.id}>
-                <TableCell>{t.date}</TableCell>
-                <TableCell>{t.payee}</TableCell>
-                <TableCell className={t.amount < 0 ? "text-red-400" : "text-emerald-400 font-semibold"}>
+                <TableCell className="whitespace-nowrap">{t.date}</TableCell>
+                <TableCell className="font-medium">{t.payee}</TableCell>
+                <TableCell className={t.amount < 0 ? "text-red-400 font-semibold whitespace-nowrap" : "text-emerald-400 font-semibold whitespace-nowrap"}>
                   {t.amount.toLocaleString(undefined, { style: "currency", currency: "USD" })}
                 </TableCell>
                 <TableCell>
@@ -153,12 +161,13 @@ export default function TransactionsPage() {
                     {t.status}
                   </Chip>
                 </TableCell>
-                <TableCell>{t.account}</TableCell>
-                <TableCell>{t.category}</TableCell>
+                <TableCell className="hidden sm:table-cell">{t.account}</TableCell>
+                <TableCell className="hidden sm:table-cell">{t.category}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-            </Table>
+              </Table>
+            </div>
           </motion.div>
 
           {/* Approve Modal */}

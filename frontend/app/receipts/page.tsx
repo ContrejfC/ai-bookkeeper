@@ -78,35 +78,35 @@ export default function ReceiptsPage() {
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div>
-            <h1 className="text-3xl font-bold">Receipts</h1>
-            <p className="text-sm opacity-60 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold">Receipts</h1>
+            <p className="text-xs sm:text-sm opacity-60 mt-1">
               View and manage receipt OCR processing
             </p>
           </div>
-          <Button color="primary" onPress={handleUpload}>
+          <Button color="primary" onPress={handleUpload} size="sm" className="w-full sm:w-auto">
             Upload Receipt
           </Button>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Card>
-            <CardHeader className="text-sm opacity-60">Total Receipts</CardHeader>
-            <CardBody className="text-2xl font-semibold">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
+          <Card className="rounded-xl sm:rounded-2xl">
+            <CardHeader className="text-xs sm:text-sm opacity-60 pb-2">Total Receipts</CardHeader>
+            <CardBody className="text-xl sm:text-2xl font-semibold pt-0">
               {receipts.length}
             </CardBody>
           </Card>
-          <Card>
-            <CardHeader className="text-sm opacity-60">Processed</CardHeader>
-            <CardBody className="text-2xl font-semibold">
+          <Card className="rounded-xl sm:rounded-2xl">
+            <CardHeader className="text-xs sm:text-sm opacity-60 pb-2">Processed</CardHeader>
+            <CardBody className="text-xl sm:text-2xl font-semibold pt-0">
               {receipts.filter((r) => r.status === "processed").length}
             </CardBody>
           </Card>
-          <Card>
-            <CardHeader className="text-sm opacity-60">Avg Confidence</CardHeader>
-            <CardBody className="text-2xl font-semibold">
+          <Card className="rounded-xl sm:rounded-2xl">
+            <CardHeader className="text-xs sm:text-sm opacity-60 pb-2">Avg Confidence</CardHeader>
+            <CardBody className="text-xl sm:text-2xl font-semibold pt-0">
               {(
                 (receipts
                   .filter((r) => r.status === "processed")
@@ -119,99 +119,108 @@ export default function ReceiptsPage() {
           </Card>
         </div>
 
-        <Card>
+        <Card className="rounded-xl sm:rounded-2xl">
           <CardHeader>
-            <div className="flex justify-between items-center w-full">
-              <h3 className="text-lg font-semibold">All Receipts</h3>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 w-full">
+              <h3 className="text-base sm:text-lg font-semibold">All Receipts</h3>
               <Input
                 size="sm"
                 placeholder="Search receipts..."
                 value={searchQuery}
                 onValueChange={setSearchQuery}
-                className="w-64"
+                className="w-full sm:w-64"
               />
             </div>
           </CardHeader>
-          <CardBody>
-            <Table aria-label="Receipts">
-              <TableHeader>
-                <TableColumn>Filename</TableColumn>
-                <TableColumn>Vendor</TableColumn>
-                <TableColumn>Amount</TableColumn>
-                <TableColumn>Date</TableColumn>
-                <TableColumn>Status</TableColumn>
-                <TableColumn>Confidence</TableColumn>
-                <TableColumn>Uploaded</TableColumn>
-                <TableColumn>Actions</TableColumn>
-              </TableHeader>
-              <TableBody emptyContent="No receipts found">
-                {filteredReceipts.map((receipt) => (
-                  <TableRow key={receipt.id}>
-                    <TableCell className="font-mono text-xs">
-                      {receipt.filename}
-                    </TableCell>
-                    <TableCell>{receipt.vendor}</TableCell>
-                    <TableCell className="font-semibold">{receipt.amount}</TableCell>
-                    <TableCell>{receipt.date}</TableCell>
-                    <TableCell>
-                      <Chip
-                        size="sm"
-                        color={
-                          receipt.status === "processed"
-                            ? "success"
-                            : receipt.status === "pending"
-                            ? "warning"
-                            : "danger"
-                        }
-                      >
-                        {receipt.status}
-                      </Chip>
-                    </TableCell>
-                    <TableCell>
-                      {receipt.status === "processed" ? (
+          <CardBody className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-6">
+            <div className="min-w-[640px] sm:min-w-0">
+              <Table 
+                aria-label="Receipts"
+                classNames={{
+                  wrapper: "p-0",
+                  th: "text-xs sm:text-sm",
+                  td: "text-xs sm:text-sm"
+                }}
+              >
+                <TableHeader>
+                  <TableColumn className="hidden md:table-cell">Filename</TableColumn>
+                  <TableColumn>Vendor</TableColumn>
+                  <TableColumn>Amount</TableColumn>
+                  <TableColumn className="hidden sm:table-cell">Date</TableColumn>
+                  <TableColumn>Status</TableColumn>
+                  <TableColumn className="hidden lg:table-cell">Confidence</TableColumn>
+                  <TableColumn className="hidden md:table-cell">Uploaded</TableColumn>
+                  <TableColumn>Actions</TableColumn>
+                </TableHeader>
+                <TableBody emptyContent="No receipts found">
+                  {filteredReceipts.map((receipt) => (
+                    <TableRow key={receipt.id}>
+                      <TableCell className="font-mono text-xs hidden md:table-cell">
+                        {receipt.filename}
+                      </TableCell>
+                      <TableCell className="font-medium">{receipt.vendor}</TableCell>
+                      <TableCell className="font-semibold whitespace-nowrap">{receipt.amount}</TableCell>
+                      <TableCell className="hidden sm:table-cell whitespace-nowrap">{receipt.date}</TableCell>
+                      <TableCell>
                         <Chip
                           size="sm"
-                          variant="flat"
                           color={
-                            receipt.confidence > 0.95
+                            receipt.status === "processed"
                               ? "success"
-                              : receipt.confidence > 0.85
+                              : receipt.status === "pending"
                               ? "warning"
                               : "danger"
                           }
                         >
-                          {(receipt.confidence * 100).toFixed(0)}%
+                          {receipt.status}
                         </Chip>
-                      ) : (
-                        <span className="text-xs opacity-60">N/A</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-xs opacity-70">
-                      {new Date(receipt.uploaded_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant="flat"
-                        href={`/receipts/${receipt.id}`}
-                        as="a"
-                      >
-                        View
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {receipt.status === "processed" ? (
+                          <Chip
+                            size="sm"
+                            variant="flat"
+                            color={
+                              receipt.confidence > 0.95
+                                ? "success"
+                                : receipt.confidence > 0.85
+                                ? "warning"
+                                : "danger"
+                            }
+                          >
+                            {(receipt.confidence * 100).toFixed(0)}%
+                          </Chip>
+                        ) : (
+                          <span className="text-xs opacity-60">N/A</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-xs opacity-70 hidden md:table-cell">
+                        {new Date(receipt.uploaded_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          href={`/receipts/${receipt.id}`}
+                          as="a"
+                        >
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardBody>
         </Card>
 
-        <Card>
+        <Card className="rounded-xl sm:rounded-2xl">
           <CardHeader>
-            <h3 className="text-lg font-semibold">OCR Processing</h3>
+            <h3 className="text-base sm:text-lg font-semibold">OCR Processing</h3>
           </CardHeader>
           <CardBody>
-            <div className="text-sm opacity-80 space-y-2">
+            <div className="text-xs sm:text-sm opacity-80 space-y-2">
               <p>
                 Receipts are processed using <strong>Tesseract OCR</strong> with
                 token-level bounding boxes for precise field extraction.

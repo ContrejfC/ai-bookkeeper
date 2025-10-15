@@ -132,29 +132,31 @@ export default function RulesPage() {
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div>
-            <h1 className="text-3xl font-bold">Rules Console</h1>
-            <p className="text-sm opacity-60 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold">Rules Console</h1>
+            <p className="text-xs sm:text-sm opacity-60 mt-1">
               Review and manage automation rule candidates
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="flat" onPress={loadVersions}>
+            <Button variant="flat" onPress={loadVersions} size="sm" className="flex-1 sm:flex-none">
               View History
             </Button>
             <Button
               color="primary"
               onPress={handleDryRun}
               isDisabled={selectedCandidates.size === 0}
+              size="sm"
+              className="flex-1 sm:flex-none"
             >
               Dry Run ({selectedCandidates.size})
             </Button>
           </div>
         </div>
 
-        <Card>
+        <Card className="rounded-xl sm:rounded-2xl">
           <CardHeader>
             <Tabs
               selectedKey={activeTab}
@@ -165,31 +167,37 @@ export default function RulesPage() {
               <Tab key="rejected" title="Rejected" />
             </Tabs>
           </CardHeader>
-          <CardBody>
-            <Table
-              aria-label="Rule candidates"
-              selectionMode={activeTab === "pending" ? "multiple" : "none"}
-              selectedKeys={selectedCandidates}
-              onSelectionChange={(keys) => setSelectedCandidates(new Set(keys as Set<string>))}
-            >
-              <TableHeader>
-                <TableColumn>Vendor Pattern</TableColumn>
-                <TableColumn>Suggested Account</TableColumn>
-                <TableColumn>Evidence</TableColumn>
-                <TableColumn>Status</TableColumn>
-                <TableColumn>Actions</TableColumn>
-              </TableHeader>
+          <CardBody className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-6">
+            <div className="min-w-[640px] sm:min-w-0">
+              <Table
+                aria-label="Rule candidates"
+                selectionMode={activeTab === "pending" ? "multiple" : "none"}
+                selectedKeys={selectedCandidates}
+                onSelectionChange={(keys) => setSelectedCandidates(new Set(keys as Set<string>))}
+                classNames={{
+                  wrapper: "p-0",
+                  th: "text-xs sm:text-sm",
+                  td: "text-xs sm:text-sm"
+                }}
+              >
+                <TableHeader>
+                  <TableColumn>Vendor Pattern</TableColumn>
+                  <TableColumn className="hidden sm:table-cell">Suggested Account</TableColumn>
+                  <TableColumn className="hidden md:table-cell">Evidence</TableColumn>
+                  <TableColumn>Status</TableColumn>
+                  <TableColumn>Actions</TableColumn>
+                </TableHeader>
               <TableBody
                 isLoading={loading}
                 emptyContent="No candidates found"
               >
                 {candidates.map((candidate) => (
                   <TableRow key={candidate.id}>
-                    <TableCell className="font-mono text-sm">
+                    <TableCell className="font-mono text-xs sm:text-sm whitespace-nowrap">
                       {candidate.vendor_pattern}
                     </TableCell>
-                    <TableCell>{candidate.suggested_account}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">{candidate.suggested_account}</TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <div className="text-xs">
                         <div>Count: {candidate.evidence.count}</div>
                         <div>
@@ -214,12 +222,13 @@ export default function RulesPage() {
                     </TableCell>
                     <TableCell>
                       {candidate.status === "pending" && (
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
                           <Button
                             size="sm"
                             color="success"
                             variant="flat"
                             onPress={() => handleAccept(candidate.id)}
+                            className="min-w-[60px]"
                           >
                             Accept
                           </Button>
@@ -228,6 +237,7 @@ export default function RulesPage() {
                             color="danger"
                             variant="flat"
                             onPress={() => handleReject(candidate.id)}
+                            className="min-w-[60px]"
                           >
                             Reject
                           </Button>
@@ -237,7 +247,8 @@ export default function RulesPage() {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+              </Table>
+            </div>
           </CardBody>
         </Card>
 

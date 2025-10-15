@@ -211,8 +211,8 @@ export default function LoginPage() {
               transition={{ duration: 0.5, delay: 0.5 }}
             >
               Don&apos;t have an account?{" "}
-              <Link href="#" size="sm" className="text-emerald-400 hover:text-emerald-300">
-                Contact your administrator
+              <Link href="/signup" size="sm" className="text-emerald-400 hover:text-emerald-300 font-semibold">
+                Sign up
               </Link>
             </motion.p>
             <motion.p 

@@ -2,8 +2,8 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import uuid
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -12,10 +12,6 @@ from pydantic import BaseModel
 from app.db.session import get_db
 from app.db.models import UserDB
 from config.settings import settings
-
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token", auto_error=False)
@@ -55,15 +51,30 @@ class UserResponse(BaseModel):
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a password against its hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    """Verify a password against its hash using bcrypt."""
+    try:
+        # Convert string password to bytes
+        password_bytes = plain_password.encode('utf-8')
+        # Convert stored hash to bytes if it's a string
+        if isinstance(hashed_password, str):
+            hash_bytes = hashed_password.encode('utf-8')
+        else:
+            hash_bytes = hashed_password
+        return bcrypt.checkpw(password_bytes, hash_bytes)
+    except Exception as e:
+        print(f"Password verification error: {e}")
+        return False
 
 
 def get_password_hash(password: str) -> str:
-    """Hash a password. Truncates to 72 bytes for bcrypt compatibility."""
-    # Bcrypt has a 72 byte limit
-    password_truncated = password[:72] if len(password) > 72 else password
-    return pwd_context.hash(password_truncated)
+    """Hash a password using bcrypt. Truncates to 72 bytes for bcrypt compatibility."""
+    # Bcrypt has a 72 byte limit - truncate password if necessary
+    password_bytes = password.encode('utf-8')[:72]
+    # Generate salt and hash
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    # Return as string for database storage
+    return hashed.decode('utf-8')
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

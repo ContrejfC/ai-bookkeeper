@@ -5,6 +5,7 @@ services:
     runtime: docker
     plan: free
     healthCheckPath: /healthz
+    startCommand: "/app/docker-entrypoint.sh"
     envVars:
       - key: DATABASE_URL
         sync: false

@@ -15,6 +15,15 @@ const nextConfig = {
         source: '/api/:path*',
         destination: `${apiUrl}/api/:path*`,
       },
+      // Health checks (Render hits frontend port 10000)
+      {
+        source: '/healthz',
+        destination: `${apiUrl}/healthz`,
+      },
+      {
+        source: '/readyz',
+        destination: `${apiUrl}/readyz`,
+      },
     ];
   },
 };

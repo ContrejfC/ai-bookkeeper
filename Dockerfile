@@ -11,13 +11,13 @@ WORKDIR /frontend
 # Copy frontend package files
 COPY frontend/package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (including devDependencies needed for build)
+RUN npm ci
 
-# Copy frontend source
+# Copy frontend source code
 COPY frontend/ ./
 
-# Build Next.js app
+# Build Next.js app for production
 RUN npm run build
 
 # ============================================================================
@@ -59,11 +59,11 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application code
 COPY . /app
 
-# Copy built Next.js frontend from Stage 1
-COPY --from=frontend-builder /frontend/.next /app/frontend/.next
+# Copy built Next.js frontend from Stage 1 (standalone mode)
+COPY --from=frontend-builder /frontend/.next/standalone /app/frontend/
+COPY --from=frontend-builder /frontend/.next/static /app/frontend/.next/static
 COPY --from=frontend-builder /frontend/public /app/frontend/public
-COPY --from=frontend-builder /frontend/package.json /app/frontend/
-COPY --from=frontend-builder /frontend/node_modules /app/frontend/node_modules
+COPY --from=frontend-builder /frontend/package.json /app/frontend/package.json
 
 # Create necessary directories
 RUN mkdir -p logs/analytics reports/analytics artifacts/receipts data && \

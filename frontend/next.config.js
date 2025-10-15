@@ -1,13 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Output standalone for Docker deployment
+  output: 'standalone',
   async rewrites() {
+    // In production (Docker), proxy to backend on localhost:8000
+    // In development, proxy to local backend
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? 'http://localhost:8000'
+      : 'http://localhost:8000';
+    
     return [
       {
         source: '/api/:path*',
-        destination: process.env.NODE_ENV === 'production' 
-          ? 'https://ai-bookkeeper-app.onrender.com/api/:path*'
-          : 'http://localhost:8000/api/:path*',
+        destination: `${apiUrl}/api/:path*`,
       },
     ];
   },

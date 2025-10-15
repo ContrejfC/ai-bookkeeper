@@ -11,8 +11,9 @@ WORKDIR /frontend
 # Copy frontend package files
 COPY frontend/package*.json ./
 
-# Install ALL dependencies (including devDependencies needed for build)
-RUN npm ci
+# Install dependencies (devDependencies needed for build). Use npm install
+# because this repo does not include a package-lock.json, which would break npm ci.
+RUN npm install
 
 # Copy frontend source code
 COPY frontend/ ./

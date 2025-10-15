@@ -8,7 +8,7 @@ echo "Starting AI Bookkeeper services..."
 # Start FastAPI backend on port 8000
 cd /app
 echo "Starting FastAPI backend on port 8000..."
-uvicorn app.api.main:app --host 0.0.0.0 --port 8000 &
+uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --proxy-headers &
 BACKEND_PID=$!
 
 # Wait for backend to start

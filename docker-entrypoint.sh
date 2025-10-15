@@ -36,10 +36,12 @@ shutdown() {
 # Trap SIGTERM and SIGINT
 trap shutdown SIGTERM SIGINT
 
-# Wait for both processes - exit if either crashes
-wait -n $FRONTEND_PID $BACKEND_PID
-EXIT_CODE=$?
+# Wait for both processes; only exit when both have exited
+wait $FRONTEND_PID
+FRONTEND_CODE=$?
+wait $BACKEND_PID
+BACKEND_CODE=$?
 
-echo "One of the services exited with code $EXIT_CODE"
+echo "Frontend exited with code $FRONTEND_CODE, Backend exited with code $BACKEND_CODE"
 shutdown
 

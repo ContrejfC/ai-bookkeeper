@@ -1,0 +1,51 @@
+# ============================================================================
+# AI Bookkeeper - API Service Dockerfile
+# ============================================================================
+# Clean Python-only image for FastAPI backend
+# Deployed as separate Render service: ai-bookkeeper-api
+# ============================================================================
+
+FROM python:3.11-slim AS base
+
+# Prevent Python from writing pyc files and buffering stdout/stderr
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Install system dependencies
+# libpq-dev needed for psycopg2-binary (PostgreSQL)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    ca-certificates \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Python dependencies first (cache-friendly layer)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY app/ app/
+COPY alembic/ alembic/
+COPY alembic.ini .
+COPY scripts/ scripts/
+COPY config/ config/
+COPY app/VERSION VERSION
+
+# Make scripts executable
+RUN chmod +x scripts/*.sh scripts/*.py
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:${PORT:-8000}/healthz || exit 1
+
+# Expose port (informational, Render uses $PORT)
+EXPOSE 8000
+
+# Runtime command
+# - Run migrations first (with || true to not fail if already migrated)
+# - Start Uvicorn with --proxy-headers for Render reverse proxy
+CMD ["sh", "-c", "scripts/db_migrate.sh || true && uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"]
+

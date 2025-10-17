@@ -4,18 +4,16 @@ const nextConfig = {
   // Output standalone for Docker deployment
   output: 'standalone',
   async rewrites() {
-    // In production (Docker), proxy to backend on localhost:8000
-    // In development, proxy to local backend
-    const apiUrl = process.env.NODE_ENV === 'production' 
-      ? 'http://localhost:8000'
-      : 'http://localhost:8000';
+    // Proxy to separate API service
+    // Use NEXT_PUBLIC_API_URL env var (set in Render)
+    // Default to localhost for local development
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     
     return [
       {
         source: '/api/:path*',
         destination: `${apiUrl}/api/:path*`,
       },
-      // Health checks (Render hits frontend port 10000)
       {
         source: '/healthz',
         destination: `${apiUrl}/healthz`,
@@ -23,6 +21,14 @@ const nextConfig = {
       {
         source: '/readyz',
         destination: `${apiUrl}/readyz`,
+      },
+      {
+        source: '/actions',
+        destination: `${apiUrl}/actions`,
+      },
+      {
+        source: '/openapi.json',
+        destination: `${apiUrl}/openapi.json`,
       },
     ];
   },

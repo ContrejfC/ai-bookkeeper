@@ -28,9 +28,20 @@ RUN if [ -f pnpm-lock.yaml ]; then \
 COPY frontend/ .
 
 # Build Next.js with standalone output
-ENV NEXT_TELEMETRY_DISABLED=1 \
-    NODE_ENV=production
+# ⚠️ NEXT_PUBLIC_* vars must be available at BUILD TIME
+# Set these in Render: Environment → "Available during build"
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_BASE_URL
 
+ENV NEXT_TELEMETRY_DISABLED=1 \
+    NODE_ENV=production \
+    NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
+    NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+
+# ⚠️ NO BUILD-TIME SIDE EFFECTS:
+# - Do NOT run tests (npm test)
+# - Do NOT run linters that fail builds
+# - Do NOT fetch external data
 RUN npm run build
 
 # ============================================================================
@@ -60,11 +71,12 @@ USER nextjs
 # Expose port (informational, Render uses $PORT)
 EXPOSE 3000
 
-# Health check
+# Health check - proxies to API service via /healthz rewrite
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:${PORT:-3000}/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+  CMD node -e "require('http').get('http://localhost:${PORT:-3000}/healthz', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 
 # Start Next.js server
-# Standalone server.js binds to port from environment
+# ⚠️ MUST bind to $PORT environment variable (Render provides this)
+# Standalone server.js reads PORT and HOSTNAME from env
 CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=${PORT:-3000} node server.js"]
 

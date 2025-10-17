@@ -99,13 +99,18 @@ services:
     branch: main
     
     envVars:
+      # ⚠️ IMPORTANT: NEXT_PUBLIC_* vars must be available at BUILD TIME
+      # Render: Mark these as "Available during build" in Dashboard
+      
       # Next.js API proxy target (internal communication)
       - key: NEXT_PUBLIC_API_URL
         value: https://ai-bookkeeper-api.onrender.com
+        # In Render Dashboard: Check "Available during build"
       
       # Public-facing variables
       - key: NEXT_PUBLIC_BASE_URL
         value: https://ai-bookkeeper.onrender.com
+        # In Render Dashboard: Check "Available during build"
 
   # ==========================================================================
   # PostgreSQL Database

@@ -37,7 +37,13 @@ COPY app/VERSION VERSION
 # Make scripts executable
 RUN chmod +x scripts/*.sh scripts/*.py
 
-# Health check
+# ⚠️ NO BUILD-TIME SIDE EFFECTS:
+# - Do NOT run migrations (alembic upgrade head)
+# - Do NOT run tests (pytest)
+# - Do NOT run verification scripts
+# These belong in CMD or manual operations
+
+# Health check - uses $PORT from environment
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:${PORT:-8000}/healthz || exit 1
 
@@ -45,7 +51,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 EXPOSE 8000
 
 # Runtime command
-# - Run migrations first (with || true to not fail if already migrated)
-# - Start Uvicorn with --proxy-headers for Render reverse proxy
+# - Run migrations on container start (safe with || true fallback)
+# - Bind to $PORT environment variable (Render provides this)
+# - Use --proxy-headers for Render's reverse proxy
 CMD ["sh", "-c", "scripts/db_migrate.sh || true && uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"]
 

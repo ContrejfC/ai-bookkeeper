@@ -1,0 +1,65 @@
+name: OpenAPI Version Guard
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  check-openapi:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Check if OpenAPI spec changed
+        id: openapi_check
+        run: |
+          # Check if openapi.json or related files changed
+          if git diff --name-only HEAD~1 HEAD | grep -E "(openapi|app/routers|app/api)" > /dev/null; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Install dependencies
+        if: steps.openapi_check.outputs.changes == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn sqlalchemy pydantic
+      
+      - name: Check for version file
+        if: steps.openapi_check.outputs.changes == 'true'
+        run: |
+          # Check if new versioned file was added
+          if git diff --name-only HEAD~1 HEAD | grep "docs/openapi-v.*\.json" > /dev/null; then
+            echo "✅ New OpenAPI version file detected"
+            exit 0
+          fi
+          
+          # Check for skip flag in commit message
+          if git log -1 --pretty=%B | grep "\[skip-openapi-check\]" > /dev/null; then
+            echo "⚠️  OpenAPI check skipped per commit message"
+            exit 0
+          fi
+          
+          echo "❌ OpenAPI may have changed without version bump"
+          echo ""
+          echo "If you modified API endpoints/schemas, please:"
+          echo "1. Run: curl http://localhost:8000/openapi.json > docs/openapi-vX.Y.json"
+          echo "2. Update: cp docs/openapi-vX.Y.json docs/openapi-latest.json"
+          echo "3. Commit both files with this PR"
+          echo ""
+          echo "Or add [skip-openapi-check] to commit message if this is a false positive."
+          echo ""
+          exit 1
+

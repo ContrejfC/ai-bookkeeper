@@ -398,6 +398,16 @@ class BillingService:
         usage = self.get_monthly_usage(tenant_id)
         daily_usage = self.get_daily_usage(tenant_id)
         
+        # Calculate trial days left if in trial
+        trial_days_left = None
+        if entitlement and entitlement.get("trial_ends_at"):
+            try:
+                trial_end = datetime.fromisoformat(entitlement["trial_ends_at"])
+                delta = trial_end - datetime.utcnow()
+                trial_days_left = max(0, delta.days)
+            except:
+                pass
+        
         return {
             "active": entitlement["active"] if entitlement else False,
             "plan": entitlement["plan"] if entitlement else None,
@@ -413,6 +423,7 @@ class BillingService:
                 "daily_explain": daily_usage["explain_count"]
             },
             "trial_ends_at": entitlement["trial_ends_at"] if entitlement else None,
+            "trial_days_left": trial_days_left,
             "subscription_status": entitlement["subscription_status"] if entitlement else None
         }
 

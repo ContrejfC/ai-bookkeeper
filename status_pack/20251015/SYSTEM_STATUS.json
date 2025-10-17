@@ -1,0 +1,156 @@
+{
+  "timestamp": "2025-10-15T16:30:00Z",
+  "audit_period": "2025-10-08 to 2025-10-15",
+  "versions": {
+    "python": "3.13.3",
+    "node": "v22.16.0",
+    "npm": "10.9.2",
+    "fastapi": "0.115.14",
+    "next": "15.0.0",
+    "react": "18.2.0",
+    "alembic": "1.16.5",
+    "sqlalchemy": "2.0.23"
+  },
+  "services": {
+    "frontend": {
+      "url": "http://localhost:3000",
+      "commit": "73cdc50",
+      "health": "not_running_locally",
+      "status": "deployed_to_render",
+      "framework": "Next.js 15",
+      "features": [
+        "mobile_responsive",
+        "jwt_auth",
+        "protected_routes",
+        "api_proxy"
+      ]
+    },
+    "backend": {
+      "url": "http://localhost:8000",
+      "commit": "73cdc50",
+      "health": "healthy",
+      "status": "running_locally",
+      "framework": "FastAPI",
+      "endpoints": 33,
+      "health_checks": {
+        "/healthz": "200 OK",
+        "/readyz": "200 OK",
+        "/openapi.json": "200 OK"
+      }
+    },
+    "worker": {
+      "schedule": "manual",
+      "last_run": "unknown",
+      "status": "configured",
+      "type": "RQ worker",
+      "queue": "ai_bookkeeper"
+    },
+    "cron": {
+      "schedule": "0 2 * * *",
+      "last_run": "unknown",
+      "status": "configured",
+      "jobs": [
+        "analytics_rollup",
+        "compliance_weekly",
+        "data_retention"
+      ]
+    }
+  },
+  "database": {
+    "dialect": "sqlite",
+    "url": "sqlite:///./ai_bookkeeper_demo.db",
+    "migrations": {
+      "head": "008_xero_export",
+      "dirty": true,
+      "error": "KeyError: '001'",
+      "available_revisions": [
+        "002_tenant_settings",
+        "003_auth_users",
+        "004_billing",
+        "004_create_admin_user",
+        "005_notifications",
+        "006_receipt_fields",
+        "008_xero_export"
+      ]
+    },
+    "tables": 23,
+    "size_mb": 0.34
+  },
+  "ci": {
+    "last_run": "unknown",
+    "status": "configured",
+    "workflows": [
+      "ci.yml",
+      "compliance_weekly.yml",
+      "data_retention_report.yml",
+      "backup_restore_check.yml",
+      "pr_label_gate.yml"
+    ],
+    "test_results": {
+      "total": 35,
+      "passed": 35,
+      "failed": 0,
+      "coverage": "partial",
+      "issues": ["import_errors_in_access_snapshot_tests"]
+    }
+  },
+  "toggles": {
+    "AUTOPOST": false,
+    "threshold": 0.90,
+    "UI_ASSESSMENT": "1",
+    "AUTH_MODE": "dev"
+  },
+  "feature_flags": [
+    "mobile_ui",
+    "soc2_compliance",
+    "jwt_auth",
+    "multi_tenant",
+    "rbac",
+    "pii_redaction",
+    "audit_logging",
+    "data_retention",
+    "backup_restore"
+  ],
+  "deployment": {
+    "platform": "render",
+    "status": "in_progress",
+    "services": [
+      "ai-bookkeeper-web",
+      "ai-bookkeeper-worker", 
+      "ai-bookkeeper-analytics-cron"
+    ],
+    "docker": {
+      "multi_stage": true,
+      "entrypoint": "custom",
+      "frontend_port": 10000,
+      "backend_port": 8000
+    }
+  },
+  "security": {
+    "soc2_controls": "active",
+    "audit_logging": "enabled",
+    "pii_redaction": "enabled",
+    "access_snapshots": "weekly",
+    "change_control": "enforced",
+    "data_retention": "configured",
+    "backup_restore": "verified"
+  },
+  "integrations": {
+    "quickbooks": {
+      "export": "implemented",
+      "import": "implemented",
+      "oauth2": "missing"
+    },
+    "xero": {
+      "export": "implemented",
+      "import": "implemented",
+      "oauth2": "missing"
+    }
+  },
+  "label_pipeline": {
+    "training_data": "present",
+    "consent_toggle": "missing",
+    "export_purge": "missing",
+    "redaction": "implemented"
+  }
+}

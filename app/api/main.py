@@ -58,6 +58,16 @@ app.middleware("http")(csrf_protect)
 logger.info("✅ CSRF protection middleware enabled")
 
 # ============================================================================
+# Billing Entitlement Middleware
+# ============================================================================
+try:
+    from app.middleware.entitlements import EntitlementGateMiddleware
+    app.add_middleware(EntitlementGateMiddleware)
+    logger.info("✅ Entitlement gate middleware enabled")
+except ImportError as e:
+    logger.warning(f"⚠️  Entitlement middleware not available: {e}")
+
+# ============================================================================
 # Wave-2 Phase 1, 2a & 2b: Import and register API routes
 # ============================================================================
 try:

@@ -61,6 +61,69 @@ class PortalResponse(BaseModel):
     message: Optional[str] = None
 
 
+class BillingLimits(BaseModel):
+    """Billing limits model."""
+    tx_cap: int
+    bulk_approve: bool = False
+    included_companies: int = 1
+
+
+class BillingUsage(BaseModel):
+    """Billing usage model."""
+    tx_analyzed: int
+    tx_posted: int
+    daily_analyze: int = 0
+    daily_explain: int = 0
+
+
+class BillingStatusResponse(BaseModel):
+    """Billing status response."""
+    active: bool
+    plan: Optional[str] = None
+    limits: BillingLimits
+    usage: BillingUsage
+    trial_ends_at: Optional[str] = None
+    subscription_status: Optional[str] = None
+
+
+@router.get("/status", response_model=BillingStatusResponse)
+async def get_billing_status(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get current plan, limits, and usage for tenant.
+    
+    This is the first Action call in any "post" flow for GPT paywall checks.
+    """
+    # Get tenant ID from user
+    # For now, use first tenant or default to user_id
+    tenant_id = user.tenants[0] if user.tenants else user.user_id
+    
+    try:
+        from app.services.billing import BillingService
+        billing_service = BillingService(db)
+        status_dict = billing_service.get_billing_status(tenant_id)
+        
+        return BillingStatusResponse(
+            active=status_dict["active"],
+            plan=status_dict["plan"],
+            limits=BillingLimits(**status_dict["limits"]),
+            usage=BillingUsage(**status_dict["usage"]),
+            trial_ends_at=status_dict.get("trial_ends_at"),
+            subscription_status=status_dict.get("subscription_status")
+        )
+    except Exception as e:
+        logger.error(f"Error getting billing status for tenant {tenant_id}: {e}")
+        # Return default free tier status
+        return BillingStatusResponse(
+            active=False,
+            plan=None,
+            limits=BillingLimits(tx_cap=0, bulk_approve=False, included_companies=1),
+            usage=BillingUsage(tx_analyzed=0, tx_posted=0, daily_analyze=0, daily_explain=0)
+        )
+
+
 @router.post("/create_checkout_session", response_model=CheckoutResponse)
 async def create_checkout_session(
     request: CheckoutRequest,
@@ -268,7 +331,9 @@ async def stripe_webhook(
     
     # Process event
     try:
-        if event["type"] == "customer.subscription.created":
+        if event["type"] == "checkout.session.completed":
+            handle_checkout_completed(event["data"]["object"], db)
+        elif event["type"] == "customer.subscription.created":
             handle_subscription_created(event["data"]["object"], db)
         elif event["type"] == "customer.subscription.updated":
             handle_subscription_updated(event["data"]["object"], db)
@@ -276,6 +341,8 @@ async def stripe_webhook(
             handle_subscription_deleted(event["data"]["object"], db)
         elif event["type"] == "invoice.payment_failed":
             handle_payment_failed(event["data"]["object"], db)
+        elif event["type"] == "customer.subscription.trial_will_end":
+            handle_trial_will_end(event["data"]["object"], db)
         else:
             logger.info(f"Unhandled event type: {event['type']}")
         
@@ -311,6 +378,43 @@ def handle_subscription_created(subscription_data, db):
         cancel_at_period_end=subscription_data.get("cancel_at_period_end", False)
     )
     db.add(subscription)
+    
+    # Create entitlement from price metadata
+    try:
+        from app.services.billing import BillingService
+        billing_service = BillingService(db)
+        
+        # Get price metadata
+        price_id = subscription_data["items"]["data"][0]["price"]["id"]
+        if STRIPE_AVAILABLE:
+            price = stripe.Price.retrieve(price_id)
+            price_metadata = price.get("metadata", {})
+            
+            # Extract trial end
+            trial_end = None
+            if subscription_data.get("trial_end"):
+                trial_end = datetime.fromtimestamp(subscription_data["trial_end"])
+            
+            # Map entitlement from price metadata
+            billing_service.map_entitlement_from_price(
+                tenant_id=tenant_id,
+                price_id=price_id,
+                price_metadata=price_metadata,
+                subscription_status=subscription_data["status"],
+                trial_end=trial_end
+            )
+    except Exception as e:
+        logger.error(f"Error creating entitlement for tenant {tenant_id}: {e}")
+    
+    # Update tenant settings with Stripe customer ID
+    from app.db.models import TenantSettingsDB
+    tenant_settings = db.query(TenantSettingsDB).filter(
+        TenantSettingsDB.tenant_id == tenant_id
+    ).first()
+    
+    if tenant_settings:
+        tenant_settings.stripe_customer_id = subscription_data["customer"]
+        tenant_settings.stripe_subscription_id = subscription_data["id"]
     
     # Audit entry
     audit = DecisionAuditLogDB(
@@ -348,6 +452,33 @@ def handle_subscription_updated(subscription_data, db):
     subscription.cancel_at_period_end = subscription_data.get("cancel_at_period_end", False)
     subscription.updated_at = datetime.utcnow()
     
+    # Update entitlement
+    try:
+        from app.services.billing import BillingService
+        billing_service = BillingService(db)
+        
+        # Get price metadata
+        price_id = subscription_data["items"]["data"][0]["price"]["id"]
+        if STRIPE_AVAILABLE:
+            price = stripe.Price.retrieve(price_id)
+            price_metadata = price.get("metadata", {})
+            
+            # Extract trial end
+            trial_end = None
+            if subscription_data.get("trial_end"):
+                trial_end = datetime.fromtimestamp(subscription_data["trial_end"])
+            
+            # Update entitlement from price metadata
+            billing_service.map_entitlement_from_price(
+                tenant_id=tenant_id,
+                price_id=price_id,
+                price_metadata=price_metadata,
+                subscription_status=subscription_data["status"],
+                trial_end=trial_end
+            )
+    except Exception as e:
+        logger.error(f"Error updating entitlement for tenant {tenant_id}: {e}")
+    
     # Audit entry
     audit = DecisionAuditLogDB(
         timestamp=datetime.utcnow(),
@@ -373,6 +504,20 @@ def handle_subscription_deleted(subscription_data, db):
     if subscription:
         subscription.status = "canceled"
         subscription.updated_at = datetime.utcnow()
+        
+        # Deactivate entitlement
+        try:
+            from app.db.models import EntitlementDB
+            entitlement = db.query(EntitlementDB).filter(
+                EntitlementDB.tenant_id == tenant_id
+            ).first()
+            
+            if entitlement:
+                entitlement.active = False
+                entitlement.subscription_status = "canceled"
+                entitlement.updated_at = datetime.utcnow()
+        except Exception as e:
+            logger.error(f"Error deactivating entitlement for tenant {tenant_id}: {e}")
         
         # Audit entry
         audit = DecisionAuditLogDB(
@@ -401,6 +546,20 @@ def handle_payment_failed(invoice_data, db):
         subscription.status = "past_due"
         subscription.updated_at = datetime.utcnow()
         
+        # Deactivate entitlement
+        try:
+            from app.db.models import EntitlementDB
+            entitlement = db.query(EntitlementDB).filter(
+                EntitlementDB.tenant_id == subscription.tenant_id
+            ).first()
+            
+            if entitlement:
+                entitlement.active = False
+                entitlement.subscription_status = "past_due"
+                entitlement.updated_at = datetime.utcnow()
+        except Exception as e:
+            logger.error(f"Error deactivating entitlement for tenant {subscription.tenant_id}: {e}")
+        
         # Audit entry
         audit = DecisionAuditLogDB(
             timestamp=datetime.utcnow(),
@@ -411,4 +570,59 @@ def handle_payment_failed(invoice_data, db):
         db.commit()
         
         logger.warning(f"Payment failed for tenant {subscription.tenant_id}")
+
+
+def handle_checkout_completed(session_data, db):
+    """Handle checkout session completion."""
+    tenant_id = session_data["metadata"].get("tenant_id")
+    if not tenant_id:
+        logger.warning(f"Checkout session {session_data['id']} missing tenant_id in metadata")
+        return
+    
+    customer_id = session_data.get("customer")
+    subscription_id = session_data.get("subscription")
+    
+    if customer_id:
+        # Update tenant settings with Stripe customer ID
+        from app.db.models import TenantSettingsDB
+        tenant_settings = db.query(TenantSettingsDB).filter(
+            TenantSettingsDB.tenant_id == tenant_id
+        ).first()
+        
+        if not tenant_settings:
+            # Create tenant settings if doesn't exist
+            tenant_settings = TenantSettingsDB(
+                tenant_id=tenant_id,
+                stripe_customer_id=customer_id,
+                stripe_subscription_id=subscription_id
+            )
+            db.add(tenant_settings)
+        else:
+            tenant_settings.stripe_customer_id = customer_id
+            if subscription_id:
+                tenant_settings.stripe_subscription_id = subscription_id
+        
+        db.commit()
+        logger.info(f"Checkout completed for tenant {tenant_id}, customer {customer_id}")
+
+
+def handle_trial_will_end(subscription_data, db):
+    """Handle trial ending soon notification (3 days before)."""
+    tenant_id = subscription_data["metadata"].get("tenant_id")
+    if not tenant_id:
+        return
+    
+    # Log the event for potential notification system
+    audit = DecisionAuditLogDB(
+        timestamp=datetime.utcnow(),
+        tenant_id=tenant_id,
+        action="billing_trial_will_end"
+    )
+    db.add(audit)
+    db.commit()
+    
+    logger.info(f"Trial will end soon for tenant {tenant_id}")
+    
+    # TODO: Send notification to user (email, in-app notification)
+    # This can be integrated with the existing notification system
 

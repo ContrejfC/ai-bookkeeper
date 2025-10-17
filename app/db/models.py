@@ -15,6 +15,8 @@ class TenantSettingsDB(Base):
     autopost_enabled = Column(Boolean, nullable=False, server_default='false')
     autopost_threshold = Column(Float, nullable=False, server_default='0.90')
     llm_tenant_cap_usd = Column(Float, nullable=False, server_default='50.0')
+    stripe_customer_id = Column(String(255), nullable=True)
+    stripe_subscription_id = Column(String(255), nullable=True)
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
     updated_by = Column(String(255), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
@@ -400,6 +402,66 @@ class LLMCallLogDB(Base):
     __table_args__ = (
         Index('idx_llm_call_logs_tenant', 'tenant_id'),
         Index('idx_llm_call_logs_timestamp', 'timestamp'),
+    )
+
+
+class EntitlementDB(Base):
+    """Tenant entitlements and subscription details."""
+    __tablename__ = 'entitlements'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    plan = Column(String(50), nullable=False)  # starter, pro, firm
+    active = Column(Boolean, nullable=False, server_default='false')
+    tx_cap = Column(Integer, nullable=False, server_default='300')
+    bulk_approve = Column(Boolean, nullable=False, server_default='false')
+    included_companies = Column(Integer, nullable=False, server_default='1')
+    trial_ends_at = Column(DateTime, nullable=True)
+    subscription_status = Column(String(50), nullable=True)  # active, trialing, past_due, canceled
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_entitlements_tenant_id', 'tenant_id'),
+        Index('idx_entitlements_active', 'active'),
+        Index('idx_entitlements_plan', 'plan'),
+    )
+
+
+class UsageMonthlyDB(Base):
+    """Monthly usage tracking for billing."""
+    __tablename__ = 'usage_monthly'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    year_month = Column(String(7), nullable=False)  # Format: YYYY-MM
+    tx_analyzed = Column(Integer, nullable=False, server_default='0')
+    tx_posted = Column(Integer, nullable=False, server_default='0')
+    last_reset_at = Column(DateTime, nullable=False, server_default=func.now())
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_usage_monthly_tenant_month', 'tenant_id', 'year_month', unique=True),
+        Index('idx_usage_monthly_year_month', 'year_month'),
+    )
+
+
+class UsageDailyDB(Base):
+    """Daily usage tracking for free tier limits."""
+    __tablename__ = 'usage_daily'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    date = Column(String(10), nullable=False)  # Format: YYYY-MM-DD
+    analyze_count = Column(Integer, nullable=False, server_default='0')
+    explain_count = Column(Integer, nullable=False, server_default='0')
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_usage_daily_tenant_date', 'tenant_id', 'date', unique=True),
+        Index('idx_usage_daily_date', 'date'),
     )
 
 

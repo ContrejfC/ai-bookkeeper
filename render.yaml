@@ -68,3 +68,17 @@ services:
         value: "INFO"
     
     startCommand: "python jobs/analytics_rollup.py"
+  
+  # Monthly Usage Rollover Cron - requires Starter plan or higher
+  - type: cron
+    name: ai-bookkeeper-usage-rollover
+    runtime: docker
+    plan: starter
+    schedule: "0 0 1 * *"  # 00:00 UTC on 1st of each month
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: LOG_LEVEL
+        value: "INFO"
+    
+    startCommand: "python scripts/roll_usage_month.py"

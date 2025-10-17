@@ -58,6 +58,16 @@ app.middleware("http")(csrf_protect)
 logger.info("✅ CSRF protection middleware enabled")
 
 # ============================================================================
+# API Key Authentication Middleware (runs before entitlement checks)
+# ============================================================================
+try:
+    from app.middleware.api_key_auth import APIKeyAuthMiddleware
+    app.add_middleware(APIKeyAuthMiddleware)
+    logger.info("✅ API key authentication middleware enabled")
+except ImportError as e:
+    logger.warning(f"⚠️  API key auth middleware not available: {e}")
+
+# ============================================================================
 # Billing Entitlement Middleware
 # ============================================================================
 try:
@@ -73,7 +83,7 @@ except ImportError as e:
 try:
     from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, notifications, onboarding, receipts, analytics as analytics_api
     from app.ui import routes as ui_routes
-    from app.routers import qbo as qbo_router
+    from app.routers import qbo as qbo_router, actions as actions_router
     
     # Include Phase 1 routers
     app.include_router(wave2_auth.router)
@@ -93,6 +103,9 @@ try:
     # Include QBO integration router
     app.include_router(qbo_router.router)
     
+    # Include GPT Actions router
+    app.include_router(actions_router.router)
+    
     # Include UI routes
     app.include_router(ui_routes.router, tags=["ui"])
     
@@ -104,6 +117,7 @@ try:
     
     logger.info("✅ Wave-2 Phase 1, 2a & 2b routes loaded successfully")
     logger.info("✅ QBO integration routes loaded")
+    logger.info("✅ GPT Actions discovery route loaded")
 except ImportError as e:
     logger.warning(f"⚠️  Wave-2 routes not available: {e}")
 

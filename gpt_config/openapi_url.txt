@@ -1,0 +1,39 @@
+# OpenAPI URL for GPT Actions
+
+**Production:**
+https://<your-domain>/openapi.json
+
+**Local Development:**
+http://localhost:8000/openapi.json
+
+**Render Staging:**
+https://ai-bookkeeper.onrender.com/openapi.json
+
+---
+
+## How to Import in GPT Builder
+
+1. Go to ChatGPT → Explore GPTs → Create
+2. Navigate to Configure → Actions
+3. Click "Import from URL"
+4. Paste the OpenAPI URL above
+5. ChatGPT will automatically import all endpoints and schemas
+
+## Authentication Setup
+
+After importing OpenAPI:
+
+1. In Actions → Authentication:
+   - Select: **API Key**
+   - Auth Type: **Bearer**
+   - API Key: Paste your API key from `scripts/create_api_key.py`
+   - Header Name: `Authorization` (default)
+
+2. Test connection:
+   - Click "Test" on any action
+   - Verify authentication works
+
+3. Privacy:
+   - Set to "Only me" for private pilot
+   - Or "Anyone with a link" for closed beta
+

@@ -503,6 +503,24 @@ class JEIdempotencyDB(Base):
     )
 
 
+class APIKeyDB(Base):
+    """API keys for GPT Actions authentication."""
+    __tablename__ = 'api_keys'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    token_hash = Column(String(64), nullable=False)  # SHA-256 hex
+    name = Column(String(255), nullable=True)  # Optional description
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    revoked_at = Column(DateTime, nullable=True)
+    
+    __table_args__ = (
+        Index('idx_api_keys_tenant_id', 'tenant_id'),
+        Index('idx_api_keys_token_hash', 'token_hash', unique=True),
+        Index('idx_api_keys_revoked_at', 'revoked_at'),
+    )
+
+
 # Import other models as needed for completeness
 Transaction = TransactionDB
 JournalEntry = JournalEntryDB

@@ -717,6 +717,187 @@ async def approve_journal_entries(
     }
 
 
+@app.post("/api/post/commit")
+async def commit_journal_entries(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """
+    Commit approved journal entries to QuickBooks Online with idempotency.
+    
+    Request body:
+    {
+        "approvals": [
+            {
+                "txn_id": "t1",
+                "je": {
+                    "txnDate": "2025-10-16",
+                    "refNumber": "AB-1001",
+                    "privateNote": "AI Bookkeeper",
+                    "lines": [
+                        {"amount": 150.00, "postingType": "Debit", "accountRef": {"value": "46"}},
+                        {"amount": 150.00, "postingType": "Credit", "accountRef": {"value": "7"}}
+                    ]
+                }
+            }
+        ]
+    }
+    
+    Response:
+    {
+        "results": [
+            {"txn_id": "t1", "qbo_doc_id": "123", "idempotent": false, "status": "posted"},
+            {"txn_id": "t2", "error": {"code": "UNBALANCED_JE", "message": "..."}, "status": "error"}
+        ]
+    }
+    
+    Errors (global):
+    - 402 ENTITLEMENT_REQUIRED - If no active subscription or over monthly cap
+    - 429 FREE_CAP_EXCEEDED - Should not apply to commit (only propose)
+    
+    Errors (per-item):
+    - UNBALANCED_JE - Debits != credits
+    - QBO_VALIDATION - QBO rejected entry
+    - QBO_UPSTREAM - QBO API unavailable
+    - QBO_UNAUTHORIZED - QBO not connected
+    """
+    from app.services.qbo import QBOService
+    from app.services.billing import BillingService
+    
+    # Parse request body
+    body = await request.json()
+    approvals = body.get("approvals", [])
+    
+    if not approvals:
+        raise HTTPException(status_code=400, detail="No approvals provided")
+    
+    # Get tenant ID from request state (set by middleware)
+    tenant_id = getattr(request.state, "tenant_id", None)
+    if not tenant_id:
+        # Fallback: extract from auth or default
+        # For now, use a placeholder - production should set this via middleware
+        tenant_id = body.get("tenant_id", "default_tenant")
+    
+    # Initialize services
+    qbo_service = QBOService(db)
+    billing_service = BillingService(db)
+    
+    results = []
+    posted_count = 0
+    
+    for approval in approvals:
+        txn_id = approval.get("txn_id")
+        je_payload = approval.get("je")
+        
+        if not je_payload:
+            results.append({
+                "txn_id": txn_id,
+                "status": "error",
+                "error": {
+                    "code": "MISSING_JE_PAYLOAD",
+                    "message": "Journal entry payload is required"
+                }
+            })
+            continue
+        
+        try:
+            # Post to QBO with idempotency
+            result = await qbo_service.post_idempotent_je(tenant_id, je_payload)
+            
+            results.append({
+                "txn_id": txn_id,
+                "qbo_doc_id": result["qbo_doc_id"],
+                "idempotent": result["idempotent"],
+                "status": "posted"
+            })
+            
+            # Increment posted count only for non-idempotent posts
+            if not result["idempotent"]:
+                posted_count += 1
+            
+        except ValueError as e:
+            # Balance validation error
+            error_str = str(e)
+            if "UNBALANCED_JE" in error_str:
+                results.append({
+                    "txn_id": txn_id,
+                    "status": "error",
+                    "error": {
+                        "code": "UNBALANCED_JE",
+                        "message": error_str.replace("UNBALANCED_JE:", "")
+                    }
+                })
+            else:
+                results.append({
+                    "txn_id": txn_id,
+                    "status": "error",
+                    "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": str(e)
+                    }
+                })
+        
+        except Exception as e:
+            # Map QBO errors to item-level errors
+            error_str = str(e)
+            
+            if "QBO_NOT_CONNECTED" in error_str or "QBO_UNAUTHORIZED" in error_str:
+                results.append({
+                    "txn_id": txn_id,
+                    "status": "error",
+                    "error": {
+                        "code": "QBO_UNAUTHORIZED",
+                        "message": "QuickBooks not connected. Please connect your QuickBooks account."
+                    }
+                })
+            elif "QBO_VALIDATION" in error_str:
+                safe_message = error_str.replace("QBO_VALIDATION:", "").strip()
+                results.append({
+                    "txn_id": txn_id,
+                    "status": "error",
+                    "error": {
+                        "code": "QBO_VALIDATION",
+                        "message": safe_message
+                    }
+                })
+            elif "QBO_UPSTREAM" in error_str or "QBO_RATE_LIMITED" in error_str:
+                results.append({
+                    "txn_id": txn_id,
+                    "status": "error",
+                    "error": {
+                        "code": "QBO_UPSTREAM",
+                        "message": "QuickBooks API unavailable. Please try again shortly."
+                    }
+                })
+            else:
+                logger.error(f"Unexpected error posting JE for txn {txn_id}: {e}")
+                results.append({
+                    "txn_id": txn_id,
+                    "status": "error",
+                    "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "Failed to post journal entry. Please try again."
+                    }
+                })
+    
+    # Increment posted count in usage (only for new posts, not idempotent)
+    if posted_count > 0:
+        try:
+            billing_service.increment_posted(tenant_id, count=posted_count)
+        except Exception as e:
+            logger.error(f"Failed to increment posted count: {e}")
+    
+    # Return 200 with per-item results (even if some failed)
+    return {
+        "results": results,
+        "summary": {
+            "total": len(approvals),
+            "posted": sum(1 for r in results if r["status"] == "posted"),
+            "errors": sum(1 for r in results if r["status"] == "error")
+        }
+    }
+
+
 @app.get("/api/chart-of-accounts")
 async def get_chart_of_accounts():
     """Get the chart of accounts."""

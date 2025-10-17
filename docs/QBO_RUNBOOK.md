@@ -611,6 +611,111 @@ sqlite3 ai_bookkeeper_demo.db "SELECT datetime(timestamp), tenant_id, action FRO
 
 ---
 
+## Commit Flow Integration
+
+The `/post/commit` endpoint aggregates approved journal entries and posts them to QuickBooks with idempotency.
+
+### Endpoint: POST /api/post/commit
+
+**Request:**
+```json
+{
+  "approvals": [
+    {
+      "txn_id": "t1",
+      "je": {
+        "txnDate": "2025-10-17",
+        "refNumber": "AB-1001",
+        "privateNote": "AI Bookkeeper",
+        "lines": [
+          {"amount": 150.00, "postingType": "Debit", "accountRef": {"value": "46"}},
+          {"amount": 150.00, "postingType": "Credit", "accountRef": {"value": "7"}}
+        ]
+      }
+    }
+  ]
+}
+```
+
+**Response (Success):**
+```json
+{
+  "results": [
+    {
+      "txn_id": "t1",
+      "qbo_doc_id": "12345",
+      "idempotent": false,
+      "status": "posted"
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "posted": 1,
+    "errors": 0
+  }
+}
+```
+
+**Response (Mixed):**
+```json
+{
+  "results": [
+    {
+      "txn_id": "t1",
+      "qbo_doc_id": "12345",
+      "idempotent": false,
+      "status": "posted"
+    },
+    {
+      "txn_id": "t2",
+      "status": "error",
+      "error": {
+        "code": "UNBALANCED_JE",
+        "message": "Debits (150.00) must equal credits (100.00)"
+      }
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "posted": 1,
+    "errors": 1
+  }
+}
+```
+
+### Behavior
+
+1. **Per-Item Processing:** Each approval is processed independently
+2. **No Short-Circuit:** Errors in one item don't block others
+3. **Idempotency:** Duplicate payloads return existing qbo_doc_id
+4. **Usage Tracking:** Only non-idempotent posts increment monthly counter
+5. **Global Gates:** Middleware blocks entire request if subscription inactive or over cap (402)
+
+### Example cURL
+
+```bash
+curl -X POST "http://localhost:8000/api/post/commit" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "approvals": [
+      {
+        "txn_id": "office_supplies_001",
+        "je": {
+          "txnDate": "2025-10-17",
+          "refNumber": "OS-001",
+          "lines": [
+            {"amount": 250.00, "postingType": "Debit", "accountRef": {"value": "46"}},
+            {"amount": 250.00, "postingType": "Credit", "accountRef": {"value": "33"}}
+          ]
+        }
+      }
+    ]
+  }'
+```
+
+---
+
 ## Appendix: Testing Checklist
 
 - [ ] OAuth flow completes successfully

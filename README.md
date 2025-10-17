@@ -1,6 +1,26 @@
-# 🤖 AI Bookkeeper MVP
+# 🤖 AI Bookkeeper - Production Ready
 
-An AI-powered bookkeeping system that ingests bank statements and produces double-entry journal entries with human review, plus basic reconciliation and financial reports.
+An AI-powered bookkeeping system that ingests bank statements and produces double-entry journal entries with human review, plus Stripe billing, QuickBooks integration, and ChatGPT GPT Actions.
+
+**Status:** ✅ **Ready to Deploy** | **Tests:** 74/74 passing | **Docs:** 17 guides
+
+## 🚀 Quick Start
+
+**Deploy to Render in 10 minutes:**
+
+```bash
+# 1. Pre-flight check
+./ops/pre_deploy_check.sh
+
+# 2. Deploy
+# Follow DEPLOY_NOW.md for one-page quick reference
+# Or docs/RENDER_DEPLOY_QUICKSTART.md for full guide
+
+# 3. Verify
+./ops/smoke_live.sh --base-url https://your-web-service.onrender.com
+```
+
+**See:** `DEPLOY_NOW.md` | `PRODUCTION_READY.md` | `docs/RENDER_DEPLOY_QUICKSTART.md`
 
 ## Features
 

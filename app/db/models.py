@@ -521,6 +521,52 @@ class APIKeyDB(Base):
     )
 
 
+class ConsentLogDB(Base):
+    """Consent log for training data opt-in/opt-out."""
+    __tablename__ = 'consent_log'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    state = Column(String(20), nullable=False)  # 'opt_in', 'opt_out'
+    actor = Column(String(255), nullable=True)  # user who changed it
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_consent_log_tenant_id', 'tenant_id'),
+        Index('idx_consent_log_created_at', 'created_at'),
+    )
+
+
+class LabelSaltDB(Base):
+    """Per-tenant salts for redacting training data."""
+    __tablename__ = 'label_salts'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    salt = Column(String(64), nullable=False)  # hex-encoded salt
+    rotated_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_label_salts_tenant_id', 'tenant_id'),
+    )
+
+
+class LabelEventDB(Base):
+    """Redacted label training events."""
+    __tablename__ = 'label_events'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    payload_redacted = Column(Text, nullable=False)  # JSON string with redacted data
+    approved_bool = Column(Boolean, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_label_events_tenant_id', 'tenant_id'),
+        Index('idx_label_events_created_at', 'created_at'),
+    )
+
+
 # Import other models as needed for completeness
 Transaction = TransactionDB
 JournalEntry = JournalEntryDB

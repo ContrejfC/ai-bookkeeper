@@ -83,7 +83,7 @@ except ImportError as e:
 try:
     from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, notifications, onboarding, receipts, analytics as analytics_api
     from app.ui import routes as ui_routes
-    from app.routers import qbo as qbo_router, actions as actions_router
+    from app.routers import qbo as qbo_router, actions as actions_router, privacy as privacy_router
     
     # Include Phase 1 routers
     app.include_router(wave2_auth.router)
@@ -106,6 +106,9 @@ try:
     # Include GPT Actions router
     app.include_router(actions_router.router)
     
+    # Include Privacy router
+    app.include_router(privacy_router.router)
+    
     # Include UI routes
     app.include_router(ui_routes.router, tags=["ui"])
     
@@ -118,6 +121,7 @@ try:
     logger.info("✅ Wave-2 Phase 1, 2a & 2b routes loaded successfully")
     logger.info("✅ QBO integration routes loaded")
     logger.info("✅ GPT Actions discovery route loaded")
+    logger.info("✅ Privacy & training data routes loaded")
 except ImportError as e:
     logger.warning(f"⚠️  Wave-2 routes not available: {e}")
 

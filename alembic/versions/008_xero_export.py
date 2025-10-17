@@ -1,7 +1,7 @@
 """xero export tables
 
 Revision ID: 008_xero_export
-Revises: 007_auth_hardening
+Revises: 006_receipt_fields
 Create Date: 2024-10-11
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '008_xero_export'
-down_revision = '007_auth_hardening'
+down_revision = '006_receipt_fields'
 branch_labels = None
 depends_on = None
 

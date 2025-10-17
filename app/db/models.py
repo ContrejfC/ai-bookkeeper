@@ -465,6 +465,44 @@ class UsageDailyDB(Base):
     )
 
 
+class QBOTokenDB(Base):
+    """QuickBooks Online OAuth tokens."""
+    __tablename__ = 'qbo_tokens'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    realm_id = Column(String(255), nullable=False)
+    access_token = Column(Text, nullable=False)
+    refresh_token = Column(Text, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    scope = Column(String(255), nullable=True)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_qbo_tokens_tenant_id', 'tenant_id', unique=True),
+        Index('idx_qbo_tokens_realm_id', 'realm_id'),
+        Index('idx_qbo_tokens_expires_at', 'expires_at'),
+    )
+
+
+class JEIdempotencyDB(Base):
+    """Journal entry idempotency tracking for QBO posting."""
+    __tablename__ = 'je_idempotency'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tenant_id = Column(String(255), nullable=False)
+    payload_hash = Column(String(64), nullable=False)  # SHA-256 hex
+    qbo_doc_id = Column(String(255), nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_je_idempotency_tenant_hash', 'tenant_id', 'payload_hash', unique=True),
+        Index('idx_je_idempotency_tenant_id', 'tenant_id'),
+        Index('idx_je_idempotency_qbo_doc_id', 'qbo_doc_id'),
+    )
+
+
 # Import other models as needed for completeness
 Transaction = TransactionDB
 JournalEntry = JournalEntryDB

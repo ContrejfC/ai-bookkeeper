@@ -73,6 +73,7 @@ except ImportError as e:
 try:
     from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, notifications, onboarding, receipts, analytics as analytics_api
     from app.ui import routes as ui_routes
+    from app.routers import qbo as qbo_router
     
     # Include Phase 1 routers
     app.include_router(wave2_auth.router)
@@ -89,6 +90,9 @@ try:
     app.include_router(receipts.router)
     app.include_router(analytics_api.router)
     
+    # Include QBO integration router
+    app.include_router(qbo_router.router)
+    
     # Include UI routes
     app.include_router(ui_routes.router, tags=["ui"])
     
@@ -99,6 +103,7 @@ try:
         pass  # Static directory may not exist in all environments
     
     logger.info("✅ Wave-2 Phase 1, 2a & 2b routes loaded successfully")
+    logger.info("✅ QBO integration routes loaded")
 except ImportError as e:
     logger.warning(f"⚠️  Wave-2 routes not available: {e}")
 

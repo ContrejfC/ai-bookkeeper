@@ -1,7 +1,7 @@
 """Add tenant_settings table for Wave-2 Phase 1
 
 Revision ID: 002_tenant_settings
-Revises: 001_initial_schema
+Revises: 001
 Create Date: 2024-10-11 15:00:00
 
 """
@@ -11,7 +11,7 @@ from datetime import datetime
 
 # revision identifiers, used by Alembic.
 revision = '002_tenant_settings'
-down_revision = '001_initial_schema'
+down_revision = '001'
 branch_labels = None
 depends_on = None
 

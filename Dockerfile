@@ -9,14 +9,14 @@ FROM node:20-slim AS frontend-builder
 WORKDIR /frontend
 
 # Copy frontend package files
-COPY frontend/package*.json ./
+COPY package*.json ./
 
 # Install dependencies (devDependencies needed for build). Use npm install
 # because this repo does not include a package-lock.json, which would break npm ci.
 RUN npm install
 
 # Copy frontend source code
-COPY frontend/ ./
+COPY . ./
 
 # Build Next.js app for production
 RUN npm run build
@@ -61,10 +61,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY . /app
 
 # Copy built Next.js frontend from Stage 1 (standalone mode)
-COPY --from=frontend-builder /frontend/.next/standalone /app/frontend/
-COPY --from=frontend-builder /frontend/.next/static /app/frontend/.next/static
-COPY --from=frontend-builder /frontend/public /app/frontend/public
-COPY --from=frontend-builder /frontend/package.json /app/frontend/package.json
+COPY --from=frontend-builder /frontend/.next/standalone /app/
+COPY --from=frontend-builder /frontend/.next/static /app/.next/static
+COPY --from=frontend-builder /frontend/public /app/public
+COPY --from=frontend-builder /frontend/package.json /app/package.json
 
 # Create necessary directories
 RUN mkdir -p logs/analytics reports/analytics artifacts/receipts data && \

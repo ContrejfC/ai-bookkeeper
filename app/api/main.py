@@ -50,6 +50,27 @@ app = FastAPI(
 )
 
 # ============================================================================
+# CORS Configuration
+# ============================================================================
+import os
+from fastapi.middleware.cors import CORSMiddleware
+
+# Get allowed origins from environment variable
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "https://app.ai-bookkeeper.app,https://ai-bookkeeper-web.onrender.com"
+).split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)
+logger.info(f"✅ CORS enabled for origins: {ALLOWED_ORIGINS}")
+
+# ============================================================================
 # P1.1 Security Patch: CSRF Protection Middleware
 # ============================================================================
 from app.auth.csrf import csrf_protect
@@ -82,7 +103,7 @@ except ImportError as e:
 # Wave-2 Phase 1, 2a & 2b: Import and register API routes
 # ============================================================================
 try:
-    from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, notifications, onboarding, receipts, analytics as analytics_api
+    from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, billing_v2, notifications, onboarding, receipts, analytics as analytics_api, tools, post_idempotency
     # from app.ui import routes as ui_routes  # DISABLED: Next.js serves UI pages
     from app.routers import qbo as qbo_router, actions as actions_router, privacy as privacy_router
     
@@ -93,13 +114,20 @@ try:
     app.include_router(audit_export.router)
     
     # Include Phase 2a routers
-    app.include_router(billing.router)
+    app.include_router(billing.router)  # Original billing
+    app.include_router(billing_v2.router, prefix="/v2")  # Enhanced billing with ad-ready pricing
     app.include_router(notifications.router)
     
     # Include Phase 2b routers
     app.include_router(onboarding.router)
     app.include_router(receipts.router)
     app.include_router(analytics_api.router)
+    
+    # Include Tools router (CSV cleaner, etc.)
+    app.include_router(tools.router)
+    
+    # Include Post idempotency router
+    app.include_router(post_idempotency.router)
     
     # Include QBO integration router
     app.include_router(qbo_router.router)

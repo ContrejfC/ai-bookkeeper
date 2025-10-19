@@ -11,7 +11,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY frontend/package.json frontend/package-lock.json* frontend/pnpm-lock.yaml* frontend/yarn.lock* ./
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
 
 # Install dependencies based on available lockfile
 RUN if [ -f pnpm-lock.yaml ]; then \
@@ -25,7 +25,7 @@ RUN if [ -f pnpm-lock.yaml ]; then \
     fi
 
 # Copy application code
-COPY frontend/ .
+COPY . .
 
 # Build Next.js with standalone output
 # ⚠️ NEXT_PUBLIC_* vars must be available at BUILD TIME
@@ -79,4 +79,3 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # ⚠️ MUST bind to $PORT environment variable (Render provides this)
 # Standalone server.js reads PORT and HOSTNAME from env
 CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=${PORT:-3000} node server.js"]
-

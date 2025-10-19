@@ -1,0 +1,67 @@
+{
+  "plans": {
+    "starter_monthly": "price_starter_monthly_placeholder",
+    "starter_annual": "price_starter_annual_placeholder",
+    "team_monthly": "price_team_monthly_placeholder",
+    "team_annual": "price_team_annual_placeholder",
+    "firm_monthly": "price_firm_monthly_placeholder",
+    "firm_annual": "price_firm_annual_placeholder",
+    "pilot_monthly": "price_pilot_monthly_placeholder"
+  },
+  "overage": {
+    "starter_tx": "price_overage_starter_placeholder",
+    "team_tx": "price_overage_team_placeholder",
+    "firm_tx": "price_overage_firm_placeholder",
+    "enterprise_tx": "price_overage_enterprise_placeholder"
+  },
+  "addons": {
+    "extra_entity_starter_team": "price_addon_entity_starter_team_placeholder",
+    "extra_entity_firm": "price_addon_entity_firm_placeholder",
+    "sso_saml": "price_addon_sso_placeholder",
+    "white_label": "price_addon_whitelabel_placeholder",
+    "retention_24m": "price_addon_retention_placeholder",
+    "priority_support": "price_addon_priority_support_placeholder"
+  },
+  "coupons": {
+    "nonprofit_10": "coupon_nonprofit_10_placeholder"
+  },
+  "_instructions": "Replace all _placeholder values with actual Stripe price IDs from your Stripe Dashboard. Go to: https://dashboard.stripe.com/products → Copy price IDs → Update this file → Redeploy backend.",
+  "_pricing_reference": {
+    "starter": {
+      "monthly": 49,
+      "annual": 41,
+      "entities": 1,
+      "transactions_monthly": 500,
+      "overage_rate": 0.03
+    },
+    "team": {
+      "monthly": 149,
+      "annual": 124,
+      "entities": 3,
+      "transactions_monthly": 2000,
+      "overage_rate": 0.02
+    },
+    "firm": {
+      "monthly": 499,
+      "annual": 414,
+      "entities": 10,
+      "transactions_monthly": 10000,
+      "overage_rate": 0.015
+    },
+    "enterprise": {
+      "monthly": "custom",
+      "annual": "custom",
+      "entities": 25,
+      "transactions_monthly": 25000,
+      "overage_rate": 0.01
+    },
+    "pilot": {
+      "monthly": 99,
+      "duration_months": 3,
+      "entities": 3,
+      "transactions_monthly": 3000,
+      "auto_migrate_to": "team_or_firm"
+    }
+  }
+}
+

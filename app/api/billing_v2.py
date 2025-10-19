@@ -37,34 +37,66 @@ APP_URL = os.getenv("NEXT_PUBLIC_BASE_URL", "https://app.ai-bookkeeper.app")
 if STRIPE_AVAILABLE and STRIPE_SECRET_KEY:
     stripe.api_key = STRIPE_SECRET_KEY
 
-# Stripe Price IDs - these should be created in Stripe Dashboard
-# Format: price_XXXXX
-STRIPE_PRICES = {
-    # Monthly subscriptions
-    "starter_monthly": os.getenv("STRIPE_PRICE_STARTER_MONTHLY", "price_starter_monthly"),
-    "team_monthly": os.getenv("STRIPE_PRICE_TEAM_MONTHLY", "price_team_monthly"),
-    "firm_monthly": os.getenv("STRIPE_PRICE_FIRM_MONTHLY", "price_firm_monthly"),
-    "pilot_monthly": os.getenv("STRIPE_PRICE_PILOT_MONTHLY", "price_pilot_monthly"),
+# Load Stripe Price IDs from config file or environment variables
+import json
+from pathlib import Path
+
+def load_stripe_prices():
+    """Load Stripe price IDs from config file or environment variables"""
+    config_path = Path(__file__).parent.parent.parent / "config" / "stripe_price_map.json"
     
-    # Annual subscriptions (17% discount)
-    "starter_annual": os.getenv("STRIPE_PRICE_STARTER_ANNUAL", "price_starter_annual"),
-    "team_annual": os.getenv("STRIPE_PRICE_TEAM_ANNUAL", "price_team_annual"),
-    "firm_annual": os.getenv("STRIPE_PRICE_FIRM_ANNUAL", "price_firm_annual"),
+    if config_path.exists():
+        try:
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+                return {
+                    # Plans
+                    "starter_monthly": config["plans"]["starter_monthly"],
+                    "team_monthly": config["plans"]["team_monthly"],
+                    "firm_monthly": config["plans"]["firm_monthly"],
+                    "pilot_monthly": config["plans"]["pilot_monthly"],
+                    "starter_annual": config["plans"]["starter_annual"],
+                    "team_annual": config["plans"]["team_annual"],
+                    "firm_annual": config["plans"]["firm_annual"],
+                    # Overage
+                    "overage_starter": config["overage"]["starter_tx"],
+                    "overage_team": config["overage"]["team_tx"],
+                    "overage_firm": config["overage"]["firm_tx"],
+                    "overage_enterprise": config["overage"]["enterprise_tx"],
+                    # Add-ons
+                    "addon_extra_entity_starter": config["addons"]["extra_entity_starter_team"],
+                    "addon_extra_entity_firm": config["addons"]["extra_entity_firm"],
+                    "addon_sso": config["addons"]["sso_saml"],
+                    "addon_whitelabel": config["addons"]["white_label"],
+                    "addon_retention": config["addons"]["retention_24m"],
+                    "addon_priority_support": config["addons"]["priority_support"],
+                }
+        except Exception as e:
+            logger.warning(f"Failed to load stripe_price_map.json: {e}, falling back to env vars")
     
-    # Metered overage prices (per transaction)
-    "overage_starter": os.getenv("STRIPE_PRICE_OVERAGE_STARTER", "price_overage_starter"),
-    "overage_team": os.getenv("STRIPE_PRICE_OVERAGE_TEAM", "price_overage_team"),
-    "overage_firm": os.getenv("STRIPE_PRICE_OVERAGE_FIRM", "price_overage_firm"),
-    "overage_enterprise": os.getenv("STRIPE_PRICE_OVERAGE_ENTERPRISE", "price_overage_enterprise"),
-    
-    # Add-ons
-    "addon_extra_entity_starter": os.getenv("STRIPE_PRICE_ADDON_ENTITY_STARTER", "price_addon_entity_starter"),
-    "addon_extra_entity_firm": os.getenv("STRIPE_PRICE_ADDON_ENTITY_FIRM", "price_addon_entity_firm"),
-    "addon_sso": os.getenv("STRIPE_PRICE_ADDON_SSO", "price_addon_sso"),
-    "addon_whitelabel": os.getenv("STRIPE_PRICE_ADDON_WHITELABEL", "price_addon_whitelabel"),
-    "addon_retention": os.getenv("STRIPE_PRICE_ADDON_RETENTION", "price_addon_retention"),
-    "addon_priority_support": os.getenv("STRIPE_PRICE_ADDON_PRIORITY_SUPPORT", "price_addon_priority_support"),
-}
+    # Fallback to environment variables
+    return {
+        "starter_monthly": os.getenv("STRIPE_PRICE_STARTER_MONTHLY", "price_starter_monthly"),
+        "team_monthly": os.getenv("STRIPE_PRICE_TEAM_MONTHLY", "price_team_monthly"),
+        "firm_monthly": os.getenv("STRIPE_PRICE_FIRM_MONTHLY", "price_firm_monthly"),
+        "pilot_monthly": os.getenv("STRIPE_PRICE_PILOT_MONTHLY", "price_pilot_monthly"),
+        "starter_annual": os.getenv("STRIPE_PRICE_STARTER_ANNUAL", "price_starter_annual"),
+        "team_annual": os.getenv("STRIPE_PRICE_TEAM_ANNUAL", "price_team_annual"),
+        "firm_annual": os.getenv("STRIPE_PRICE_FIRM_ANNUAL", "price_firm_annual"),
+        "overage_starter": os.getenv("STRIPE_PRICE_OVERAGE_STARTER", "price_overage_starter"),
+        "overage_team": os.getenv("STRIPE_PRICE_OVERAGE_TEAM", "price_overage_team"),
+        "overage_firm": os.getenv("STRIPE_PRICE_OVERAGE_FIRM", "price_overage_firm"),
+        "overage_enterprise": os.getenv("STRIPE_PRICE_OVERAGE_ENTERPRISE", "price_overage_enterprise"),
+        "addon_extra_entity_starter": os.getenv("STRIPE_PRICE_ADDON_ENTITY_STARTER", "price_addon_entity_starter"),
+        "addon_extra_entity_firm": os.getenv("STRIPE_PRICE_ADDON_ENTITY_FIRM", "price_addon_entity_firm"),
+        "addon_sso": os.getenv("STRIPE_PRICE_ADDON_SSO", "price_addon_sso"),
+        "addon_whitelabel": os.getenv("STRIPE_PRICE_ADDON_WHITELABEL", "price_addon_whitelabel"),
+        "addon_retention": os.getenv("STRIPE_PRICE_ADDON_RETENTION", "price_addon_retention"),
+        "addon_priority_support": os.getenv("STRIPE_PRICE_ADDON_PRIORITY_SUPPORT", "price_addon_priority_support"),
+    }
+
+STRIPE_PRICES = load_stripe_prices()
+logger.info(f"Loaded {len(STRIPE_PRICES)} Stripe price mappings")
 
 # Plan configurations
 PLAN_CONFIG = {

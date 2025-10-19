@@ -115,7 +115,20 @@ AI Bookkeeper uses a tiered subscription model with usage-based overage charges.
 - $0.02 per transaction overage
 - All Team features
 
-**Auto-migration:** After 3 months, automatically migrates to Team or Firm based on usage. Cancel anytime.
+**Auto-migration Rules:**
+- After 3 months (month 4), subscription automatically migrates based on usage:
+  - If average usage ≤ Team limits (3 entities, 2K tx/mo) → Migrate to **Team** ($149/mo)
+  - If average usage > Team limits → Migrate to **Firm** ($499/mo)
+- Customer receives email notification 7 days before migration
+- Customer can cancel anytime before migration to avoid charges
+- No migration if subscription is canceled
+
+**Implementation:**
+- Use Stripe **Subscription Schedule** to automate migration
+- Set schedule phases:
+  - Phase 1: Months 1-3 at $99/mo (Pilot plan)
+  - Phase 2: Month 4+ at Team or Firm price (based on usage analysis)
+- Cancellation prevents Phase 2 from starting
 
 **Stripe Price IDs:**
 - Monthly: `STRIPE_PRICE_PILOT_MONTHLY`

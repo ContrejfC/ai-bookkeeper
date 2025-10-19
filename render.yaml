@@ -45,7 +45,7 @@ services:
 
   # Frontend Web Service (Next.js)
   - type: web
-    name: ai-bookkeeper-web
+    name: ai-bookkeeper-web-1zg5
     env: node
     rootDir: frontend
     buildCommand: |

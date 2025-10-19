@@ -6,19 +6,13 @@
 # ============================================================================
 FROM node:20-slim AS frontend-builder
 
-WORKDIR /frontend
+WORKDIR /build
 
-# Copy frontend package files
+# Copy frontend files
 COPY frontend/package*.json ./
-
-# Install dependencies (devDependencies needed for build). Use npm install
-# because this repo does not include a package-lock.json, which would break npm ci.
 RUN npm install
 
-# Copy frontend source code
 COPY frontend/ ./
-
-# Build Next.js app for production
 RUN npm run build
 
 # ============================================================================
@@ -29,8 +23,7 @@ FROM python:3.11-slim
 # Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive \
-    NEXT_PUBLIC_API_URL=http://localhost:8000
+    DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies including Node.js
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -52,31 +45,32 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt /app/
+# Copy and install Python dependencies
+COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . /app
+COPY . .
 
-# Copy built Next.js frontend from Stage 1 (standalone mode)
-COPY --from=frontend-builder /frontend/.next/standalone /app/frontend/
-COPY --from=frontend-builder /frontend/.next/static /app/frontend/.next/static
-COPY --from=frontend-builder /frontend/public /app/frontend/public
-COPY --from=frontend-builder /frontend/package.json /app/frontend/package.json
+# Copy built Next.js frontend from Stage 1 (standalone output)
+COPY --from=frontend-builder /build/.next/standalone /app/
+COPY --from=frontend-builder /build/.next/static /app/ai-bookkeeper/frontend/.next/static
+COPY --from=frontend-builder /build/public /app/ai-bookkeeper/frontend/public
 
 # Create necessary directories
 RUN mkdir -p logs/analytics reports/analytics artifacts/receipts data && \
-    chmod -R 755 logs reports artifacts data frontend
+    chmod -R 755 logs reports artifacts data
 
-# Health check (Render uses port 10000)
+# Health check
 HEALTHCHECK --interval=30s --timeout=5s --retries=5 \
-    CMD curl -fsS http://localhost:10000/healthz || exit 1
+    CMD curl -fsS http://localhost:10000/ || exit 1
 
-# We'll use a startup script to run both backend and frontend
-COPY docker-entrypoint.sh /app/
+# Make entrypoint executable
 RUN chmod +x /app/docker-entrypoint.sh
 
-# Default command (Render will override via startCommand)
+# Expose port
+EXPOSE 10000
+
+# Start services
 CMD ["/app/docker-entrypoint.sh"]

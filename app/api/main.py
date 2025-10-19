@@ -439,6 +439,54 @@ async def get_company_jobs_api(company_id: str, limit: int = 50):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# === Slim OpenAPI for GPT Actions (≤30 operations) ============================
+import os
+from fastapi.responses import JSONResponse
+from fastapi.openapi.utils import get_openapi
+
+# Public base URL for the service (override in Render env if you want)
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://ai-bookkeeper.onrender.com")
+
+# Only expose endpoints GPT needs
+ALLOWED_GPT_PATHS = [
+    "/actions",
+    "/api/billing/status",
+    "/api/billing/create_checkout_session",
+    "/api/billing/portal_link",
+    "/api/auth/qbo/start",
+    "/api/qbo/status",
+    "/api/post/propose",
+    "/api/post/commit",
+]
+
+@app.get("/openapi.gpt.json", include_in_schema=False)
+def openapi_for_gpt():
+    """
+    A slim schema for ChatGPT Actions. Keeps total operations well under 30,
+    declares Bearer auth, and sets the required `servers` array.
+    """
+    schema = get_openapi(
+        title="AI Bookkeeper – GPT Actions",
+        version="1.0.0",
+        description="Slimmed schema for ChatGPT Actions (≤30 operations).",
+        routes=app.routes,
+    )
+
+    # Keep only the whitelisted paths
+    schema["paths"] = {p: v for p, v in schema.get("paths", {}).items() if p in ALLOWED_GPT_PATHS}
+
+    # Required by GPT Actions
+    schema["servers"] = [{"url": PUBLIC_BASE_URL, "description": "Production"}]
+
+    # Bearer auth to match GPT Action config (API Key → Bearer)
+    schema.setdefault("components", {}).setdefault("securitySchemes", {}).update(
+        {"BearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "Token"}}
+    )
+    schema["security"] = [{"BearerAuth": []}]
+
+    return JSONResponse(schema)
+# =============================================================================
+
 # Create tables
 Base.metadata.create_all(bind=engine)
 

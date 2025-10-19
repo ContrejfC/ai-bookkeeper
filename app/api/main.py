@@ -46,7 +46,7 @@ app = FastAPI(
     title="AI Bookkeeper",
     description="AI-powered bookkeeping with automated journal entry posting",
     version="0.2.1-beta",
-    servers=[{"url": "https://ai-bookkeeper.onrender.com", "description": "Production"}]
+    servers=[{"url": "https://api.ai-bookkeeper.app", "description": "Production"}]
 )
 
 # ============================================================================
@@ -445,7 +445,7 @@ from fastapi.responses import JSONResponse
 from fastapi.openapi.utils import get_openapi
 
 # Public base URL for the service (override in Render env if you want)
-PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://ai-bookkeeper.onrender.com")
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://api.ai-bookkeeper.app")
 
 # Only expose endpoints GPT needs
 ALLOWED_GPT_PATHS = [

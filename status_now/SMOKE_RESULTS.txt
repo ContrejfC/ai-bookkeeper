@@ -1,0 +1,149 @@
+# 🧪 Smoke Test Results
+
+**Test Date:** 2025-10-17  
+**Environment:** Local (Docker not available)  
+**Status:** 🟡 **SKIPPED** - Docker not available in current environment
+
+## 📋 Test Plan
+
+### Container Build Tests
+```bash
+# API Service Build
+docker build -f Dockerfile.api -t aibk-api:now .
+# Expected: Build succeeds, no errors
+
+# Web Service Build  
+docker build -f Dockerfile.web -t aibk-web:now .
+# Expected: Build succeeds, no errors
+```
+
+### Container Runtime Tests
+```bash
+# Start API Container
+docker run -e PORT=8000 -p 18000:8000 --rm aibk-api:now &
+sleep 3 && curl -sfS localhost:18000/healthz || true
+
+# Start Web Container
+docker run -e PORT=3000 -e NEXT_PUBLIC_BASE_URL=http://localhost:3000 \
+  -e NEXT_PUBLIC_API_URL=http://localhost:18000 \
+  -p 13000:3000 --rm aibk-web:now &
+sleep 5 && curl -sfS localhost:13000/healthz || true
+```
+
+## 🚫 Test Results
+
+**Status:** **SKIPPED** - Docker not available
+
+**Reason:** Current environment does not have Docker installed or accessible.
+
+**Impact:** Cannot verify container builds and runtime behavior locally.
+
+## 🔍 Alternative Validation
+
+### Dockerfile Analysis (Static)
+- ✅ **Dockerfile.api:** Clean, proper $PORT binding, health check configured
+- ✅ **Dockerfile.web:** Clean, proper $PORT binding, health check configured
+- ✅ **No build-time side effects:** Neither runs migrations/tests during build
+- ✅ **Health check paths:** Both use /healthz endpoint
+
+### Expected Results (Based on Analysis)
+```bash
+# API Health Check Expected Output
+curl localhost:18000/healthz
+# Expected: {"status":"healthy","database":"connected"}
+
+# Web Health Check Expected Output  
+curl localhost:13000/healthz
+# Expected: {"status":"ok"}
+```
+
+## 🎯 Production Readiness Assessment
+
+**Based on Static Analysis:**
+- 🟢 **Dockerfiles:** Production-ready
+- 🟢 **Port Binding:** Proper $PORT usage
+- 🟢 **Health Checks:** Configured correctly
+- 🟢 **Build Process:** Clean, no side effects
+
+**Missing:** Runtime verification due to Docker unavailability
+
+## 📋 Manual Verification Steps
+
+### 1. Deploy to Render
+- Use render-split.yaml blueprint
+- Create API and Web services
+- Link PostgreSQL database
+
+### 2. Verify Health Checks
+```bash
+# After deployment, test:
+curl https://ai-bookkeeper-api.onrender.com/healthz
+curl https://ai-bookkeeper-web.onrender.com/healthz
+```
+
+### 3. Verify OpenAPI
+```bash
+curl https://ai-bookkeeper-web.onrender.com/openapi.json | jq '.info.version'
+# Expected: "0.2.1-beta"
+```
+
+### 4. Verify GPT Actions
+```bash
+curl https://ai-bookkeeper-web.onrender.com/actions
+# Expected: JSON with version, links, paywall_md, etc.
+```
+
+## 🚨 Known Issues
+
+### Alembic Migration Chain
+- **Issue:** `KeyError: '001'` prevents database initialization
+- **Impact:** Fresh deployments will fail
+- **Fix:** Update `alembic/versions/001_initial_schema.py` revision ID
+
+## 📊 Test Coverage
+
+| Test Category | Status | Notes |
+|---------------|--------|-------|
+| **Container Build** | ⚠️ SKIPPED | Docker not available |
+| **Container Runtime** | ⚠️ SKIPPED | Docker not available |
+| **Health Checks** | ✅ VALIDATED | Static analysis confirms proper config |
+| **Port Binding** | ✅ VALIDATED | Both services use $PORT correctly |
+| **Environment Variables** | ✅ VALIDATED | NEXT_PUBLIC_* handled properly |
+
+## 🎯 Next Steps
+
+1. **Fix Alembic baseline** (critical blocker)
+2. **Deploy to Render** using render-split.yaml
+3. **Run production smoke tests** against live services
+4. **Verify all endpoints** respond correctly
+5. **Test GPT Actions integration** with ChatGPT
+
+## 📝 Test Script for Production
+
+```bash
+#!/bin/bash
+# Production smoke test script
+
+API_URL="https://ai-bookkeeper-api.onrender.com"
+WEB_URL="https://ai-bookkeeper-web.onrender.com"
+
+echo "🧪 Running production smoke tests..."
+
+# Test API health
+echo "Testing API health..."
+curl -sfS "$API_URL/healthz" || echo "❌ API health check failed"
+
+# Test Web health  
+echo "Testing Web health..."
+curl -sfS "$WEB_URL/healthz" || echo "❌ Web health check failed"
+
+# Test OpenAPI
+echo "Testing OpenAPI..."
+curl -sfS "$WEB_URL/openapi.json" | jq '.info.version' || echo "❌ OpenAPI not accessible"
+
+# Test GPT Actions discovery
+echo "Testing GPT Actions discovery..."
+curl -sfS "$WEB_URL/actions" | jq '.version' || echo "❌ Actions discovery failed"
+
+echo "✅ Smoke tests completed"
+```

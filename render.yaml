@@ -28,7 +28,6 @@ services:
     
     # Run migrations automatically on deploy (|| true makes it non-blocking)
     preDeployCommand: "alembic current || true"
-    postDeployCommand: "alembic upgrade head"
   
   # Background Worker (RQ) - requires Starter plan or higher
   - type: worker

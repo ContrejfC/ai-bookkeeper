@@ -16,6 +16,7 @@ echo "Waiting for backend to be ready..."
 sleep 5
 
 # Start Next.js frontend on port 10000 (Render's exposed port)
+cd /app/frontend
 echo "Starting Next.js frontend on port 10000..."
 PORT=10000 HOSTNAME=0.0.0.0 node server.js &
 FRONTEND_PID=$!

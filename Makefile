@@ -1,10 +1,11 @@
-.PHONY: help smoke usage monthend test-api test-e2e lint format clean
+.PHONY: help validate smoke usage monthend test-api test-e2e lint format clean
 
 # Default target
 help:
 	@echo "AI Bookkeeper - Ad-Ready Makefile"
 	@echo ""
 	@echo "Available targets:"
+	@echo "  make validate   - Run pre-launch validation (all 8 criteria)"
 	@echo "  make smoke      - Run E2E smoke tests against staging/production"
 	@echo "  make usage      - Simulate transaction usage (600 tx for testing)"
 	@echo "  make monthend   - Run month-end billing job"
@@ -13,6 +14,11 @@ help:
 	@echo "  make lint       - Run linters (Python + TypeScript)"
 	@echo "  make format     - Format code (Black + Prettier)"
 	@echo "  make clean      - Clean temporary files"
+
+# Pre-launch validation
+validate:
+	@echo "Running pre-launch validation..."
+	@python3 scripts/validate_prelaunch.py --verbose
 
 # E2E smoke tests
 smoke:

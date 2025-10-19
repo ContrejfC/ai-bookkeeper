@@ -1,18 +1,12 @@
 services:
-  # Backend API Service (FastAPI)
+  # Single Web Service (FastAPI + Next.js in Docker)
   - type: web
-    name: ai-bookkeeper-api
-    env: python
-    rootDir: app
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r ../requirements.txt
-    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    name: ai-bookkeeper
+    env: docker
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /healthz
     autoDeploy: true
     envVars:
-      - key: PYTHON_VERSION
-        value: "3.11.9"
       - key: DATABASE_URL
         sync: false
       - key: REDIS_URL
@@ -22,7 +16,7 @@ services:
       - key: PASSWORD_RESET_SECRET
         generateValue: true
       - key: ALLOWED_ORIGINS
-        sync: false  # set after first web deploy, e.g. https://ai-bookkeeper-web.onrender.com
+        sync: false
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_WEBHOOK_SECRET
@@ -39,24 +33,10 @@ services:
         value: "tesseract"
       - key: LOG_LEVEL
         value: "INFO"
-    
-    # Run migrations automatically on deploy
-    preDeployCommand: "alembic current || true"
-
-  # Frontend Web Service (Next.js)
-  - type: web
-    name: ai-bookkeeper-web-1zg5
-    env: node
-    rootDir: frontend
-    buildCommand: |
-      if [ -f package-lock.json ]; then npm ci; else npm install; fi
-      npm run build
-    startCommand: npm run start
-    autoDeploy: true
-    envVars:
-      - key: NODE_VERSION
-        value: "20"
       - key: NEXT_PUBLIC_API_URL
-        value: "https://ai-bookkeeper-api-1zg5.onrender.com"
+        value: "https://ai-bookkeeper.onrender.com"
       - key: NEXT_PUBLIC_GA_MEASUREMENT_ID
         sync: false
+
+    # Run migrations automatically on deploy
+    preDeployCommand: "alembic current || true"

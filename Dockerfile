@@ -1,76 +1,52 @@
-# AI Bookkeeper - Production Dockerfile for Render
-# Multi-stage build: Node.js for frontend + Python for backend
+# Multi-stage Dockerfile for AI Bookkeeper
+# Stage 1: Build Next.js frontend
+FROM node:20-alpine AS frontend-builder
 
-# ============================================================================
-# Stage 1: Build Next.js Frontend
-# ============================================================================
-FROM node:20-slim AS frontend-builder
-
-WORKDIR /build
-
-# Copy frontend files
+WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm ci --only=production
 
 COPY frontend/ ./
 RUN npm run build
 
-# ============================================================================
-# Stage 2: Python Backend with Frontend Static Files
-# ============================================================================
+# Stage 2: Python backend with frontend
 FROM python:3.11-slim
 
-# Environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive
-
-# Install system dependencies including Node.js
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
     tesseract-ocr \
+    tesseract-ocr-eng \
     libtesseract-dev \
-    libleptonica-dev \
-    ghostscript \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    curl \
-    build-essential \
-    libpq-dev \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
 
-# Copy and install Python dependencies
-COPY requirements.txt ./
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
+COPY app/ ./app/
+COPY alembic/ ./alembic/
+COPY alembic.ini ./
+COPY scripts/ ./scripts/
 
-# Copy built Next.js frontend from Stage 1 (standalone output)
-COPY --from=frontend-builder /build/.next/standalone /app/
-COPY --from=frontend-builder /build/.next/static /app/ai-bookkeeper/frontend/.next/static
-COPY --from=frontend-builder /build/public /app/ai-bookkeeper/frontend/public
+# Copy built frontend from Stage 1
+COPY --from=frontend-builder /app/frontend/.next ./frontend/.next
+COPY --from=frontend-builder /app/frontend/public ./frontend/public
+COPY --from=frontend-builder /app/frontend/package.json ./frontend/
 
-# Create necessary directories
-RUN mkdir -p logs/analytics reports/analytics artifacts/receipts data && \
-    chmod -R 755 logs reports artifacts data
+# Create startup script
+RUN echo '#!/bin/bash\n\
+cd /app\n\
+uvicorn app.api.main:app --host 0.0.0.0 --port 8000 &\n\
+cd frontend && npm start -- -p 10000 &\n\
+wait' > /app/start.sh && chmod +x /app/start.sh
+
+EXPOSE 8000 10000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=5s --retries=5 \
-    CMD curl -fsS http://localhost:10000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/healthz || exit 1
 
-# Make entrypoint executable
-RUN chmod +x /app/docker-entrypoint.sh
-
-# Expose port
-EXPOSE 10000
-
-# Start services
-CMD ["/app/docker-entrypoint.sh"]
+CMD ["/app/start.sh"]

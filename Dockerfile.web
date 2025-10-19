@@ -11,7 +11,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+COPY frontend/package.json frontend/package-lock.json* frontend/pnpm-lock.yaml* frontend/yarn.lock* ./
 
 # Install dependencies based on available lockfile
 RUN if [ -f pnpm-lock.yaml ]; then \
@@ -25,7 +25,7 @@ RUN if [ -f pnpm-lock.yaml ]; then \
     fi
 
 # Copy application code
-COPY . .
+COPY frontend/ .
 
 # Build Next.js with standalone output
 # ⚠️ NEXT_PUBLIC_* vars must be available at BUILD TIME

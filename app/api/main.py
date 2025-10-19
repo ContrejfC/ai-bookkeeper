@@ -484,6 +484,33 @@ def openapi_for_gpt():
     )
     schema["security"] = [{"BearerAuth": []}]
 
+    # Fix GPT Actions validation issues
+    for path, path_obj in schema["paths"].items():
+        for method, operation in path_obj.items():
+            # Truncate descriptions to 300 chars max
+            if "description" in operation and len(operation["description"]) > 300:
+                operation["description"] = operation["description"][:297] + "..."
+            
+            # Remove problematic parameters (header/cookie locations)
+            if "parameters" in operation:
+                operation["parameters"] = [
+                    p for p in operation["parameters"] 
+                    if p.get("in") not in ["header", "cookie"]
+                ]
+            
+            # Fix request body schemas
+            if "requestBody" in operation:
+                request_body = operation["requestBody"]
+                if "content" in request_body:
+                    for content_type, content_obj in request_body["content"].items():
+                        if "schema" in content_obj:
+                            schema_obj = content_obj["schema"]
+                            # Ensure schema is an object type
+                            if schema_obj.get("type") != "object":
+                                schema_obj["type"] = "object"
+                                schema_obj["properties"] = schema_obj.get("properties", {})
+                                schema_obj["required"] = schema_obj.get("required", [])
+
     return JSONResponse(schema)
 # =============================================================================
 

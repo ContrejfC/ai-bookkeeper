@@ -1,4 +1,5 @@
 # 🤖 AI Bookkeeper - Production Ready
+<!-- Auto-deploy test -->
 
 An AI-powered bookkeeping system that ingests bank statements and produces double-entry journal entries with human review, plus Stripe billing, QuickBooks integration, and ChatGPT GPT Actions.
 

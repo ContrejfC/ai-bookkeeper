@@ -35,7 +35,7 @@ COPY config/ config/
 COPY app/VERSION VERSION
 
 # Make scripts executable
-RUN chmod +x scripts/*.sh scripts/*.py
+RUN find scripts/ -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
 
 # ⚠️ NO BUILD-TIME SIDE EFFECTS:
 # - Do NOT run migrations (alembic upgrade head)
@@ -54,5 +54,5 @@ EXPOSE 8000
 # - Run migrations on container start (safe with || true fallback)
 # - Bind to $PORT environment variable (Render provides this)
 # - Use --proxy-headers for Render's reverse proxy
-CMD ["sh", "-c", "scripts/db_migrate.sh || true && uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"]
+CMD ["sh", "-c", "alembic upgrade head || true && uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"]
 

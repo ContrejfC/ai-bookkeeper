@@ -83,7 +83,7 @@ except ImportError as e:
 # ============================================================================
 try:
     from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, notifications, onboarding, receipts, analytics as analytics_api
-    from app.ui import routes as ui_routes
+    # from app.ui import routes as ui_routes  # DISABLED: Next.js serves UI pages
     from app.routers import qbo as qbo_router, actions as actions_router, privacy as privacy_router
     
     # Include Phase 1 routers
@@ -110,14 +110,20 @@ try:
     # Include Privacy router
     app.include_router(privacy_router.router)
     
-    # Include UI routes
-    app.include_router(ui_routes.router, tags=["ui"])
-    
-    # Mount static files for UI
-    try:
-        app.mount("/static", StaticFiles(directory="app/ui/static"), name="static")
-    except:
-        pass  # Static directory may not exist in all environments
+    # ============================================================================
+    # UI Routes: DISABLED to allow Next.js frontend to serve pages
+    # ============================================================================
+    # The Jinja2 landing page conflicts with Next.js frontend routing.
+    # Next.js will serve all pages (/, /pricing, /dashboard, etc.)
+    # API endpoints remain accessible at /api/* and /docs
+    # 
+    # app.include_router(ui_routes.router, tags=["ui"])
+    # 
+    # # Mount static files for UI
+    # try:
+    #     app.mount("/static", StaticFiles(directory="app/ui/static"), name="static")
+    # except:
+    #     pass  # Static directory may not exist in all environments
     
     logger.info("✅ Wave-2 Phase 1, 2a & 2b routes loaded successfully")
     logger.info("✅ QBO integration routes loaded")

@@ -140,8 +140,9 @@ RUN chmod +x /app/docker-entrypoint.sh
 # Expose Ports
 # ----------------------------------------------------------------------------
 # Port 8000: Backend API (internal, not exposed to internet)
-# Port 10000: Frontend UI (exposed to internet via Render/Cloud Run)
-EXPOSE 8000 10000
+# Port 8080/10000: Frontend UI (uses $PORT from Cloud Run, defaults to 10000 locally)
+# Cloud Run will route traffic to whatever port is set in $PORT environment variable
+EXPOSE 8000 8080 10000
 
 # ----------------------------------------------------------------------------
 # Health Check Configuration

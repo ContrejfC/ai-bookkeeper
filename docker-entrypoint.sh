@@ -5,16 +5,24 @@ set -e
 
 echo "🚀 Starting AI Bookkeeper..."
 
+# Use PORT from Cloud Run environment, default to 10000 for local dev
+FRONTEND_PORT=${PORT:-10000}
+BACKEND_PORT=8000
+
+echo "📋 Configuration:"
+echo "   Frontend will listen on: $FRONTEND_PORT"
+echo "   Backend will listen on: $BACKEND_PORT"
+
 # Start FastAPI backend
-echo "📡 Starting FastAPI backend on port 8000..."
+echo "📡 Starting FastAPI backend on port $BACKEND_PORT..."
 cd /app
-uvicorn app.api.main:app --host 0.0.0.0 --port 8000 &
+uvicorn app.api.main:app --host 0.0.0.0 --port $BACKEND_PORT &
 BACKEND_PID=$!
 
 # Wait for backend to be ready (max 30 seconds)
 echo "⏳ Waiting for backend to be ready..."
 for i in {1..30}; do
-  if curl -f http://localhost:8000/healthz >/dev/null 2>&1; then
+  if curl -f http://localhost:$BACKEND_PORT/healthz >/dev/null 2>&1; then
     echo "✅ Backend is ready!"
     break
   fi
@@ -25,10 +33,10 @@ for i in {1..30}; do
   sleep 1
 done
 
-# Start Next.js frontend
-echo "🌐 Starting Next.js frontend on port 10000..."
+# Start Next.js frontend on Cloud Run's PORT
+echo "🌐 Starting Next.js frontend on port $FRONTEND_PORT..."
 cd /app/frontend
-npm start -- -p 10000 &
+PORT=$FRONTEND_PORT npm start &
 FRONTEND_PID=$!
 
 echo "✅ Both services started successfully"

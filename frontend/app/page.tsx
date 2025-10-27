@@ -438,7 +438,7 @@ export default function LandingPage() {
                   size="md"
                   className="hover:scale-105 transition-transform"
                 >
-                  Log in
+                  Sign In
                 </Button>
                 <Button
                   as={Link}

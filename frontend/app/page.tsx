@@ -146,10 +146,10 @@ const features = [
 ];
 
 const stats = [
-  { value: "92%", label: "Automation Rate" },
-  { value: "5hrs", label: "Saved Weekly" },
-  { value: "500+", label: "Active Users" },
-  { value: "99.9%", label: "Uptime" }
+  { value: "4-Tier", label: "AI Decision System" },
+  { value: "CSV/OFX/PDF", label: "File Formats Supported" },
+  { value: "QBO + Xero", label: "Integrations" },
+  { value: "Live", label: "Production Status" }
 ];
 
 export default function LandingPage() {
@@ -511,7 +511,7 @@ export default function LandingPage() {
                 size="lg"
                 className="text-lg px-8 py-6 font-semibold shadow-2xl shadow-emerald-500/30 hover:shadow-3xl hover:shadow-emerald-500/40 hover:scale-110 transition-all"
               >
-                Get Started Free
+                Create Account
               </Button>
               <Button
                 as={Link}
@@ -531,7 +531,7 @@ export default function LandingPage() {
               transition={{ delay: 0.8 }}
               className="flex flex-wrap justify-center gap-6 text-sm text-foreground/40 mb-16"
             >
-              {["SOC 2 Compliant", "Bank-Grade Security", "Free Tier Available"].map((item, i) => (
+              {["SOC 2 Controls", "PII Redaction", "JWT Auth + CSRF Protection"].map((item, i) => (
                 <motion.div
                   key={item}
                   initial={{ opacity: 0, x: -20 }}
@@ -576,7 +576,7 @@ export default function LandingPage() {
           </motion.div>
 
           {/* Features Grid */}
-          <div className="py-16">
+          <div id="features" className="py-16">
             <motion.h2
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -644,10 +644,10 @@ export default function LandingPage() {
             
             <div className="max-w-5xl mx-auto">
               {[
-                { step: "1", title: "Upload Transactions", desc: "Import from your bank, credit cards, or accounting software" },
-                { step: "2", title: "AI Reviews & Categorizes", desc: "Our ML model analyzes and categorizes each transaction with confidence scores" },
-                { step: "3", title: "Review & Approve", desc: "Low-confidence items flagged for your review with explanations" },
-                { step: "4", title: "Export & Post", desc: "Approved entries posted to your ledger or exported to QuickBooks/Xero" }
+                { step: "1", title: "Upload Bank Statements", desc: "Upload CSV, OFX, or PDF files from your bank or credit card" },
+                { step: "2", title: "4-Tier AI Categorization", desc: "Rules engine → Vector search → LLM reasoning → Human review (with confidence scores & explanations)" },
+                { step: "3", title: "Review & Approve", desc: "See every AI decision with reasoning. Low-confidence items (<60%) automatically flagged for review" },
+                { step: "4", title: "Export to QuickBooks or Xero", desc: "One-click OAuth2 export with idempotent posting (demo mode available for testing)" }
               ].map((item, i) => (
                 <motion.div
                   key={item.step}
@@ -672,19 +672,19 @@ export default function LandingPage() {
             </div>
           </motion.div>
 
-          {/* Social Proof */}
+          {/* Use Cases */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="py-16 text-center"
           >
-            <p className="text-sm text-foreground/40 mb-8">TRUSTED BY</p>
-            <div className="flex flex-wrap justify-center items-center gap-12 opacity-40">
-              <div className="text-2xl font-bold">StartupCo</div>
-              <div className="text-2xl font-bold">TechFirm</div>
-              <div className="text-2xl font-bold">Consultants Inc</div>
-              <div className="text-2xl font-bold">SMB Solutions</div>
+            <p className="text-sm text-foreground/40 mb-8">PERFECT FOR</p>
+            <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
+              <div className="text-lg font-semibold">Small Businesses</div>
+              <div className="text-lg font-semibold">Accountants</div>
+              <div className="text-lg font-semibold">Startups</div>
+              <div className="text-lg font-semibold">Freelancers</div>
             </div>
           </motion.div>
 
@@ -708,7 +708,7 @@ export default function LandingPage() {
                     Ready to automate your bookkeeping?
                   </h2>
                   <p className="text-lg text-foreground/60 mb-8 max-w-2xl mx-auto">
-                    Join hundreds of businesses saving hours every week with intelligent automation
+                    Transform your bookkeeping workflow with AI-powered categorization and intelligent automation
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <motion.div
@@ -722,7 +722,7 @@ export default function LandingPage() {
                         size="lg"
                         className="text-lg px-8 py-6 font-semibold shadow-xl shadow-emerald-500/40"
                       >
-                        Start Free Trial
+                        Get Started
                       </Button>
                     </motion.div>
                     <motion.div
@@ -751,7 +751,7 @@ export default function LandingPage() {
                   >
                   <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                     <span className="text-emerald-500">✓</span>
-                      No credit card required • Free forever tier
+                      Live in production • QuickBooks & Xero integrations
                     </span>
                   </motion.div>
                 </motion.div>
@@ -759,32 +759,32 @@ export default function LandingPage() {
             </Card>
           </motion.div>
 
-          {/* Testimonials */}
+          {/* Real Features Showcase */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="py-16"
           >
-            <h2 className="text-3xl font-bold text-center mb-12">What Our Users Say</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Built for Real Accounting Workflows</h2>
             <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {[
                 {
-                  quote: "Cut our monthly close time from 2 days to 4 hours. Game changer!",
-                  author: "Sarah Chen",
-                  role: "CFO, TechStartup"
+                  feature: "Multi-Tenant Architecture",
+                  description: "Manage multiple companies/entities from a single account with role-based access control (owner, staff)",
+                  icon: "🏢"
                 },
                 {
-                  quote: "The explainability feature gives me confidence in every automated decision.",
-                  author: "Mike Rodriguez",
-                  role: "Accountant, SMB Solutions"
+                  feature: "Audit Trail & Compliance",
+                  description: "Complete audit logging, PII redaction, request tracing, and SOC 2 control implementation",
+                  icon: "📋"
                 },
                 {
-                  quote: "SOC 2 compliance made our audit a breeze. Highly recommend.",
-                  author: "Emily Taylor",
-                  role: "COO, FinanceGroup"
+                  feature: "Idempotent Operations",
+                  description: "Safe re-processing with duplicate detection, webhook idempotency, and 24-hour deduplication windows",
+                  icon: "🔒"
                 }
-              ].map((testimonial, i) => (
+              ].map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -795,17 +795,9 @@ export default function LandingPage() {
                 >
                   <Card className="rounded-2xl shadow-lg border border-divider/50 h-full">
                     <CardBody className="p-6">
-                      <div className="text-4xl mb-4 opacity-20">"</div>
-                      <p className="text-foreground/80 mb-6 italic">{testimonial.quote}</p>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold">
-                          {testimonial.author[0]}
-                        </div>
-                        <div>
-                          <div className="font-semibold text-sm">{testimonial.author}</div>
-                          <div className="text-xs text-foreground/60">{testimonial.role}</div>
-                        </div>
-                      </div>
+                      <div className="text-4xl mb-4">{item.icon}</div>
+                      <h3 className="font-semibold text-lg mb-3">{item.feature}</h3>
+                      <p className="text-foreground/70 text-sm leading-relaxed">{item.description}</p>
                     </CardBody>
                   </Card>
                 </motion.div>
@@ -831,30 +823,30 @@ export default function LandingPage() {
               <div>
                 <h4 className="font-semibold mb-3">Product</h4>
                 <div className="flex flex-col gap-2 text-sm text-foreground/60">
-                  <Link href="#" className="hover:text-foreground">Features</Link>
-                  <Link href="#" className="hover:text-foreground">Pricing</Link>
-                  <Link href="#" className="hover:text-foreground">Integrations</Link>
-                  <Link href="#" className="hover:text-foreground">API Docs</Link>
+                  <Link href="#features" className="hover:text-foreground">Features</Link>
+                  <Link href="/pricing" className="hover:text-foreground">Pricing</Link>
+                  <Link href="/dashboard" className="hover:text-foreground">Dashboard</Link>
+                  <Link href="https://ai-bookkeeper-api-ww4vg3u7eq-uc.a.run.app/docs" target="_blank" className="hover:text-foreground">API Docs</Link>
                 </div>
               </div>
               
               <div>
-                <h4 className="font-semibold mb-3">Company</h4>
+                <h4 className="font-semibold mb-3">Resources</h4>
                 <div className="flex flex-col gap-2 text-sm text-foreground/60">
-                  <Link href="#" className="hover:text-foreground">About</Link>
-                  <Link href="#" className="hover:text-foreground">Blog</Link>
-                  <Link href="#" className="hover:text-foreground">Careers</Link>
-                  <Link href="#" className="hover:text-foreground">Contact</Link>
+                  <Link href="/welcome" className="hover:text-foreground">Getting Started</Link>
+                  <Link href="/export" className="hover:text-foreground">QuickBooks Setup</Link>
+                  <Link href="/rules" className="hover:text-foreground">Automation Rules</Link>
+                  <Link href="https://github.com/ContrejfC/ai-bookkeeper" target="_blank" className="hover:text-foreground">GitHub</Link>
                 </div>
               </div>
               
               <div>
                 <h4 className="font-semibold mb-3">Legal</h4>
                 <div className="flex flex-col gap-2 text-sm text-foreground/60">
-                  <Link href="#" className="hover:text-foreground">Privacy Policy</Link>
-                  <Link href="#" className="hover:text-foreground">Terms of Service</Link>
-                  <Link href="#" className="hover:text-foreground">Security</Link>
-                  <Link href="#" className="hover:text-foreground">Compliance</Link>
+                  <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+                  <Link href="/terms" className="hover:text-foreground">Terms of Service</Link>
+                  <Link href="/security" className="hover:text-foreground">Security</Link>
+                  <Link href="/dpa" className="hover:text-foreground">Data Processing</Link>
                 </div>
               </div>
             </div>
@@ -864,15 +856,26 @@ export default function LandingPage() {
                 © 2025 AI Bookkeeper. All rights reserved.
               </div>
               <div className="flex gap-4">
-                {["Twitter", "LinkedIn", "GitHub"].map((social) => (
-                  <Link
-                    key={social}
-                    href="#"
-                    className="text-foreground/60 hover:text-foreground text-sm"
-                  >
-                    {social}
-                  </Link>
-                ))}
+                <Link
+                  href="https://github.com/ContrejfC/ai-bookkeeper"
+                  target="_blank"
+                  className="text-foreground/60 hover:text-foreground text-sm"
+                >
+                  GitHub
+                </Link>
+                <Link
+                  href="https://ai-bookkeeper-api-ww4vg3u7eq-uc.a.run.app/docs"
+                  target="_blank"
+                  className="text-foreground/60 hover:text-foreground text-sm"
+                >
+                  API Docs
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="text-foreground/60 hover:text-foreground text-sm"
+                >
+                  Pricing
+                </Link>
               </div>
             </div>
           </div>

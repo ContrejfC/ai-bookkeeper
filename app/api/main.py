@@ -587,7 +587,28 @@ rules_engine = RulesEngine()
 
 @app.get("/")
 async def root():
-    """Root endpoint."""
+    """
+    Root API Endpoint - Health Check and Service Discovery
+    ======================================================
+    
+    Purpose:
+        - Quick health check (returns JSON with "version" field)
+        - Service discovery (lists available endpoints)
+        - Used by docker-entrypoint.sh to verify backend is ready
+    
+    Returns:
+        JSON with API metadata and endpoint map
+    
+    Response Example:
+        {
+            "message": "AI Bookkeeper API",
+            "version": "0.1.0",
+            "endpoints": {...}
+        }
+    
+    Status Codes:
+        200: API is healthy and ready to serve requests
+    """
     return {
         "message": "AI Bookkeeper API",
         "version": "0.1.0",
@@ -607,9 +628,43 @@ async def upload_statement(
     db: Session = Depends(get_db)
 ):
     """
-    Upload and parse a bank statement (CSV/OFX/PDF).
+    Upload Bank Statement - Multi-Format Transaction Ingestion
+    ==========================================================
     
-    Returns the parsed transactions.
+    Purpose:
+        Accepts bank statements in multiple formats and extracts transactions
+        for categorization and journal entry creation.
+    
+    Supported Formats:
+        - CSV: Bank export files (Amex, Chase, BofA, etc.)
+        - OFX: Open Financial Exchange format
+        - PDF: Bank statement PDFs (experimental)
+    
+    Flow:
+        1. Save uploaded file temporarily
+        2. Detect format from file extension
+        3. Parse transactions using format-specific parser
+        4. Save transactions to database
+        5. Return parsed transaction list
+    
+    Args:
+        file: Uploaded file (multipart/form-data)
+        db: Database session (injected)
+    
+    Returns:
+        {
+            "transactions": [...],
+            "count": int
+        }
+    
+    Error Handling:
+        - 400: Unsupported file format
+        - 500: Parse error or database failure
+    
+    Security:
+        - Files are saved to /tmp with UUID prefix
+        - Files are deleted after parsing (in try/finally)
+        - Max file size enforced by FastAPI
     """
     # Save uploaded file temporarily
     temp_path = f"/tmp/{uuid.uuid4().hex}_{file.filename}"
@@ -666,21 +721,77 @@ async def propose_journal_entries(
     current_user = Depends(get_current_user)
 ):
     """
-    Generate proposed journal entries for transactions.
+    Propose Journal Entries - AI-Powered Transaction Categorization
+    ================================================================
     
-    Uses tiered decisioning: rules → embeddings → LLM → human review
+    Purpose:
+        Generates double-entry journal entries for bank transactions using
+        a tiered AI decisioning system with confidence scoring.
+    
+    Decisioning Flow (Waterfall):
+        1. Rules Engine: Deterministic pattern matching (confidence: 1.0)
+        2. Vector Search: Historical transaction similarity (confidence: 0.8-0.95)
+        3. LLM Categorization: GPT-4 reasoning (confidence: 0.6-0.9)
+        4. Human Review: Low confidence items flagged (confidence: <0.6)
     
     Idempotency:
-    -----------
-    - Send `Idempotency-Key` header to prevent duplicate processing
-    - If same key is received within 24 hours, cached result is returned
-    - Key format: any unique string (e.g., UUID)
+        POST with header: `Idempotency-Key: <unique-id>`
+        - Prevents duplicate processing (24-hour cache)
+        - Returns cached result if key already processed
+        - Use UUIDs or transaction batch IDs
     
-    Entitlements:
-    ------------
-    - Checks transaction quota
-    - Returns quota headers in response
-    - 402 if quota exceeded
+    Entitlement Enforcement:
+        - Checks user's transaction quota (GET /api/billing/entitlements)
+        - Returns quota in response headers:
+            - X-Quota-Limit: Monthly limit
+            - X-Quota-Used: Transactions used this month
+            - X-Quota-Remaining: Remaining quota
+        - Returns 402 Payment Required if quota exceeded
+    
+    Args:
+        request: FastAPI request (for idempotency key)
+        response: FastAPI response (for quota headers)
+        txn_ids: Optional list of transaction IDs to process
+                 If None, processes all unprocessed transactions
+        db: Database session (injected)
+        current_user: Authenticated user (JWT token required)
+    
+    Returns:
+        {
+            "entries": [
+                {
+                    "txn_id": "...",
+                    "account": "6100 Office Supplies",
+                    "debit": 150.00,
+                    "credit": 0,
+                    "confidence": 0.92,
+                    "reasoning": "...",
+                    "source": "llm"
+                },
+                ...
+            ],
+            "count": int,
+            "high_confidence_count": int,
+            "needs_review_count": int
+        }
+    
+    Response Headers:
+        X-Quota-Limit: Monthly transaction limit
+        X-Quota-Used: Transactions processed this month
+        X-Quota-Remaining: Remaining quota
+    
+    Error Codes:
+        200: Success
+        400: Bad request (invalid transaction IDs)
+        402: Payment required (quota exceeded)
+        403: Forbidden (not authenticated)
+        409: Conflict (duplicate idempotency key with different request)
+        500: Internal server error
+    
+    Security:
+        - Requires JWT authentication
+        - Tenant isolation enforced
+        - Rate limiting applied
     """
     # Check entitlements
     from app.middleware.entitlements import check_entitlements, add_quota_headers, log_usage

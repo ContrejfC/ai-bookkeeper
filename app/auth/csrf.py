@@ -107,6 +107,7 @@ async def csrf_protect(request: Request, call_next):
     # Skip exempt routes
     exempt_paths = [
         "/api/auth/login",
+        "/api/auth/signup",  # Public endpoint - no session/CSRF token yet
         "/api/billing/stripe_webhook"
     ]
     

@@ -311,7 +311,7 @@ export default function WelcomePage() {
                 <h1 className="text-3xl font-bold mb-2">✅ Data Imported!</h1>
                 <p className="text-default-600">
                   {demoDataCreated 
-                    ? 'Your demo transactions are ready. Let's categorize them with AI!' 
+                    ? 'Your demo transactions are ready. Let\'s categorize them with AI!' 
                     : 'Your transactions have been imported. Ready for AI categorization?'}
                 </p>
               </div>

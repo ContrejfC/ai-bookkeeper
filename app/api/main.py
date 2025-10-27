@@ -552,7 +552,11 @@ def openapi_for_gpt():
 # =============================================================================
 
 # Create tables
-Base.metadata.create_all(bind=engine)
+# NOTE: Disabled in production - use Alembic migrations instead
+# In production/Cloud Run, database tables should be created via:
+#   alembic upgrade head
+# Uncomment below only for local development if needed:
+# Base.metadata.create_all(bind=engine)
 
 # Chart of Accounts (hardcoded for MVP)
 CHART_OF_ACCOUNTS = [

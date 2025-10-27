@@ -101,6 +101,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ----------------------------------------------------------------------------
 # FastAPI application
 COPY app/ ./app/
+# Configuration files
+COPY config/ ./config/
 # Database migrations
 COPY alembic/ ./alembic/
 # Alembic configuration

@@ -49,9 +49,9 @@ WORKDIR /app/frontend
 # If package.json doesn't change, npm install is cached
 COPY frontend/package*.json ./
 
-# Install ONLY production dependencies (skip devDependencies)
+# Install ALL dependencies (including devDependencies needed for build)
 # --ci uses package-lock.json for reproducible builds
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy all frontend source code
 COPY frontend/ ./
@@ -59,6 +59,9 @@ COPY frontend/ ./
 # Build Next.js for production
 # Creates optimized static bundle in .next/
 RUN npm run build
+
+# Remove devDependencies after build to reduce image size
+RUN npm prune --production
 
 # ============================================================================
 # STAGE 2: Production Runtime Container

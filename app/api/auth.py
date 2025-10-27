@@ -126,15 +126,65 @@ async def login(
     use_cookie: bool = True  # Query param to disable cookie for API clients
 ):
     """
-    Authenticate user and issue JWT token.
+    User Login - Authenticate and Issue JWT Token
+    ==============================================
     
-    Modes:
-    - dev: Allows magic link bypass (magic_token="dev")
-    - prod: Requires password validation
+    Purpose:
+        Authenticates user credentials and issues JWT token for API access.
+        Supports both password authentication (production) and magic token (development).
     
-    Response:
-    - Sets HttpOnly, Secure, SameSite=Lax cookie for UI
-    - Returns token in body for API clients
+    Authentication Modes:
+        1. Password (Production):
+           - Validates email and password hash
+           - Uses bcrypt for password verification
+        
+        2. Magic Token (Development Only):
+           - Set AUTH_MODE=dev in environment
+           - Use magic_token="dev" to bypass password
+           - For testing and development only
+    
+    Flow:
+        1. Look up user by email
+        2. Check user is active
+        3. Validate credentials (password or magic token)
+        4. Generate JWT token with user_id, email, role
+        5. Set HTTP-only cookie (if use_cookie=true)
+        6. Return success response with user details
+    
+    Request Body:
+        {
+            "email": "user@example.com",
+            "password": "securepass123",
+            "magic_token": null  // Optional, dev mode only
+        }
+    
+    Query Parameters:
+        use_cookie: bool = true (set false for API clients)
+    
+    Response (200 OK):
+        {
+            "success": true,
+            "user_id": "user-abc12345",
+            "email": "user@example.com",
+            "role": "owner",
+            "token": "eyJ..." // Only if use_cookie=false
+        }
+    
+    Error Codes:
+        401: Invalid credentials, inactive account, or invalid magic token
+        500: Database error or unexpected failure
+    
+    Security:
+        - CSRF protection: Exempted (stateless auth)
+        - Password: Verified with bcrypt.checkpw()
+        - JWT: Signed with HS256, 24-hour expiry
+        - Cookie: HTTP-only, Secure, SameSite=Lax
+        - Rate limiting: Applied by middleware
+    
+    Side Effects:
+        - Sets access_token cookie in browser
+        - Logs login event
+        - Updates last_login timestamp (if tracked)
     """
     # Query user by email
     user = db.query(UserDB).filter(UserDB.email == request.email).first()
@@ -216,9 +266,53 @@ async def signup(
     db: Session = Depends(get_db)
 ):
     """
-    Create a new user account.
+    User Signup - Create New Account
+    =================================
     
-    Creates a new user with owner role and sets up authentication.
+    Purpose:
+        Creates a new user account with email/password authentication.
+        Automatically assigns 'owner' role and issues JWT token.
+    
+    Flow:
+        1. Validate email is unique (check existing users)
+        2. Validate password strength (minimum 8 characters)
+        3. Hash password with bcrypt
+        4. Create user record with 'owner' role
+        5. Generate JWT token
+        6. Set HTTP-only cookie with token
+        7. Return user details
+    
+    Request Body:
+        {
+            "email": "user@example.com",
+            "password": "securepass123",
+            "full_name": "John Doe",
+            "tenant_name": "My Company"
+        }
+    
+    Response (200 OK):
+        {
+            "success": true,
+            "user_id": "user-abc12345",
+            "email": "user@example.com",
+            "role": "owner",
+            "message": "Account created successfully! Welcome to AI Bookkeeper."
+        }
+    
+    Error Codes:
+        400: Email already exists or password too weak
+        500: Database error or unexpected failure
+    
+    Security:
+        - CSRF protection: Exempted (no session yet)
+        - Password: Hashed with bcrypt
+        - JWT: Signed with HS256, stored in HTTP-only cookie
+        - Cookie: Secure, SameSite=Lax, 24-hour expiry
+    
+    Side Effects:
+        - Creates user record in database
+        - Sets access_token cookie in browser
+        - Logs signup event
     """
     import uuid
     import logging

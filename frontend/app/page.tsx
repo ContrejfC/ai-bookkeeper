@@ -766,43 +766,70 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="py-16"
           >
-            <h2 className="text-3xl font-bold text-center mb-12">Built for Real Accounting Workflows</h2>
-            <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">Built for Real Accounting Workflows</h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center text-foreground/60 mb-12 max-w-2xl mx-auto"
+            >
+              Enterprise-grade features for professional accounting teams
+            </motion.p>
+            
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto"
+            >
               {[
                 {
                   feature: "Multi-Tenant Architecture",
                   description: "Manage multiple companies/entities from a single account with role-based access control (owner, staff)",
-                  icon: "🏢"
+                  icon: "🏢",
+                  gradient: "from-emerald-500/10 to-teal-500/10"
                 },
                 {
                   feature: "Audit Trail & Compliance",
                   description: "Complete audit logging, PII redaction, request tracing, and SOC 2 control implementation",
-                  icon: "📋"
+                  icon: "📋",
+                  gradient: "from-teal-500/10 to-cyan-500/10"
                 },
                 {
                   feature: "Idempotent Operations",
                   description: "Safe re-processing with duplicate detection, webhook idempotency, and 24-hour deduplication windows",
-                  icon: "🔒"
+                  icon: "🔒",
+                  gradient: "from-cyan-500/10 to-blue-500/10"
                 }
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.2 }}
-                  whileHover={{ y: -5 }}
+                  variants={fadeInUp}
+                  whileHover={{
+                    y: -8,
+                    transition: { type: "spring", stiffness: 300 }
+                  }}
                 >
-                  <Card className="rounded-2xl shadow-lg border border-divider/50 h-full">
+                  <Card className={`rounded-2xl border border-divider/50 shadow-lg hover:shadow-2xl transition-shadow bg-gradient-to-br ${item.gradient} backdrop-blur-sm h-full`}>
                     <CardBody className="p-6">
-                      <div className="text-4xl mb-4">{item.icon}</div>
-                      <h3 className="font-semibold text-lg mb-3">{item.feature}</h3>
-                      <p className="text-foreground/70 text-sm leading-relaxed">{item.description}</p>
+                      <motion.div
+                        className="text-4xl mb-4 flex justify-center"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                      >
+                        {item.icon}
+                      </motion.div>
+                      <h3 className="text-xl font-semibold mb-2 text-center">{item.feature}</h3>
+                      <p className="text-foreground/60 text-sm leading-relaxed">
+                        {item.description}
+                      </p>
                     </CardBody>
                   </Card>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </main>
 

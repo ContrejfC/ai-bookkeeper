@@ -99,11 +99,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ----------------------------------------------------------------------------
 # Copy Backend Application Code
 # ----------------------------------------------------------------------------
-COPY app/ ./app/              # FastAPI application
-COPY alembic/ ./alembic/      # Database migrations
-COPY alembic.ini ./           # Alembic configuration
-COPY scripts/ ./scripts/      # Utility scripts
-COPY main.py ./               # Entry point
+# FastAPI application
+COPY app/ ./app/
+# Database migrations
+COPY alembic/ ./alembic/
+# Alembic configuration
+COPY alembic.ini ./
+# Utility scripts
+COPY scripts/ ./scripts/
+# Entry point
+COPY main.py ./
 
 # ----------------------------------------------------------------------------
 # Copy Built Frontend from Stage 1

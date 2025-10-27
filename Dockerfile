@@ -112,48 +112,21 @@ COPY --from=frontend-builder /app/frontend/package.json ./frontend/
 COPY --from=frontend-builder /app/frontend/node_modules ./frontend/node_modules
 
 # ----------------------------------------------------------------------------
-# Create Startup Script
+# Copy Startup Script
 # ----------------------------------------------------------------------------
 # This script starts both services in the background and waits for both
 #
 # Service 1: FastAPI Backend (Uvicorn)
 #   - Listens on 0.0.0.0:8000 (internal)
-#   - Auto-reloads on code changes (dev) or runs stable (prod)
+#   - Waits for backend to be healthy before starting frontend
 #
 # Service 2: Next.js Frontend
 #   - Listens on 0.0.0.0:10000 (exposed to internet)
-#   - Serves static pages and proxies API calls
+#   - Serves static pages and proxies API calls to backend
 #
-# The 'wait' command keeps container running until both services exit
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Starting AI Bookkeeper services..."\n\
-\n\
-# Start backend API\n\
-echo "→ Starting FastAPI backend on port 8000..."\n\
-cd /app\n\
-uvicorn app.api.main:app --host 0.0.0.0 --port 8000 &\n\
-BACKEND_PID=$!\n\
-\n\
-# Start frontend\n\
-echo "→ Starting Next.js frontend on port 10000..."\n\
-cd /app/frontend\n\
-npm start -- -p 10000 &\n\
-FRONTEND_PID=$!\n\
-\n\
-echo "✓ Services started"\n\
-echo "  Backend PID: $BACKEND_PID"\n\
-echo "  Frontend PID: $FRONTEND_PID"\n\
-\n\
-# Wait for both services (exit if either crashes)\n\
-wait -n\n\
-EXIT_CODE=$?\n\
-\n\
-echo "⚠ Service exited with code $EXIT_CODE"\n\
-echo "Shutting down..."\n\
-kill $BACKEND_PID $FRONTEND_PID 2>/dev/null\n\
-exit $EXIT_CODE\n\
-' > /app/start.sh && chmod +x /app/start.sh
+# The startup script ensures proper initialization order and health checking
+COPY docker-entrypoint.sh /app/
+RUN chmod +x /app/docker-entrypoint.sh
 
 # ----------------------------------------------------------------------------
 # Expose Ports
@@ -180,7 +153,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # Container Entry Point
 # ----------------------------------------------------------------------------
 # Run the startup script that launches both services
-CMD ["/app/start.sh"]
+CMD ["/app/docker-entrypoint.sh"]
 
 #===============================================================================
 # Building and Running:

@@ -100,8 +100,21 @@ export async function login(email: string, password?: string, magicToken?: strin
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ detail: 'Login failed' }));
-    throw new Error(errorData.detail || 'Login failed');
+    // Try to parse JSON error, fallback to text if not JSON
+    let errorMessage = 'Login failed';
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.detail || errorData.message || errorMessage;
+    } catch {
+      // Not JSON, try to get text
+      const text = await response.text();
+      if (text.includes('Not Found')) {
+        errorMessage = 'API endpoint not found. Please ensure the backend is running.';
+      } else {
+        errorMessage = `Server error: ${response.status} ${response.statusText}`;
+      }
+    }
+    throw new Error(errorMessage);
   }
 
   const data: LoginResponse = await response.json();

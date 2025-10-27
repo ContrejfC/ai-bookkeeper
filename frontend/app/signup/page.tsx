@@ -64,11 +64,27 @@ export default function SignupPage() {
         }),
       });
 
-      const data = await response.json();
-
+      // Check response status first
       if (!response.ok) {
-        throw new Error(data.detail || 'Signup failed');
+        // Try to parse JSON error, fallback to text if not JSON
+        let errorMessage = 'Signup failed';
+        try {
+          const data = await response.json();
+          errorMessage = data.detail || data.message || errorMessage;
+        } catch {
+          // Not JSON, try to get text
+          const text = await response.text();
+          if (text.includes('Not Found')) {
+            errorMessage = 'API endpoint not found. Please ensure the backend is running.';
+          } else {
+            errorMessage = `Server error: ${response.status} ${response.statusText}`;
+          }
+        }
+        throw new Error(errorMessage);
       }
+
+      // Response is OK, parse JSON
+      const data = await response.json();
 
       if (data.success) {
         // Signup successful - user is automatically logged in

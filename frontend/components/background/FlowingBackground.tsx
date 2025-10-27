@@ -9,6 +9,7 @@ export default function FlowingBackground() {
       <motion.svg
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 1200 800"
+        preserveAspectRatio="none"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         initial={{ opacity: 0 }}

@@ -50,8 +50,8 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 
 # Install ALL dependencies (including devDependencies needed for build)
-# --ci uses package-lock.json for reproducible builds
-RUN npm ci
+# Using npm install instead of npm ci for better compatibility in Cloud Build
+RUN npm install --legacy-peer-deps
 
 # Copy all frontend source code
 COPY frontend/ ./
@@ -61,7 +61,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Remove devDependencies after build to reduce image size
-RUN npm prune --production
+RUN npm prune --production --legacy-peer-deps
 
 # ============================================================================
 # STAGE 2: Production Runtime Container

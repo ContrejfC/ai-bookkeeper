@@ -26,7 +26,8 @@ import {
   Divider
 } from '@nextui-org/react';
 import { useAuth } from '@/contexts/auth-context';
-import { useEntitlements } from '@/components/EntitlementsGate';
+// Temporarily disabled for build debugging
+// import { useEntitlements } from '@/components/EntitlementsGate';
 
 interface OnboardingStatus {
   status: string;
@@ -43,7 +44,8 @@ interface OnboardingStatus {
 export default function WelcomePage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { entitlements, loading: entitlementsLoading } = useEntitlements();
+  // Temporarily disabled for build debugging
+  // const { entitlements, loading: entitlementsLoading } = useEntitlements();
   
   const [step, setStep] = useState(1);
   const [onboardingStatus, setOnboardingStatus] = useState<OnboardingStatus | null>(null);
@@ -184,6 +186,7 @@ export default function WelcomePage() {
                 </div>
               </div>
 
+              {/* Temporarily disabled for build debugging
               {!entitlementsLoading && entitlements && (
                 <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -199,6 +202,7 @@ export default function WelcomePage() {
                   </p>
                 </div>
               )}
+              */}
 
               <div className="flex justify-end gap-2">
                 <Button variant="light" onPress={() => router.push('/dashboard')}>

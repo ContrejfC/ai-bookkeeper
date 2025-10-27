@@ -75,11 +75,14 @@ FROM python:3.11-slim
 # tesseract-ocr: OCR engine for receipt text extraction
 # tesseract-ocr-eng: English language data for OCR
 # libtesseract-dev: Development libraries for Python pytesseract
+# nodejs & npm: Required to run Next.js frontend in production
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     tesseract-ocr-eng \
     libtesseract-dev \
     curl \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 # Clean up apt cache to reduce image size
 

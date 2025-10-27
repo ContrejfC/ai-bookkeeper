@@ -7,7 +7,8 @@ export default function FlowingBackground() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Animated SVG Pattern */}
       <motion.svg
-        className="absolute inset-0 w-full h-full"
+        className="absolute w-full h-full"
+        style={{ left: '-5%', width: '110%', top: 0, height: '100%' }}
         viewBox="0 0 1200 800"
         preserveAspectRatio="none"
         fill="none"

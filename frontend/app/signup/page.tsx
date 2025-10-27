@@ -66,14 +66,16 @@ export default function SignupPage() {
 
       // Check response status first
       if (!response.ok) {
-        // Try to parse JSON error, fallback to text if not JSON
+        // Get text first, then try to parse as JSON
         let errorMessage = 'Signup failed';
+        const text = await response.text();
+        
+        // Try to parse as JSON
         try {
-          const data = await response.json();
+          const data = JSON.parse(text);
           errorMessage = data.detail || data.message || errorMessage;
         } catch {
-          // Not JSON, try to get text
-          const text = await response.text();
+          // Not JSON, use text directly
           if (text.includes('Not Found')) {
             errorMessage = 'API endpoint not found. Please ensure the backend is running.';
           } else {

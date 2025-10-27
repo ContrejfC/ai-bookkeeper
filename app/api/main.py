@@ -1,6 +1,6 @@
 """FastAPI application main entry point."""
 import logging
-from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Request
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -33,7 +33,7 @@ from app.api.financial_reports.pnl import generate_pnl
 from app.api.financial_reports.balance_sheet import generate_balance_sheet
 from app.api.financial_reports.cashflow import generate_cashflow
 from app.api.financial_reports.automation_metrics import get_automation_metrics, get_automation_trend
-from app.auth.security import get_company_id_from_token, require_role
+from app.auth.security import get_company_id_from_token, require_role, get_current_user
 from config.settings import settings
 from io import StringIO
 

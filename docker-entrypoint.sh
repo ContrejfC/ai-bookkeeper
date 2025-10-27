@@ -19,15 +19,15 @@ cd /app
 uvicorn app.api.main:app --host 0.0.0.0 --port $BACKEND_PORT &
 BACKEND_PID=$!
 
-# Wait for backend to be ready (max 30 seconds)
+# Wait for backend to be ready (max 120 seconds for Cloud Run)
 echo "⏳ Waiting for backend to be ready..."
-for i in {1..30}; do
+for i in {1..120}; do
   if curl -s http://localhost:$BACKEND_PORT/ | grep -q "version"; then
     echo "✅ Backend is ready!"
     break
   fi
-  if [ $i -eq 30 ]; then
-    echo "❌ Backend failed to start within 30 seconds"
+  if [ $i -eq 120 ]; then
+    echo "❌ Backend failed to start within 120 seconds"
     exit 1
   fi
   sleep 1

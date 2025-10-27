@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import AppShell from "@/components/layout/AppShell";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { EntitlementsGate } from "@/components/EntitlementsGate";
 import {
   Card, CardHeader, CardBody, Tabs, Tab, Table, TableHeader,
   TableColumn, TableBody, TableRow, TableCell, Button, Chip,
@@ -131,8 +133,10 @@ export default function RulesPage() {
   };
 
   return (
-    <AppShell>
-      <div className="flex flex-col gap-4 sm:gap-6">
+    <ProtectedRoute>
+      <EntitlementsGate showQuota requireActive requiredFeature="advanced_rules" softBlock>
+        <AppShell>
+          <div className="flex flex-col gap-4 sm:gap-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">Rules Console</h1>
@@ -376,8 +380,10 @@ export default function RulesPage() {
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </div>
-    </AppShell>
+          </div>
+        </AppShell>
+      </EntitlementsGate>
+    </ProtectedRoute>
   );
 }
 

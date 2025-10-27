@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import AppShell from "@/components/layout/AppShell";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { EntitlementsGate } from "@/components/EntitlementsGate";
 import {
   Card, CardHeader, CardBody, Button, Input, Select, SelectItem,
   Divider
@@ -41,8 +43,10 @@ export default function AuditPage() {
   };
 
   return (
-    <AppShell>
-      <div className="flex flex-col gap-6">
+    <ProtectedRoute>
+      <EntitlementsGate showQuota requireActive>
+        <AppShell>
+          <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-bold">Audit Log Export</h1>
           <p className="text-sm opacity-60 mt-1">
@@ -193,8 +197,10 @@ export default function AuditPage() {
             </div>
           </CardBody>
         </Card>
-      </div>
-    </AppShell>
+          </div>
+        </AppShell>
+      </EntitlementsGate>
+    </ProtectedRoute>
   );
 }
 

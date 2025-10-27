@@ -1,0 +1,17 @@
+INFO:app.api.main_minimal:✅ CORS enabled for: ['https://frontend-ma4iv9gxo-contrejfcs-projects.vercel.app', 'https://app.ai-bookkeeper.app']
+INFO:     Started server process [73244]
+INFO:     Waiting for application startup.
+INFO:app.api.main_minimal:🚀 AI Bookkeeper API (Minimal) starting...
+INFO:app.api.main_minimal:   Version: 0.2.1-beta
+INFO:app.api.main_minimal:   Environment: production
+INFO:app.api.main_minimal:   CORS Origins: 2 configured
+INFO:app.api.main_minimal:✅ Ready to accept requests
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+INFO:app.api.main_minimal:Signup attempt for: sqlite-test-1760929849@example.com
+INFO:app.api.main_minimal:✅ User created: user-355e57e8
+INFO:     127.0.0.1:58721 - "POST /api/auth/signup HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [73244]

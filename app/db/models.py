@@ -1,14 +1,76 @@
-"""Database models (SQLAlchemy ORM)."""
+"""
+Database Models - SQLAlchemy ORM Definitions
+============================================
+
+This module contains all database table definitions for the AI Bookkeeper application.
+Each class represents a table in the PostgreSQL database.
+
+Architecture:
+------------
+- Uses SQLAlchemy ORM for type-safe database interactions
+- All models inherit from the Base declarative base class
+- Indexes are defined for frequently queried columns
+- Foreign keys maintain referential integrity
+- Timestamps track creation and modification times
+
+Model Categories:
+----------------
+1. Core Bookkeeping:  TransactionDB, JournalEntryDB, ReconciliationDB
+2. Multi-tenancy:     TenantSettingsDB, UserDB, UserTenantDB
+3. Billing:           BillingSubscriptionDB, BillingEventDB, EntitlementDB
+4. Usage Tracking:    UsageMonthlyDB, UsageDailyDB, LLMCallLogDB
+5. Integrations:      QBOTokenDB, XeroMappingDB, QBOExportLogDB
+6. ML/AI:             ModelTrainingLogDB, ModelRetrainEventDB
+7. Rules Engine:      RuleVersionDB, RuleCandidateDB
+8. Compliance:        DecisionAuditLogDB, ConsentLogDB, LabelEventDB
+9. Notifications:     TenantNotificationDB, NotificationLogDB
+10. Receipt OCR:      ReceiptFieldDB
+
+Database Support:
+----------------
+- Primary: PostgreSQL (production on Neon)
+- Fallback: SQLite (local development only)
+"""
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, Text, JSON, Index, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from datetime import datetime
 
+# Base class for all ORM models
+# All models inherit from this to be recognized by SQLAlchemy
 Base = declarative_base()
 
 
 class TenantSettingsDB(Base):
-    """Tenant settings for Wave-2 Phase 1 (de-mocked)."""
+    """
+    Tenant Settings - Per-Tenant Configuration
+    ==========================================
+    
+    Stores configuration settings for each tenant (company) in the multi-tenant system.
+    
+    Purpose:
+    --------
+    - Controls automated posting behavior (autopost_enabled, autopost_threshold)
+    - Sets LLM usage caps to prevent cost overruns
+    - Links to Stripe for billing integration
+    - Tracks who made changes and when
+    
+    Key Fields:
+    -----------
+    - tenant_id: Unique identifier for the company/organization
+    - autopost_enabled: If True, high-confidence entries post automatically
+    - autopost_threshold: Confidence level (0-1) required for autoposting
+    - llm_tenant_cap_usd: Monthly spending limit for AI categorization
+    - stripe_customer_id/subscription_id: Links to Stripe billing
+    
+    Usage Example:
+    --------------
+    Get settings for a tenant:
+        settings = db.query(TenantSettingsDB).filter_by(tenant_id="tenant-123").first()
+        if settings.autopost_enabled:
+            # Auto-post high confidence entries
+            pass
+    """
     __tablename__ = 'tenant_settings'
     
     tenant_id = Column(String(255), primary_key=True)
@@ -27,7 +89,34 @@ class TenantSettingsDB(Base):
 
 
 class UserDB(Base):
-    """User accounts for JWT authentication (Wave-2 Phase 1)."""
+    """
+    User Accounts - Authentication & Authorization
+    ==============================================
+    
+    Stores user account information for login and access control.
+    
+    Purpose:
+    --------
+    - User authentication via email/password or magic links
+    - Role-based access control (owner vs staff)
+    - Links users to tenants via UserTenantDB table
+    - Tracks login activity for security auditing
+    
+    Key Fields:
+    -----------
+    - user_id: Unique identifier for the user
+    - email: User's email address (unique, used for login)
+    - password_hash: Bcrypt hashed password (NULL for magic link-only users)
+    - role: Either 'owner' (full access) or 'staff' (limited access)
+    - is_active: Account enabled/disabled flag
+    - last_login_at: Tracks when user last accessed the system
+    
+    Security Notes:
+    --------------
+    - Passwords are NEVER stored in plain text, only bcrypt hashes
+    - email field is indexed for fast login lookups
+    - is_active allows soft-deleting accounts without removing data
+    """
     __tablename__ = 'users'
     
     user_id = Column(String(255), primary_key=True)
@@ -61,7 +150,43 @@ class UserTenantDB(Base):
 
 
 class BillingSubscriptionDB(Base):
-    """Billing subscriptions (Phase 2a - Billing)."""
+    """
+    Billing Subscriptions - Stripe Integration
+    ===========================================
+    
+    Tracks subscription plans and payment status for each tenant.
+    
+    Purpose:
+    --------
+    - Links tenants to Stripe customers and subscriptions
+    - Tracks plan level (starter, pro, firm)
+    - Monitors subscription health (active, past_due, canceled)
+    - Manages billing periods for usage-based features
+    
+    Key Fields:
+    -----------
+    - tenant_id: Links to tenant (one subscription per tenant)
+    - plan: Subscription tier (starter/pro/firm)
+    - status: Payment status (active/past_due/canceled/trialing)
+    - stripe_customer_id: Stripe customer record ID
+    - stripe_subscription_id: Stripe subscription record ID
+    - current_period_start/end: Billing period boundaries
+    - cancel_at_period_end: Scheduled cancellation flag
+    
+    Plan Tiers:
+    -----------
+    - starter: $49/month, 300 transactions
+    - pro: $149/month, 1500 transactions  
+    - firm: $499/month, 10 companies
+    
+    Webhook Integration:
+    -------------------
+    Stripe webhooks update this table when:
+    - Payment succeeds → status: active
+    - Payment fails → status: past_due
+    - Customer cancels → cancel_at_period_end: true
+    - Trial ends → status changes from trialing
+    """
     __tablename__ = 'billing_subscriptions'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -194,7 +319,46 @@ class XeroExportLogDB(Base):
 
 
 class TransactionDB(Base):
-    """Bank transaction."""
+    """
+    Bank Transactions - Source Financial Data
+    =========================================
+    
+    Represents a single bank or credit card transaction from uploaded statements.
+    
+    Purpose:
+    --------
+    - Stores raw transaction data from bank statements (CSV/OFX/PDF)
+    - Serves as input for AI categorization and journal entry generation
+    - Links to journal entries via source_txn_id field
+    - Maintains original data for audit trail
+    
+    Key Fields:
+    -----------
+    - txn_id: Unique transaction identifier
+    - date: Transaction date from bank statement
+    - amount: Transaction amount (negative = expense, positive = income)
+    - currency: ISO currency code (default: USD)
+    - description: Merchant description from bank
+    - counterparty: Vendor/customer name (extracted or normalized)
+    - raw: Original transaction text from bank statement
+    - doc_ids: Array of receipt/document IDs attached to transaction
+    
+    Data Flow:
+    ----------
+    1. User uploads bank statement
+    2. Parser creates TransactionDB records
+    3. AI categorizes and proposes journal entries
+    4. Journal entries reference txn_id as source_txn_id
+    
+    Usage Example:
+    --------------
+    Query unprocessed transactions:
+        unprocessed = db.query(TransactionDB).filter(
+            ~TransactionDB.txn_id.in_(
+                db.query(JournalEntryDB.source_txn_id)
+            )
+        ).all()
+    """
     __tablename__ = 'transactions'
     
     txn_id = Column(String(255), primary_key=True)
@@ -214,7 +378,55 @@ class TransactionDB(Base):
 
 
 class JournalEntryDB(Base):
-    """Journal entry (proposed or posted)."""
+    """
+    Journal Entries - Double-Entry Bookkeeping Records
+    ==================================================
+    
+    Represents accounting journal entries in various states of approval.
+    
+    Purpose:
+    --------
+    - Stores proposed, approved, and posted journal entries
+    - Maintains double-entry bookkeeping integrity
+    - Links back to source transactions for audit trail
+    - Tracks AI confidence and human review requirements
+    
+    Key Fields:
+    -----------
+    - je_id: Unique journal entry identifier
+    - date: Accounting date for the entry
+    - lines: JSON array of debits/credits [{account, debit, credit}, ...]
+    - source_txn_id: Links to originating bank transaction
+    - memo: Description or notes about the entry
+    - confidence: AI confidence score (0-1) for auto-categorization
+    - status: Lifecycle state (proposed → approved → posted)
+    - needs_review: Flag for human review (large amounts, low confidence)
+    
+    Status Workflow:
+    ---------------
+    proposed  → Entry suggested by AI, awaiting review
+    approved  → Reviewed and accepted by user, ready to post
+    posted    → Committed to QuickBooks/accounting system
+    
+    Double-Entry Validation:
+    -----------------------
+    Every journal entry MUST balance:
+        sum(debits) == sum(credits)
+    
+    The lines field stores an array like:
+    [
+        {"account": "1000 Cash", "debit": 100.00, "credit": 0.00},
+        {"account": "5000 COGS", "debit": 0.00, "credit": 100.00}
+    ]
+    
+    Usage Example:
+    --------------
+    Get entries needing review:
+        to_review = db.query(JournalEntryDB).filter(
+            JournalEntryDB.status == 'proposed',
+            JournalEntryDB.needs_review == 1
+        ).all()
+    """
     __tablename__ = 'journal_entries'
     
     je_id = Column(String(255), primary_key=True)
@@ -252,7 +464,55 @@ class ReconciliationDB(Base):
 
 
 class ModelTrainingLogDB(Base):
-    """Log of ML model training runs (Sprint 5)."""
+    """
+    ML Model Training Log - AI Performance Tracking
+    ===============================================
+    
+    Records each machine learning model training run with performance metrics.
+    
+    Purpose:
+    --------
+    - Tracks ML model versions and their accuracy
+    - Enables comparison of model performance over time
+    - Supports A/B testing of models
+    - Audit trail for model updates
+    
+    Key Fields:
+    -----------
+    - model_name: Classifier identifier (e.g., "category_classifier_v1")
+    - records_used: Number of training examples
+    - accuracy: Overall prediction accuracy (0-1)
+    - precision_weighted: Weighted precision across categories
+    - recall_weighted: Weighted recall across categories
+    - f1_score: Harmonic mean of precision and recall
+    - training_duration_sec: How long training took
+    - training_metadata: Additional info (hyperparameters, feature names)
+    - trained_at: Timestamp of training run
+    
+    Model Performance Targets:
+    -------------------------
+    - accuracy > 0.85: Good performance
+    - accuracy > 0.90: Excellent performance
+    - f1_score > 0.80: Balanced precision/recall
+    
+    Usage Example:
+    --------------
+    Get latest model performance:
+        latest = db.query(ModelTrainingLogDB)
+                   .filter_by(model_name="category_classifier")
+                   .order_by(ModelTrainingLogDB.trained_at.desc())
+                   .first()
+        if latest.accuracy < 0.85:
+            # Model needs retraining
+            pass
+    
+    Retraining Triggers:
+    -------------------
+    - accuracy drops below 0.85
+    - significant data drift detected
+    - 1000+ new labeled examples since last train
+    - scheduled monthly retraining
+    """
     __tablename__ = 'model_training_logs'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -466,7 +726,50 @@ class UsageDailyDB(Base):
 
 
 class QBOTokenDB(Base):
-    """QuickBooks Online OAuth tokens."""
+    """
+    QuickBooks Online Tokens - OAuth 2.0 Integration
+    ================================================
+    
+    Stores OAuth tokens for QuickBooks Online API access.
+    
+    Purpose:
+    --------
+    - Maintains OAuth 2.0 access/refresh tokens for QBO API
+    - One connection per tenant (links company to QBO account)
+    - Automatically refreshes expired tokens
+    - Identifies which QBO company is connected (realm_id)
+    
+    Key Fields:
+    -----------
+    - tenant_id: Links to tenant (unique - one QBO connection per tenant)
+    - realm_id: QBO company identifier
+    - access_token: Short-lived token for API calls (1 hour expiry)
+    - refresh_token: Long-lived token to get new access tokens (100 days)
+    - expires_at: When access_token expires (auto-refresh before this)
+    - scope: OAuth permissions granted (com.intuit.quickbooks.accounting)
+    
+    OAuth Flow:
+    -----------
+    1. User clicks "Connect QuickBooks"
+    2. Redirected to Intuit OAuth page
+    3. After approval, callback receives auth code
+    4. Exchange auth code for access/refresh tokens
+    5. Store in this table
+    6. Use access_token for API calls
+    7. Refresh automatically when expires_at approaches
+    
+    Token Refresh:
+    -------------
+    Access tokens expire after 1 hour. The system automatically
+    refreshes using the refresh_token before expiration.
+    
+    Security:
+    ---------
+    - Tokens are sensitive credentials
+    - Never log or expose tokens
+    - Refresh tokens valid for 100 days
+    - Expired refresh tokens require re-authentication
+    """
     __tablename__ = 'qbo_tokens'
     
     id = Column(Integer, primary_key=True, autoincrement=True)

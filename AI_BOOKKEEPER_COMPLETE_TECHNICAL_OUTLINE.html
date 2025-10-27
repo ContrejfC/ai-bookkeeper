@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Bookkeeper - Complete Technical Outline</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0.75in;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 30px;
+            page-break-after: avoid;
+            font-size: 28px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 25px;
+            page-break-after: avoid;
+            font-size: 24px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin-top: 20px;
+            page-break-after: avoid;
+            font-size: 20px;
+        }
+        
+        h4 {
+            color: #34495e;
+            margin-top: 15px;
+            page-break-after: avoid;
+            font-size: 18px;
+        }
+        
+        h5 {
+            color: #555;
+            margin-top: 12px;
+            page-break-after: avoid;
+            font-size: 16px;
+        }
+        
+        p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #c7254e;
+        }
+        
+        pre {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            page-break-inside: avoid;
+            margin: 15px 0;
+            white-space: pre;
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #333;
+            font-size: 12px;
+            font-family: inherit;
+            white-space: pre;
+            display: block;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            page-break-inside: avoid;
+            font-size: 14px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 30px 0;
+        }
+        
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Highlight target section when jumped to */
+        :target {
+            animation: highlight 2s ease;
+        }
+        
+        @keyframes highlight {
+            0% {
+                background-color: #fff3cd;
+            }
+            100% {
+                background-color: transparent;
+            }
+        }
+        
+        /* Table of contents styling */
+        #table-of-contents + ul {
+            list-style: none;
+            padding-left: 0;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        
+        #table-of-contents + ul li {
+            margin: 8px 0;
+        }
+        
+        #table-of-contents + ul a {
+            font-weight: 500;
+        }
+        
+        /* Back to Top Button */
+        #back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        #back-to-top:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+        
+        #back-to-top:active {
+            transform: translateY(-1px);
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                page-break-after: avoid;
+            }
+            
+            pre, table {
+                page-break-inside: avoid;
+            }
+            
+            ul, ol {
+                page-break-inside: avoid;
+            }
+            
+            #back-to-top {
+                display: none;
+            }
+        }
+        
+        /* Header styling */
+        .document-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .document-header h1 {
+            border: none;
+            margin-top: 0;
+        }
+        
+        .document-info {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="ai-bookkeeper-complete-technical-outline">AI Bookkeeper - Complete Technical Outline</h1>
+<p>
+<strong>Version:</strong> 1.0  
+<strong>Date:</strong> October 26, 2025  
+<strong>Status:</strong> Production Ready  
+<strong>Author:</strong> Technical Documentation
+<p>
+<hr>
+<p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>
+1. <a href="#system-overview">System Overview</a>
+2. <a href="#architecture">Architecture</a>
+3. <a href="#technology-stack">Technology Stack</a>
+4. <a href="#backend-components">Backend Components</a>
+5. <a href="#frontend-components">Frontend Components</a>
+6. <a href="#database-schema">Database Schema</a>
+7. <a href="#core-features">Core Features</a>
+8. <a href="#authentication--security">Authentication & Security</a>
+9. <a href="#integrations">Integrations</a>
+10. <a href="#ai--machine-learning">AI & Machine Learning</a>
+11. <a href="#billing--monetization">Billing & Monetization</a>
+12. <a href="#deployment-architecture">Deployment Architecture</a>
+13. <a href="#testing-strategy">Testing Strategy</a>
+14. <a href="#api-reference">API Reference</a>
+15. <a href="#development-workflow">Development Workflow</a>
+<p>
+<hr>
+<p>
+<h2 id="system-overview">System Overview</h2>
+<p>
+AI Bookkeeper is a full-stack AI-powered bookkeeping automation platform that processes bank statements and receipts, categorizes transactions using tiered decisioning (Rules → Embeddings → LLM → Human Review), and exports to accounting systems.
+<p>
+<h3 id="key-statistics">Key Statistics</h3>
+<p>
+<ul>
+<li><strong>Backend Files:</strong> 50+ Python modules</li>
+<li><strong>Frontend Pages:</strong> 11 complete pages</li>
+<li><strong>Database Migrations:</strong> 8+ applied</li>
+<li><strong>API Endpoints:</strong> 25+</li>
+<li><strong>Test Coverage:</strong> 74+ tests passing</li>
+<li><strong>Lines of Code:</strong> 13,000+</li>
+</ul>
+<p>
+<h3 id="target-users">Target Users</h3>
+<p>
+<ul>
+<li>Solo SMBs (Starter plan)</li>
+<li>Small firms (Team plan)</li>
+<li>Bookkeeping firms (Firm plan)</li>
+<li>Enterprise compliance-heavy companies (Enterprise plan)</li>
+</ul>
+<p>
+<h3 id="core-value-proposition">Core Value Proposition</h3>
+<p>
+Automated bookkeeping with explainable AI that maintains human oversight, ensuring accuracy while dramatically reducing manual data entry time.
+<p>
+<hr>
+<p>
+<h2 id="architecture">Architecture</h2>
+<p>
+<h3 id="high-level-architecture">High-Level Architecture</h3>
+<p>
+<pre><code class="language-">+-------------------------------------------------------------+
+|                    CLIENT LAYER                             |
+|  +--------------+  +--------------+  +--------------+       |
+|  | Web Browser  |  |  ChatGPT     |  |  API Clients |       |
+|  | (Next.js)    |  |  (GPT Actions|  |  (REST API)  |       |
+|  +------+-------+  +------+-------+  +------+-------+       |
++---------+-----------------+-----------------+---------------+
+          |                 |                 |
+          |        HTTPS    |                 |
+          v                 v                 v
++-------------------------------------------------------------+
+|                   API LAYER (FastAPI)                       |
+|  +--------------------------------------------------------+ |
+|  | Auth Middleware | RBAC | Rate Limiting | CORS         | |
+|  +--------------------------------------------------------+ |
+|  +--------------+--------------+----------------------+    |
+|  |  API Router  | Auth Router  | Integration Routers  |    |
+|  |              |              | (QBO, Xero, Stripe)  |    |
+|  +------+-------+------+-------+----------+-----------+    |
++---------+--------------+-----------------+-------------------+
+          |              |                 |
+          v              v                 v
++-------------------------------------------------------------+
+|                  SERVICE LAYER                              |
+|  +-------------+-------------+-------------+-----------+    |
+|  | Transaction |    Rules    |     OCR     |  Export   |    |
+|  |  Processing |   Engine    |   Service   |  Service  |    |
+|  +-------------+-------------+-------------+-----------+    |
+|  +-------------+-------------+-------------+-----------+    |
+|  |   Billing   |     LLM     | Embeddings  |   Audit   |    |
+|  |   Service   |  Categorize |   Memory    |  Service  |    |
+|  +-------------+-------------+-------------+-----------+    |
++-------------------------------------------------------------+
+          |              |                 |
+          v              v                 v
++-------------------------------------------------------------+
+|                   DATA LAYER                                |
+|  +-------------+-------------+-------------+-----------+    |
+|  | PostgreSQL  |  ChromaDB   |  Tesseract  |  OpenAI   |    |
+|  | (Primary)   |  (Vectors)  |    (OCR)    |   (LLM)   |    |
+|  +-------------+-------------+-------------+-----------+    |
+|  +-------------+---------------------------------------+    |
+|  |   Stripe    |         Intuit QuickBooks             |    |
+|  |   (Billing) |         Xero (Accounting)             |    |
+|  +-------------+---------------------------------------+    |
++-------------------------------------------------------------+
+</code></pre>
+<p>
+<h3 id="data-flow-transaction-processing">Data Flow - Transaction Processing</h3>
+<p>
+<pre><code class="language-">Bank Statement (CSV/OFX/PDF)
+    ↓
+Parser → Normalized Transactions → Database
+    ↓
+Decisioning Pipeline:
+    1. Rules Engine (regex patterns) → 100% confidence if matched
+    2. Embeddings Memory (semantic search) → Historical context
+    3. LLM Categorization (GPT-4) → Account + confidence + rationale
+    4. Confidence Check → Auto-post if &gt; threshold
+    5. Human Review → Manual review if needed
+    ↓
+Proposed Journal Entries → Balance Validation
+    ↓
+Review UI → Approve/Reject
+    ↓
+Post to Ledger → Reconciliation
+    ↓
+Export (CSV/QBO/Xero)
+</code></pre>
+<p>
+<h3 id="deployment-architecture">Deployment Architecture</h3>
+<p>
+<pre><code class="language-">+------------------------------------------------------------+
+|                  GOOGLE CLOUD PLATFORM                     |
+|  +--------------------+  +--------------------------+      |
+|  |  Frontend (Vercel) |  |   Backend Service        |      |
+|  |  (Next.js)         |  |   (Cloud Run)            |      |
+|  |  Port: 3000        |  |   Port: 8080             |      |
+|  +--------------------+  |   FastAPI + Uvicorn      |      |
+|           |              |   CPU: 2 vCPU            |      |
+|           |              |   Memory: 2 GB           |      |
+|           |              |   Min: 1 instance        |      |
+|           |              |   Max: 10 instances      |      |
+|           |              +--------------------------+      |
+|           |                          |                     |
+|           +--------------------------+                     |
+|                                                            |
+|  API URL: ai-bookkeeper-api-644842661403.us-central1      |
+|                         .run.app                           |
++------------------------------------------------------------+
+            |
+            v
++------------------------------------------------------------+
+|                  NEON SERVERLESS POSTGRES                  |
+|  Database: neondb                                          |
+|  Region: us-west-2                                         |
+|  Connection Pooling: Enabled                               |
+|  SSL: Required                                             |
++------------------------------------------------------------+
+</code></pre>
+<p>
+<hr>
+<p>
+<h2 id="technology-stack">Technology Stack</h2>
+<p>
+<h3 id="backend">Backend</h3>
+<p>
+<table class="data-table"><thead><tr><th>Component</th><th>Technology</th><th>Version</th><th>Purpose</th></tr></thead><tbody><tr><td>Framework</td><td>FastAPI</td><td>Latest</td><td>REST API server</td></tr><tr><td>Language</td><td>Python</td><td>3.11+</td><td>Backend logic</td></tr><tr><td>Server</td><td>Uvicorn</td><td>Latest</td><td>ASGI server</td></tr><tr><td>Database</td><td>PostgreSQL</td><td>14+</td><td>Primary data store</td></tr><tr><td>ORM</td><td>SQLAlchemy</td><td>2.0+</td><td>Database abstraction</td></tr><tr><td>Migrations</td><td>Alembic</td><td>Latest</td><td>Schema versioning</td></tr><tr><td>Vector DB</td><td>ChromaDB</td><td>0.4.22+</td><td>Embeddings storage</td></tr><tr><td>OCR</td><td>Tesseract</td><td>5.0+</td><td>Receipt text extraction</td></tr><tr><td>LLM</td><td>OpenAI GPT-4</td><td>Latest</td><td>Categorization</td></tr><tr><td>Auth</td><td>python-jose</td><td>Latest</td><td>JWT tokens</td></tr><tr><td>Password</td><td>bcrypt</td><td>4.1.2</td><td>Hashing</td></tr></tbody></table>
+<h3 id="frontend">Frontend</h3>
+<p>
+<table class="data-table"><thead><tr><th>Component</th><th>Technology</th><th>Version</th><th>Purpose</th></tr></thead><tbody><tr><td>Framework</td><td>Next.js</td><td>15.5.5</td><td>React framework</td></tr><tr><td>Language</td><td>TypeScript</td><td>5.0+</td><td>Type safety</td></tr><tr><td>Runtime</td><td>React</td><td>19.0</td><td>UI library</td></tr><tr><td>UI Library</td><td>NextUI</td><td>2.4.0</td><td>Component library</td></tr><tr><td>Styling</td><td>Tailwind CSS</td><td>3.4+</td><td>Utility-first CSS</td></tr><tr><td>Animation</td><td>Framer Motion</td><td>11.0+</td><td>Animations</td></tr><tr><td>State</td><td>React Context</td><td>Built-in</td><td>Global state</td></tr></tbody></table>
+<h3 id="infrastructure">Infrastructure</h3>
+<p>
+<table class="data-table"><thead><tr><th>Component</th><th>Technology</th><th>Purpose</th></tr></thead><tbody><tr><td>Backend Hosting</td><td>Google Cloud Run</td><td>Serverless containers</td></tr><tr><td>Frontend Hosting</td><td>Vercel</td><td>Next.js deployment</td></tr><tr><td>Database</td><td>Neon PostgreSQL</td><td>Serverless Postgres</td></tr><tr><td>Container Registry</td><td>Artifact Registry</td><td>Docker images</td></tr><tr><td>Secrets</td><td>Secret Manager</td><td>JWT secrets</td></tr><tr><td>Payments</td><td>Stripe</td><td>Billing & subscriptions</td></tr><tr><td>OCR</td><td>Tesseract</td><td>Receipt processing</td></tr><tr><td>LLM</td><td>OpenAI</td><td>AI categorization</td></tr><tr><td>QBO</td><td>Intuit OAuth2</td><td>QuickBooks integration</td></tr><tr><td>Xero</td><td>Xero API</td><td>Xero integration</td></tr></tbody></table>
+<hr>
+<p>
+<h2 id="backend-components">Backend Components</h2>
+<p>
+<h3 id="directory-structure">Directory Structure</h3>
+<p>
+<pre><code class="language-">app/
+├── api/                    # API route handlers
+│   ├── main.py            # Main FastAPI app
+│   ├── auth.py            # Authentication endpoints
+│   ├── tenants.py         # Multi-tenant management
+│   ├── rules.py           # Rules console
+│   ├── audit_export.py    # Audit logging export
+│   ├── export.py          # QBO/Xero export
+│   ├── billing_v2.py      # Stripe billing
+│   ├── receipts.py        # Receipt upload/OCR
+│   ├── analytics.py       # Analytics endpoints
+│   └── financial_reports/ # P&amp;L, Balance Sheet, Cash Flow
+├── auth/                   # Authentication modules
+│   ├── jwt_handler.py     # JWT creation/validation
+│   ├── passwords.py       # Password hashing (bcrypt)
+│   ├── rate_limit.py      # Rate limiting
+│   └── csrf.py            # CSRF protection
+├── db/                     # Database layer
+│   ├── models.py          # SQLAlchemy models
+│   ├── session.py         # DB session management
+│   └── migrations/        # Alembic migrations
+├── ingest/                 # Data ingestion
+│   ├── csv_parser.py      # CSV bank statements
+│   ├── ofx_parser.py      # OFX files
+│   └── pdf_bank_parser.py # PDF statements
+├── ocr/                    # OCR processing
+│   ├── parser.py          # OCR orchestration
+│   └── providers/         # OCR provider implementations
+│       ├── base.py        # Provider interface
+│       └── tesseract.py   # Tesseract implementation
+├── rules/                  # Rules engine
+│   ├── engine.py          # Pattern matching
+│   ├── promoter.py        # Rule candidate promotion
+│   ├── store.py           # Rule storage
+│   └── vendor_rules.yaml  # Rule definitions
+├── llm/                    # LLM integration
+│   ├── prompts.py         # System prompts
+│   └── categorize_post.py # GPT-4 function calling
+├── vendor_knowledge/       # Embeddings memory
+│   └── embeddings.py      # ChromaDB wrapper
+├── decision/               # Decision engine
+│   ├── engine.py          # Core decision logic
+│   └── blender.py         # Multi-source blending
+├── recon/                  # Reconciliation
+│   └── matcher.py         # Transaction matching
+├── exporters/              # Export modules
+│   ├── csv_export.py      # CSV export
+│   ├── quickbooks_export.py # QBO export
+│   └── xero_exporter.py   # Xero export
+├── integrations/           # External integrations
+│   └── qbo/               # QuickBooks Online
+│       └── client.py      # OAuth2 + API client
+├── services/               # Business logic services
+│   ├── billing.py         # Stripe billing logic
+│   ├── usage_metering.py  # Transaction counting
+│   ├── qbo.py             # QBO service layer
+│   └── api_key.py         # API key management
+├── middleware/             # Middleware
+│   ├── security.py        # Security headers
+│   ├── api_key_auth.py    # API key validation
+│   └── entitlements.py    # Feature gates
+├── ml/                     # Machine learning
+│   ├── classifier.py      # Transaction classifier
+│   └── drift_monitor.py   # Model drift detection
+├── notifications/          # Notifications
+│   ├── sender.py          # Email sender
+│   └── triggers.py        # Event triggers
+├── analytics/              # Analytics
+│   └── sink.py            # Event tracking
+└── ui/                     # Web UI (legacy Jinja templates)
+    ├── templates/         # HTML templates
+    └── static/            # CSS/JS assets
+</code></pre>
+<p>
+<h3 id="key-backend-modules">Key Backend Modules</h3>
+<p>
+<h4 id="1-transaction-processing-appdecisionenginepy">1. Transaction Processing (<code>app/decision/engine.py</code>)</h4>
+<p>
+Tiered decisioning pipeline:
+<p>
+<ul>
+<li><strong>Rules Engine:</strong> Regex-based vendor pattern matching (100% confidence)</li>
+<li><strong>Embeddings Memory:</strong> Semantic search for historical categorizations</li>
+<li><strong>LLM Categorization:</strong> GPT-4 function calling with Chart of Accounts</li>
+<li><strong>Human Review Triggers:</strong></li>
+</ul>
+  - Confidence < threshold (default 0.85)
+  - Amount > large amount threshold (default $5000)
+  - Unbalanced journal entry
+  - LLM sets needs_review: true
+<p>
+<h4 id="2-ocr-processing-appocr">2. OCR Processing (<code>app/ocr/</code>)</h4>
+<p>
+Token-level bounding box extraction:
+<p>
+<ul>
+<li><strong>Provider Interface:</strong> Pluggable OCR providers</li>
+<li><strong>Tesseract Provider:</strong> Local OCR with token coordinates</li>
+<li><strong>Field Extraction:</strong> Date, vendor, amount, total</li>
+<li><strong>Performance:</strong> ~500ms cold, ~3ms cached (99.4% improvement)</li>
+<li><strong>Accuracy:</strong> 90%+ IoU on field extraction</li>
+<li><strong>Fallback:</strong> Heuristic methods when OCR unavailable</li>
+</ul>
+<p>
+<h4 id="3-rules-engine-apprules">3. Rules Engine (<code>app/rules/</code>)</h4>
+<p>
+Pattern-based automation:
+<p>
+<ul>
+<li><strong>YAML Configuration:</strong> Vendor patterns → account mapping</li>
+<li><strong>Rule Candidates:</strong> Generated from transaction patterns</li>
+<li><strong>Dry-Run Simulation:</strong> Read-only preview before promotion</li>
+<li><strong>Version Control:</strong> Rollback capability</li>
+<li><strong>Evidence Metrics:</strong> Count, precision, std_dev</li>
+</ul>
+<p>
+<h4 id="4-multi-tenant-system-appapitenantspy">4. Multi-Tenant System (<code>app/api/tenants.py</code>)</h4>
+<p>
+Tenant isolation and settings:
+<p>
+<ul>
+<li><strong>Tenant-level Settings:</strong></li>
+</ul>
+  - Auto-post enabled/disabled
+  - Auto-post threshold (0.80-0.98)
+  - LLM tenant cap (USD)
+<ul>
+<li><strong>RBAC:</strong> Owner and Staff roles</li>
+<li><strong>Staff Assignment:</strong> Staff can access multiple tenants</li>
+<li><strong>Data Isolation:</strong> All queries scoped by tenant_id</li>
+</ul>
+<p>
+<h4 id="5-export-system-appexporters">5. Export System (<code>app/exporters/</code>)</h4>
+<p>
+Idempotent exports:
+<p>
+<ul>
+<li><strong>QuickBooks Online (IIF):</strong> Balanced journal entries, ExternalId</li>
+<li><strong>Xero (Manual Journals):</strong> Account code mapping, concurrency-safe</li>
+<li><strong>CSV:</strong> General ledger, trial balance, reconciliation</li>
+<li><strong>Export Logging:</strong> Status tracking, error messages</li>
+</ul>
+<p>
+<h4 id="6-billing-system-appservicesbillingpy">6. Billing System (<code>app/services/billing.py</code>)</h4>
+<p>
+Stripe integration:
+<p>
+<ul>
+<li><strong>Subscription Management:</strong> Create, update, cancel</li>
+<li><strong>Usage Metering:</strong> Transaction counting with idempotency</li>
+<li><strong>Overage Handling:</strong> Monthly overage calculation</li>
+<li><strong>Feature Gates:</strong> Entity limits, transaction quotas, feature access</li>
+<li><strong>Plans:</strong> Starter, Team, Firm, Enterprise, Pilot</li>
+</ul>
+<p>
+<h4 id="7-authentication-appauth">7. Authentication (<code>app/auth/</code>)</h4>
+<p>
+JWT-based auth with RBAC:
+<p>
+<ul>
+<li><strong>JWT Tokens:</strong> HS256 signing, 24h expiration</li>
+<li><strong>Cookie-based:</strong> HttpOnly, Secure, SameSite=Lax</li>
+<li><strong>Password Hashing:</strong> bcrypt with salt</li>
+<li><strong>Rate Limiting:</strong> 5 attempts per IP per 15 minutes</li>
+<li><strong>CSRF Protection:</strong> Token generation and validation</li>
+<li><strong>Password Reset:</strong> Secure token-based flow</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="frontend-components">Frontend Components</h2>
+<p>
+<h3 id="directory-structure">Directory Structure</h3>
+<p>
+<pre><code class="language-">frontend/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout with providers
+│   ├── providers.tsx      # Context providers
+│   ├── page.tsx           # Dashboard (home)
+│   ├── login/             # Login page
+│   ├── signup/            # Signup page
+│   ├── transactions/      # Transaction list
+│   ├── receipts/          # Receipt list + viewer
+│   │   └── [id]/          # Individual receipt viewer
+│   ├── rules/             # Rules console
+│   ├── vendors/           # Vendor list
+│   ├── firm/              # Firm settings
+│   ├── audit/             # Audit export
+│   ├── analytics/         # Analytics dashboard
+│   ├── export/            # QBO/Xero export
+│   ├── pricing/           # Pricing page
+│   ├── tools/             # Utility tools
+│   │   └── csv-cleaner/   # CSV cleaner tool
+│   └── gpt-bridge/        # ChatGPT integration
+├── components/
+│   ├── layout/
+│   │   └── AppShell.tsx   # Main layout with sidebar
+│   ├── protected-route.tsx # Route guard
+│   └── theme-toggle.tsx   # Dark/light mode
+├── contexts/
+│   └── auth-context.tsx   # Auth state management
+├── lib/
+│   └── api.ts             # API client (fetch wrapper)
+└── package.json           # Dependencies
+</code></pre>
+<p>
+<h3 id="key-frontend-pages">Key Frontend Pages</h3>
+<p>
+<h4 id="1-dashboard">1. Dashboard (<code>/</code>)</h4>
+<p>
+Key metrics overview:
+<p>
+<ul>
+<li>Active transactions count</li>
+<li>Pending review count</li>
+<li>Automation rate percentage</li>
+<li>Recent activity feed</li>
+<li>Quick action buttons</li>
+</ul>
+<p>
+<h4 id="2-transactions-transactions">2. Transactions (<code>/transactions</code>)</h4>
+<p>
+Transaction management:
+<p>
+<ul>
+<li>Filterable table (status, date, payee)</li>
+<li>Status indicators (proposed, approved, posted)</li>
+<li>Bulk selection and approval</li>
+<li>Confidence scores</li>
+<li>Account assignments</li>
+<li>Approval modal with confirmation</li>
+</ul>
+<p>
+<h4 id="3-receipts-receipts">3. Receipts (<code>/receipts</code>)</h4>
+<p>
+Receipt list and OCR viewer:
+<p>
+<ul>
+<li>Receipt listing table with OCR status</li>
+<li>Confidence scores</li>
+<li>Upload button</li>
+<li>Stats: total, processed, avg confidence</li>
+</ul>
+<p>
+<strong>Receipt Viewer (<code>/receipts/[id]</code>):</strong>
+<p>
+<ul>
+<li>Visual OCR highlights with bounding boxes</li>
+<li>Interactive hover to highlight fields</li>
+<li>Confidence scores per field</li>
+<li>Field coordinates display</li>
+<li>Action buttons (create txn, download, reprocess)</li>
+</ul>
+<p>
+<h4 id="4-rules-console-rules">4. Rules Console (<code>/rules</code>)</h4>
+<p>
+Rule management interface:
+<p>
+<ul>
+<li>Tabbed interface (pending, accepted, rejected)</li>
+<li>Rule candidate table with evidence</li>
+<li>Dry-run simulation modal</li>
+<li>Before/after automation rate comparison</li>
+<li>Accept/reject actions</li>
+<li>Version history modal</li>
+<li>Rollback functionality</li>
+</ul>
+<p>
+<h4 id="5-firm-settings-firm">5. Firm Settings (<code>/firm</code>)</h4>
+<p>
+Tenant management:
+<p>
+<ul>
+<li>Tenant listing (RBAC filtered)</li>
+<li>Settings edit modal (owner only)</li>
+<li>Auto-post toggle</li>
+<li>Threshold slider (0.80-0.98)</li>
+<li>LLM cap configuration</li>
+<li>Audit trail notation</li>
+</ul>
+<p>
+<h4 id="6-audit-export-audit">6. Audit Export (<code>/audit</code>)</h4>
+<p>
+Comprehensive filtering:
+<p>
+<ul>
+<li>7 filter criteria:</li>
+</ul>
+  - Tenant ID
+  - Vendor (partial match)
+  - Action type
+  - Not auto-post reason
+  - User ID
+  - Date range (start/end)
+<ul>
+<li>CSV download</li>
+<li>Export information panel</li>
+</ul>
+<p>
+<h4 id="7-analytics-analytics">7. Analytics (<code>/analytics</code>)</h4>
+<p>
+System analytics:
+<p>
+<ul>
+<li>Key metrics cards</li>
+<li>Automation rate with progress bar</li>
+<li>Daily activity chart</li>
+<li>Top vendors by volume</li>
+<li>Manual review reasons breakdown</li>
+<li>System performance metrics</li>
+<li>Time range selector (7d, 30d, 90d)</li>
+</ul>
+<p>
+<h4 id="8-export-export">8. Export (<code>/export</code>)</h4>
+<p>
+Accounting system export:
+<p>
+<ul>
+<li>QBO/Xero provider selection</li>
+<li>Configuration form (tenant, date range)</li>
+<li>Export execution</li>
+<li>Results modal with summary</li>
+<li>Success/skip/fail counts</li>
+</ul>
+<p>
+<h4 id="9-pricing-pricing">9. Pricing (<code>/pricing</code>)</h4>
+<p>
+Pricing and checkout:
+<p>
+<ul>
+<li>Plan comparison table</li>
+<li>Annual/monthly toggle</li>
+<li>Feature lists per plan</li>
+<li>Checkout button (Stripe)</li>
+<li>FAQ section</li>
+</ul>
+<p>
+<h4 id="10-csv-cleaner-tool-toolscsv-cleaner">10. CSV Cleaner Tool (<code>/tools/csv-cleaner</code>)</h4>
+<p>
+Utility for cleaning bank statements:
+<p>
+<ul>
+<li>CSV upload</li>
+<li>Preview with row count</li>
+<li>Column mapping</li>
+<li>Download cleaned file</li>
+<li>Paywall for export (free tier: 20 rows)</li>
+</ul>
+<p>
+<h4 id="11-gpt-bridge-gpt-bridge">11. GPT Bridge (<code>/gpt-bridge</code>)</h4>
+<p>
+ChatGPT integration:
+<p>
+<ul>
+<li>Instructions for GPT Actions setup</li>
+<li>Deep link to ChatGPT</li>
+<li>OAuth flow instructions</li>
+<li>Example queries</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="database-schema">Database Schema</h2>
+<p>
+<h3 id="core-tables-8-migrations-applied">Core Tables (8 Migrations Applied)</h3>
+<p>
+<h4 id="1-users-migration-003">1. <code>users</code> (Migration 003)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE users (
+    user_id VARCHAR(255) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255),
+    role VARCHAR(50) NOT NULL,  -- 'owner' or 'staff'
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMP
+);
+</code></pre>
+<p>
+<h4 id="2-tenant_settings-migration-002">2. <code>tenant_settings</code> (Migration 002)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE tenant_settings (
+    tenant_id VARCHAR(255) PRIMARY KEY,
+    autopost_enabled BOOLEAN DEFAULT false,
+    autopost_threshold FLOAT DEFAULT 0.85,
+    llm_tenant_cap_usd FLOAT DEFAULT 100.0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255)
+);
+</code></pre>
+<p>
+<h4 id="3-user_tenants-migration-002">3. <code>user_tenants</code> (Migration 002)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE user_tenants (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    tenant_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    UNIQUE(user_id, tenant_id)
+);
+</code></pre>
+<p>
+<h4 id="4-transactions">4. <code>transactions</code></h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE transactions (
+    txn_id VARCHAR(255) PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    vendor VARCHAR(255),
+    vendor_normalized VARCHAR(255),
+    amount DECIMAL(12, 2),
+    status VARCHAR(50),  -- 'proposed', 'approved', 'posted'
+    confidence FLOAT,
+    category VARCHAR(255),
+    account VARCHAR(255),
+    rationale TEXT,
+    needs_review BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<p>
+<h4 id="5-journal_entries">5. <code>journal_entries</code></h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE journal_entries (
+    je_id VARCHAR(255) PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    txn_id VARCHAR(255),
+    date DATE NOT NULL,
+    status VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (txn_id) REFERENCES transactions(txn_id)
+);
+</code></pre>
+<p>
+<h4 id="6-journal_entry_lines">6. <code>journal_entry_lines</code></h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE journal_entry_lines (
+    line_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    je_id VARCHAR(255) NOT NULL,
+    account VARCHAR(255) NOT NULL,
+    debit DECIMAL(12, 2) DEFAULT 0,
+    credit DECIMAL(12, 2) DEFAULT 0,
+    memo TEXT,
+    FOREIGN KEY (je_id) REFERENCES journal_entries(je_id)
+);
+</code></pre>
+<p>
+<h4 id="7-audit_log">7. <code>audit_log</code></h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE audit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    tenant_id VARCHAR(255),
+    user_id VARCHAR(255),
+    action VARCHAR(255),
+    txn_id VARCHAR(255),
+    vendor_normalized VARCHAR(255),
+    calibrated_p FLOAT,
+    threshold_used FLOAT,
+    not_auto_post_reason VARCHAR(255),
+    metadata JSON
+);
+</code></pre>
+<p>
+<h4 id="8-qbo_tokens-migration-010">8. <code>qbo_tokens</code> (Migration 010)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE qbo_tokens (
+    id INTEGER PRIMARY KEY,
+    tenant_id VARCHAR(255) UNIQUE NOT NULL,
+    realm_id VARCHAR(255) NOT NULL,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    scope VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<p>
+<h4 id="9-je_idempotency-migration-011">9. <code>je_idempotency</code> (Migration 011)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE je_idempotency (
+    id INTEGER PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    payload_hash VARCHAR(64) NOT NULL,  -- SHA-256 hex
+    qbo_doc_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(tenant_id, payload_hash)
+);
+</code></pre>
+<p>
+<h4 id="10-xero_account_mappings-migration-008">10. <code>xero_account_mappings</code> (Migration 008)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE xero_account_mappings (
+    id INTEGER PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    internal_account VARCHAR(255) NOT NULL,
+    xero_account_code VARCHAR(255) NOT NULL,
+    xero_account_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<p>
+<h4 id="11-xero_export_log-migration-008">11. <code>xero_export_log</code> (Migration 008)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE xero_export_log (
+    id INTEGER PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    journal_entry_id VARCHAR(255) NOT NULL,
+    external_id VARCHAR(255) NOT NULL,
+    xero_journal_id VARCHAR(255),
+    status VARCHAR(50),
+    error_message TEXT,
+    exported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<p>
+<h4 id="12-auth_tokens-migration-007">12. <code>auth_tokens</code> (Migration 007)</h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE auth_tokens (
+    token_id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    token_hash VARCHAR(255) NOT NULL,
+    token_type VARCHAR(50),  -- 'password_reset', 'email_verification'
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    used_at TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+</code></pre>
+<p>
+<h4 id="13-billing_subscriptions">13. <code>billing_subscriptions</code></h4>
+<p>
+<pre><code class="language-sql">CREATE TABLE billing_subscriptions (
+    id INTEGER PRIMARY KEY,
+    tenant_id VARCHAR(255) UNIQUE NOT NULL,
+    stripe_subscription_id VARCHAR(255) UNIQUE,
+    stripe_customer_id VARCHAR(255),
+    plan VARCHAR(50),  -- 'starter', 'team', 'firm', 'enterprise', 'pilot'
+    term VARCHAR(50),  -- 'monthly', 'annual'
+    status VARCHAR(50),  -- 'active', 'canceled', 'past_due'
+    entities_allowed INTEGER,
+    tx_quota_monthly INTEGER,
+    tx_used_monthly INTEGER DEFAULT 0,
+    overage_unit_price DECIMAL(10, 4),
+    metadata JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<p>
+<hr>
+<p>
+<h2 id="core-features">Core Features</h2>
+<p>
+<h3 id="1-transaction-ingestion">1. Transaction Ingestion</h3>
+<p>
+Multi-format support:
+<p>
+<ul>
+<li><strong>CSV:</strong> Custom column mapping, auto-detection</li>
+<li><strong>OFX:</strong> Bank connection files</li>
+<li><strong>PDF:</strong> OCR extraction with Tesseract</li>
+<li><strong>Manual Entry:</strong> Web form input</li>
+</ul>
+<p>
+Normalization:
+<p>
+<ul>
+<li>Vendor name normalization</li>
+<li>Date parsing</li>
+<li>Amount standardization</li>
+<li>Counterparty extraction</li>
+</ul>
+<p>
+<h3 id="2-tiered-decisioning-pipeline">2. Tiered Decisioning Pipeline</h3>
+<p>
+Four-stage classification:
+<p>
+<strong>Stage 1: Rules Engine</strong>
+<p>
+<ul>
+<li>Regex-based vendor pattern matching</li>
+<li>YAML configuration: <code>app/rules/vendor_rules.yaml</code></li>
+<li>100% confidence when matched</li>
+<li>Example: <code>(?i)(amazon|amzn).*</code> → "6100 Office Supplies"</li>
+</ul>
+<p>
+<strong>Stage 2: Embeddings Memory</strong>
+<p>
+<ul>
+<li>Semantic search using ChromaDB</li>
+<li>Sentence transformers embeddings</li>
+<li>Finds similar past categorizations</li>
+<li>Provides historical context to LLM</li>
+</ul>
+<p>
+<strong>Stage 3: LLM Categorization</strong>
+<p>
+<ul>
+<li>OpenAI GPT-4 with function calling</li>
+<li>System prompt enforces GAAP compliance</li>
+<li>Receives: transaction + Chart of Accounts + historical mappings</li>
+<li>Returns: account, journal entry, confidence (0-1), rationale</li>
+</ul>
+<p>
+<strong>Stage 4: Human Review</strong>
+<p>
+Automatic flags for review:
+<p>
+<ul>
+<li>Confidence < 0.85 (configurable)</li>
+<li>Amount > $5,000 (configurable)</li>
+<li>Unbalanced journal entry</li>
+<li>LLM explicitly sets needs_review: true</li>
+</ul>
+<p>
+<h3 id="3-journal-entry-generation">3. Journal Entry Generation</h3>
+<p>
+Double-entry accounting:
+<p>
+<ul>
+<li>Automatic balanced entries</li>
+<li>Hard fail validation: debits must equal credits (tolerance $0.01)</li>
+<li>Journal entry lines with account, debit, credit, memo</li>
+<li>Status tracking: proposed → approved → posted</li>
+</ul>
+<p>
+<h3 id="4-ocr-receipt-processing">4. OCR Receipt Processing</h3>
+<p>
+Token-level extraction:
+<p>
+<ul>
+<li><strong>Tesseract OCR:</strong> Local processing</li>
+<li><strong>Token Boxes:</strong> Character-level bounding boxes</li>
+<li><strong>Field Extraction:</strong> Date, vendor, amount, total</li>
+<li><strong>Visual Highlights:</strong> Interactive UI overlay</li>
+<li><strong>Confidence Scoring:</strong> Per-field accuracy</li>
+<li><strong>Performance:</strong> ~500ms cold, ~3ms cached</li>
+<li><strong>Graceful Fallback:</strong> Heuristic methods when OCR unavailable</li>
+</ul>
+<p>
+<h3 id="5-rules-management">5. Rules Management</h3>
+<p>
+Rule lifecycle:
+<p>
+<ul>
+<li><strong>Candidate Generation:</strong> Automated from patterns</li>
+<li><strong>Evidence Metrics:</strong> Transaction count, precision, std_dev</li>
+<li><strong>Dry-Run Simulation:</strong> Preview impact before acceptance</li>
+<li><strong>Promotion:</strong> Accept/reject workflow</li>
+<li><strong>Version Control:</strong> Historical snapshots</li>
+<li><strong>Rollback:</strong> Revert to previous versions</li>
+<li><strong>Conflict Detection:</strong> Overlapping patterns</li>
+</ul>
+<p>
+<h3 id="6-reconciliation">6. Reconciliation</h3>
+<p>
+Transaction matching:
+<p>
+<ul>
+<li><strong>Exact Match:</strong> Same txn_id and date</li>
+<li><strong>Heuristic Match:</strong> Same amount, date within ±3 days</li>
+<li><strong>Tolerance:</strong> Configurable date tolerance</li>
+<li><strong>Flags:</strong> Unmatched transactions, orphaned journal entries</li>
+<li><strong>Match Rate:</strong> Percentage of successful matches</li>
+</ul>
+<p>
+<h3 id="7-export-system">7. Export System</h3>
+<p>
+Multiple formats:
+<p>
+<strong>CSV Export:</strong>
+<p>
+<ul>
+<li>General ledger</li>
+<li>Trial balance</li>
+<li>Journal entries</li>
+<li>Reconciliation results</li>
+</ul>
+<p>
+<strong>QuickBooks Online Export:</strong>
+<p>
+<ul>
+<li>IIF format generation</li>
+<li>OAuth2 authentication</li>
+<li>Idempotent posting (SHA-256 hash)</li>
+<li>Balance validation</li>
+<li>Automatic token refresh</li>
+</ul>
+<p>
+<strong>Xero Export:</strong>
+<p>
+<ul>
+<li>Manual journals via API</li>
+<li>Account code mapping</li>
+<li>Idempotent exports (ExternalId)</li>
+<li>Concurrency-safe</li>
+<li>Export status tracking</li>
+</ul>
+<p>
+<h3 id="8-multi-tenant-architecture">8. Multi-Tenant Architecture</h3>
+<p>
+Tenant isolation:
+<p>
+<ul>
+<li>Tenant-scoped data queries</li>
+<li>Per-tenant settings (auto-post, thresholds)</li>
+<li>RBAC (owner, staff roles)</li>
+<li>Staff can access multiple tenants</li>
+<li>Tenant-level billing subscriptions</li>
+</ul>
+<p>
+<h3 id="9-audit-trail">9. Audit Trail</h3>
+<p>
+Comprehensive logging:
+<p>
+<ul>
+<li>All actions logged with timestamps (UTC ISO8601)</li>
+<li>User, tenant, transaction tracking</li>
+<li>Confidence scores and thresholds</li>
+<li>Not auto-post reasons</li>
+<li>Filterable exports (7+ criteria)</li>
+<li>Memory-bounded streaming (100k+ rows)</li>
+<li>CSV export with 12 columns</li>
+</ul>
+<p>
+<h3 id="10-analytics-reporting">10. Analytics & Reporting</h3>
+<p>
+System metrics:
+<p>
+<ul>
+<li>Automation rate tracking</li>
+<li>Daily activity trends</li>
+<li>Vendor performance metrics</li>
+<li>Manual review reasons breakdown</li>
+<li>System performance metrics (p95, p99)</li>
+<li>Time range filtering (7d, 30d, 90d)</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="authentication-security">Authentication & Security</h2>
+<p>
+<h3 id="authentication-system">Authentication System</h3>
+<p>
+<strong>JWT-based Authentication:</strong>
+<p>
+<ul>
+<li>Token format: HS256 signing</li>
+<li>Expiration: 24 hours (configurable)</li>
+<li>Payload: user_id, email, role, tenants, exp</li>
+<li>Storage: HttpOnly cookies (Secure, SameSite=Lax)</li>
+<li>Bearer token support for API clients</li>
+</ul>
+<p>
+<strong>Login Methods:</strong>
+<p>
+<ul>
+<li>Password authentication (bcrypt)</li>
+<li>Dev magic link (development only)</li>
+<li>OAuth (future: SSO/SAML for Enterprise)</li>
+</ul>
+<p>
+<strong>Password Security:</strong>
+<p>
+<ul>
+<li>bcrypt hashing with salt</li>
+<li>Minimum 8 characters (future: stronger requirements)</li>
+<li>Rate limiting: 5 attempts per 15 minutes</li>
+<li>Reset flow with secure tokens</li>
+</ul>
+<p>
+<h3 id="authorization-rbac">Authorization (RBAC)</h3>
+<p>
+<strong>Roles:</strong>
+<p>
+1. <strong>Owner:</strong>
+   - Full access to all tenants
+   - Edit tenant settings
+   - Approve/reject rules
+   - View all analytics
+   - Manage staff users
+<p>
+2. <strong>Staff:</strong>
+   - Access assigned tenants only
+   - Read-only on settings
+   - Review transactions
+   - View reports for assigned tenants
+<p>
+<strong>Enforcement:</strong>
+<p>
+<ul>
+<li>Middleware checks JWT payload</li>
+<li>User-tenant association in database</li>
+<li>Tenant-scoped queries</li>
+<li>403 Forbidden for unauthorized access</li>
+</ul>
+<p>
+<h3 id="security-hardening">Security Hardening</h3>
+<p>
+<strong>Headers (Sprint 10):</strong>
+<p>
+<ul>
+<li>Content-Security-Policy</li>
+<li>X-Content-Type-Options: nosniff</li>
+<li>X-Frame-Options: DENY</li>
+<li>Referrer-Policy: strict-origin-when-cross-origin</li>
+<li>Strict-Transport-Security (HTTPS)</li>
+</ul>
+<p>
+<strong>CORS:</strong>
+<p>
+<ul>
+<li>Configurable allowed origins</li>
+<li>Credentials: true</li>
+<li>Methods: GET, POST, PUT, DELETE, OPTIONS</li>
+<li>Headers: Content-Type, Authorization</li>
+</ul>
+<p>
+<strong>Rate Limiting:</strong>
+<p>
+<ul>
+<li>Auth endpoints: 5 attempts per 15 minutes per IP</li>
+<li>API endpoints: Configurable per-tenant limits</li>
+<li>429 Too Many Requests response</li>
+</ul>
+<p>
+<strong>CSRF Protection:</strong>
+<p>
+<ul>
+<li>CSRF token generation</li>
+<li>Validation middleware</li>
+<li>Exempt: login, webhooks (Stripe signature)</li>
+</ul>
+<p>
+<strong>Input Validation:</strong>
+<p>
+<ul>
+<li>Pydantic models for all endpoints</li>
+<li>SQL injection prevention (parameterized queries)</li>
+<li>XSS prevention (template escaping)</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="integrations">Integrations</h2>
+<p>
+<h3 id="1-stripe-billing">1. Stripe Billing</h3>
+<p>
+Complete subscription management:
+<p>
+<strong>Features:</strong>
+<p>
+<ul>
+<li>Subscription creation (checkout sessions)</li>
+<li>Usage metering (transaction counting)</li>
+<li>Overage billing (monthly calculations)</li>
+<li>Webhook handling (7+ events)</li>
+<li>Customer portal</li>
+<li>Invoice generation</li>
+</ul>
+<p>
+<strong>Plans:</strong>
+<p>
+<ul>
+<li>Starter: $49/month (1 entity, 500 tx/month)</li>
+<li>Team: $149/month (3 entities, 2,000 tx/month)</li>
+<li>Firm: $499/month (10 entities, 10,000 tx/month)</li>
+<li>Enterprise: Custom (25+ entities, 25,000+ tx/month)</li>
+<li>Pilot: $99/month for 3 months (special offer)</li>
+</ul>
+<p>
+<strong>Add-ons:</strong>
+<p>
+<ul>
+<li>Extra entity: $25/month (Starter/Team), $15/month (Firm)</li>
+<li>SSO: $99/month</li>
+<li>White-label: $149/month</li>
+<li>Extended retention: $49/month</li>
+<li>Priority support: $99/month</li>
+</ul>
+<p>
+<strong>Webhooks:</strong>
+<p>
+<ul>
+<li>checkout.session.completed</li>
+<li>customer.subscription.created</li>
+<li>customer.subscription.updated</li>
+<li>invoice.paid</li>
+<li>customer.subscription.deleted</li>
+</ul>
+<p>
+<h3 id="2-quickbooks-online">2. QuickBooks Online</h3>
+<p>
+OAuth2 integration with idempotent posting:
+<p>
+<strong>Features:</strong>
+<p>
+<ul>
+<li>OAuth 2.0 code flow</li>
+<li>Automatic token refresh</li>
+<li>Idempotent journal entry posting (SHA-256 hash)</li>
+<li>Balance validation</li>
+<li>Account mapping</li>
+<li>Error handling with retry logic</li>
+</ul>
+<p>
+<strong>Endpoints:</strong>
+<p>
+<ul>
+<li><code>GET /api/auth/qbo/start</code> - Initialize OAuth</li>
+<li><code>GET /api/auth/qbo/callback</code> - OAuth callback</li>
+<li><code>GET /api/qbo/status</code> - Connection status</li>
+<li><code>POST /api/qbo/journalentry</code> - Post journal entry</li>
+</ul>
+<p>
+<strong>Idempotency:</strong>
+<p>
+<ul>
+<li>Payload hash: SHA-256 of normalized JSON</li>
+<li>Normalization: sorted lines, rounded amounts, stripped whitespace</li>
+<li>Deduplication: Check je_idempotency table before posting</li>
+<li>First post: 201 Created</li>
+<li>Duplicate: 200 OK with existing qbo_doc_id</li>
+</ul>
+<p>
+<h3 id="3-xero">3. Xero</h3>
+<p>
+Manual journal posting:
+<p>
+<strong>Features:</strong>
+<p>
+<ul>
+<li>OAuth integration (xero-python SDK)</li>
+<li>Account code mapping</li>
+<li>Idempotent exports (ExternalId)</li>
+<li>Concurrency-safe (10 workers tested)</li>
+<li>Export status tracking</li>
+</ul>
+<p>
+<strong>Endpoints:</strong>
+<p>
+<ul>
+<li><code>POST /api/export/xero</code> - Export journal entries</li>
+<li><code>GET /api/export/xero/status</code> - Export status</li>
+</ul>
+<p>
+<strong>Tables:</strong>
+<p>
+<ul>
+<li>xero_account_mappings: Internal account → Xero account code</li>
+<li>xero_export_log: Export tracking with status</li>
+</ul>
+<p>
+<h3 id="4-openai-gpt-4">4. OpenAI GPT-4</h3>
+<p>
+LLM categorization:
+<p>
+<strong>System Prompt:</strong>
+<p>
+"You are an accounting assistant. Follow U.S. GAAP and double-entry. Return ONLY valid JSON for the function call. Use the provided Chart of Accounts. If uncertain, set 'needs_review': true and explain briefly in 'rationale'. Ensure journal entries are balanced; otherwise force review."
+<p>
+<strong>Function Schema:</strong>
+<p>
+<ul>
+<li>Function name: <code>categorize_and_post</code></li>
+<li>Parameters: account, amount, debit_account, credit_account, confidence, rationale, needs_review</li>
+</ul>
+<p>
+<strong>Usage:</strong>
+<p>
+<ul>
+<li>Called when rules and embeddings don't match</li>
+<li>Receives: transaction details, Chart of Accounts, historical mappings</li>
+<li>Returns: categorization with confidence score</li>
+<li>Fallback: Simple heuristics if API unavailable</li>
+</ul>
+<p>
+<h3 id="5-chatgpt-gpt-actions">5. ChatGPT GPT Actions</h3>
+<p>
+Custom GPT integration:
+<p>
+<strong>Features:</strong>
+<p>
+<ul>
+<li>OpenAPI schema export</li>
+<li>OAuth flow instructions</li>
+<li>Deep link to ChatGPT</li>
+<li>Example queries for users</li>
+</ul>
+<p>
+<strong>Use Cases:</strong>
+<p>
+<ul>
+<li>"Add this receipt to my bookkeeping"</li>
+<li>"What's my automation rate?"</li>
+<li>"Export my journal entries to QuickBooks"</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="ai-machine-learning">AI & Machine Learning</h2>
+<p>
+<h3 id="1-llm-categorization-gpt-4">1. LLM Categorization (GPT-4)</h3>
+<p>
+Transaction classification:
+<p>
+<strong>Input:</strong>
+<p>
+<ul>
+<li>Transaction details (date, vendor, amount, description)</li>
+<li>Chart of Accounts</li>
+<li>Historical vendor mappings (from embeddings)</li>
+<li>System prompt with accounting rules</li>
+</ul>
+<p>
+<strong>Output:</strong>
+<p>
+<ul>
+<li>Account assignment</li>
+<li>Journal entry lines (debit/credit)</li>
+<li>Confidence score (0-1)</li>
+<li>Rationale (explanation)</li>
+<li>needs_review flag</li>
+</ul>
+<p>
+<strong>Function Calling:</strong>
+<p>
+<ul>
+<li>Uses OpenAI function calling API</li>
+<li>Structured JSON response</li>
+<li>Validation against Chart of Accounts</li>
+</ul>
+<p>
+<h3 id="2-embeddings-memory-chromadb">2. Embeddings Memory (ChromaDB)</h3>
+<p>
+Semantic search for historical patterns:
+<p>
+<strong>Features:</strong>
+<p>
+<ul>
+<li>Sentence transformers (all-MiniLM-L6-v2)</li>
+<li>Vector storage in ChromaDB</li>
+<li>Similarity search for vendor names</li>
+<li>Historical categorization retrieval</li>
+</ul>
+<p>
+<strong>Usage:</strong>
+<p>
+<ul>
+<li>Query: "Amazon Web Services"</li>
+<li>Returns: Top 5 similar vendors with accounts</li>
+<li>Provides context to LLM for better categorization</li>
+</ul>
+<p>
+<strong>Fallback:</strong>
+<p>
+<ul>
+<li>FAISS in-memory if ChromaDB unavailable</li>
+<li>Graceful degradation to LLM-only</li>
+</ul>
+<p>
+<h3 id="3-rule-candidate-generation">3. Rule Candidate Generation</h3>
+<p>
+Automated pattern discovery:
+<p>
+<strong>Process:</strong>
+<p>
+1. Analyze approved transactions
+2. Identify common vendor patterns
+3. Calculate evidence metrics:
+   - Count: Number of matching transactions
+   - Precision: Percentage with same account
+   - Std_dev: Consistency of amounts
+4. Generate regex patterns
+5. Present as rule candidates
+<p>
+<strong>Evidence Thresholds:</strong>
+<p>
+<ul>
+<li>Minimum count: 3 transactions</li>
+<li>Minimum precision: 0.80 (80% same account)</li>
+<li>Maximum std_dev: Configurable</li>
+</ul>
+<p>
+<h3 id="4-confidence-calibration">4. Confidence Calibration</h3>
+<p>
+Probability calibration:
+<p>
+<strong>Input:</strong> Raw LLM confidence (0-1)
+<p>
+<strong>Calibration:</strong>
+<p>
+<ul>
+<li>Historical accuracy tracking</li>
+<li>Bayesian updating</li>
+<li>Cold start detection</li>
+<li>Per-vendor calibration</li>
+</ul>
+<p>
+<strong>Output:</strong> Calibrated probability
+<p>
+<h3 id="5-drift-monitoring">5. Drift Monitoring</h3>
+<p>
+Model performance tracking:
+<p>
+<strong>Metrics:</strong>
+<p>
+<ul>
+<li>Accuracy over time</li>
+<li>Precision per category</li>
+<li>Recall per category</li>
+<li>F1 scores</li>
+</ul>
+<p>
+<strong>Alerts:</strong>
+<p>
+<ul>
+<li>Significant accuracy drop</li>
+<li>Category-specific degradation</li>
+<li>Cold start detection</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="billing-monetization">Billing & Monetization</h2>
+<p>
+<h3 id="pricing-model">Pricing Model</h3>
+<p>
+Tiered subscriptions with usage-based overage:
+<p>
+<strong>Starter - $49/month:</strong>
+<p>
+<ul>
+<li>1 entity</li>
+<li>500 transactions/month</li>
+<li>$0.03 per transaction overage</li>
+<li>OCR, propose/review/export, QBO/Xero, email support</li>
+</ul>
+<p>
+<strong>Team - $149/month:</strong>
+<p>
+<ul>
+<li>3 entities</li>
+<li>2,000 transactions/month</li>
+<li>$0.02 per transaction overage</li>
+<li>Everything in Starter + rules versioning, bulk approve, email ingest</li>
+</ul>
+<p>
+<strong>Firm - $499/month:</strong>
+<p>
+<ul>
+<li>10 entities</li>
+<li>10,000 transactions/month</li>
+<li>$0.015 per transaction overage</li>
+<li>Everything in Team + API access, audit exports, RBAC, 99.5% SLA</li>
+</ul>
+<p>
+<strong>Enterprise - Custom:</strong>
+<p>
+<ul>
+<li>25+ entities</li>
+<li>25,000+ transactions/month</li>
+<li>$0.01 per transaction overage</li>
+<li>Everything in Firm + SSO, DPA, custom retention, 99.9% SLA</li>
+</ul>
+<p>
+<h3 id="usage-metering">Usage Metering</h3>
+<p>
+<strong>Billable Transaction:</strong>
+<p>
+A bank/card line that is ingested and processed through <code>POST /api/post/propose</code>
+<p>
+<strong>NOT Billable:</strong>
+<p>
+<ul>
+<li>Idempotent retries</li>
+<li>Re-exports to QBO/Xero</li>
+<li>Transaction edits/updates</li>
+<li>Preview operations</li>
+</ul>
+<p>
+<strong>Tracking:</strong>
+<p>
+<ul>
+<li>Increment counter on propose endpoint</li>
+<li>Idempotency-Key header prevents double billing</li>
+<li>Counter stored in billing_subscriptions.tx_used_monthly</li>
+<li>Reset on 1st day of each month</li>
+</ul>
+<p>
+<strong>Overage Handling:</strong>
+<p>
+<ul>
+<li>Soft limit: Allow overage (billed at month end)</li>
+<li>Hard limit: 2x quota (prevents runaway costs)</li>
+<li>Billing: Stripe usage records posted monthly</li>
+</ul>
+<p>
+<h3 id="feature-gates">Feature Gates</h3>
+<p>
+Entitlement enforcement:
+<p>
+<strong>Entity Limit:</strong>
+<p>
+<ul>
+<li>Enforced at entity creation</li>
+<li>HTTP 402 if limit exceeded</li>
+<li>Upgrade link in error response</li>
+</ul>
+<p>
+<strong>Transaction Limit:</strong>
+<p>
+<ul>
+<li>Soft limit: Allow with overage billing</li>
+<li>Hard limit: 2x quota returns 402</li>
+<li>Real-time check on propose endpoint</li>
+</ul>
+<p>
+<strong>Feature Access:</strong>
+<p>
+<table class="data-table"><thead><tr><th>Feature</th><th>Starter</th><th>Team</th><th>Firm</th><th>Enterprise</th></tr></thead><tbody><tr><td>API Access</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td>Audit Exports</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td>RBAC</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td>SSO</td><td>Add-on</td><td>Add-on</td><td>Add-on</td><td>Included</td></tr></tbody></table>
+<h3 id="stripe-integration">Stripe Integration</h3>
+<p>
+<strong>Environment Variables:</strong>
+<p>
+<pre><code class="language-bash">STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_STARTER_MONTHLY=price_...
+STRIPE_PRICE_TEAM_MONTHLY=price_...
+STRIPE_PRICE_FIRM_MONTHLY=price_...
+</code></pre>
+<p>
+<strong>Webhook Events:</strong>
+<p>
+<ul>
+<li>checkout.session.completed → Create subscription</li>
+<li>customer.subscription.updated → Update entitlements</li>
+<li>invoice.paid → Record payment</li>
+<li>customer.subscription.deleted → Cancel subscription</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="deployment-architecture">Deployment Architecture</h2>
+<p>
+<h3 id="google-cloud-run-deployment">Google Cloud Run Deployment</h3>
+<p>
+Serverless container deployment with auto-scaling:
+<p>
+<strong>Architecture:</strong>
+<p>
+<ul>
+<li><strong>Backend:</strong> Google Cloud Run (serverless containers)</li>
+<li><strong>Frontend:</strong> Vercel (Next.js optimized)</li>
+<li><strong>Database:</strong> Neon PostgreSQL (serverless)</li>
+</ul>
+<p>
+<strong>Cloud Run Configuration:</strong>
+<p>
+<pre><code class="language-yaml">Service: ai-bookkeeper-api
+Region: us-central1
+Image: us-central1-docker.pkg.dev/bright-fastness-475700-j2/app/api:latest
+CPU: 2 vCPU
+Memory: 2 GB
+Min Instances: 1 (always warm, no cold starts)
+Max Instances: 10 (auto-scaling)
+Timeout: 600s
+Port: 8080
+Concurrency: 1000 requests per instance
+</code></pre>
+<p>
+<strong>API URL:</strong>
+<p>
+<pre><code class="language-">https://ai-bookkeeper-api-644842661403.us-central1.run.app
+</code></pre>
+<p>
+<strong>Performance:</strong>
+<p>
+<ul>
+<li>Cold start: ~10 seconds (optimized from 60+)</li>
+<li>Warm requests: <100ms response time</li>
+<li>Always warm: Min 1 instance prevents cold starts</li>
+<li>99.95% SLA uptime guarantee</li>
+</ul>
+<p>
+<strong>Docker Image Build:</strong>
+<p>
+<pre><code class="language-dockerfile"># app/Dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8080"]
+</code></pre>
+<p>
+<h3 id="database-neon-serverless-postgres">Database (Neon Serverless Postgres)</h3>
+<p>
+<strong>Configuration:</strong>
+<p>
+<ul>
+<li>Connection pooling enabled</li>
+<li>SSL required</li>
+<li>Automatic backups</li>
+<li>Database: neondb</li>
+<li>Region: us-west-2</li>
+</ul>
+<p>
+<strong>Connection String:</strong>
+<p>
+<pre><code class="language-">postgresql://neondb_owner:npg_f1nD7XhKekjp@ep-summer-fog-aftcltuf-pooler.us-west-2.aws.neon.tech/neondb?sslmode=require
+</code></pre>
+<p>
+<h3 id="environment-variables">Environment Variables</h3>
+<p>
+<strong>Backend:</strong>
+<p>
+<pre><code class="language-bash">DATABASE_URL=postgresql://...
+JWT_SECRET_KEY=your-secret-key
+AUTH_MODE=prod
+OPENAI_API_KEY=sk-...
+OCR_PROVIDER=tesseract
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+QBO_CLIENT_ID=...
+QBO_CLIENT_SECRET=...
+QBO_REDIRECT_URI=https://your-domain.com/api/auth/qbo/callback
+CORS_ALLOWED_ORIGINS=https://your-domain.com
+PASSWORD_RESET_SECRET=your-reset-secret
+</code></pre>
+<p>
+<strong>Frontend:</strong>
+<p>
+<pre><code class="language-bash">NEXT_PUBLIC_API_URL=https://ai-bookkeeper-api-644842661403.us-central1.run.app
+NEXT_PUBLIC_GA_ID=G-...
+NEXT_PUBLIC_GPT_DEEPLINK=https://chat.openai.com/g/...
+</code></pre>
+<p>
+<h3 id="deployment-process">Deployment Process</h3>
+<p>
+<strong>Prerequisites:</strong>
+<p>
+<ul>
+<li>Google Cloud account with billing enabled</li>
+<li>gcloud CLI installed</li>
+<li>Service account with required permissions:</li>
+</ul>
+  - Cloud Run Admin
+  - Cloud Build Editor
+  - Artifact Registry Repository Administrator
+  - Secret Manager Admin
+<p>
+<strong>Steps:</strong>
+<p>
+1. <strong>Authenticate with Google Cloud:</strong>
+   <pre><code class="language-bash">   gcloud auth login
+   gcloud config set project bright-fastness-475700-j2
+   </code></pre>
+<p>
+2. <strong>Enable Required APIs:</strong>
+   <pre><code class="language-bash">   gcloud services enable cloudbuild.googleapis.com
+   gcloud services enable run.googleapis.com
+   gcloud services enable artifactregistry.googleapis.com
+   gcloud services enable secretmanager.googleapis.com
+   </code></pre>
+<p>
+3. <strong>Build and Push Docker Image:</strong>
+   <pre><code class="language-bash">   cd app
+   docker build -t us-central1-docker.pkg.dev/bright-fastness-475700-j2/app/api:latest .
+   docker push us-central1-docker.pkg.dev/bright-fastness-475700-j2/app/api:latest
+   </code></pre>
+<p>
+4. <strong>Deploy to Cloud Run:</strong>
+   <pre><code class="language-bash">   gcloud run deploy ai-bookkeeper-api \
+     --image us-central1-docker.pkg.dev/bright-fastness-475700-j2/app/api:latest \
+     --region us-central1 \
+     --allow-unauthenticated \
+     --port 8080 \
+     --cpu 2 \
+     --memory 2Gi \
+     --min-instances 1 \
+     --max-instances 10 \
+     --timeout 600 \
+     --set-env-vars="DATABASE_URL=postgresql://...,APP_ENV=production" \
+     --set-secrets="JWT_SECRET_KEY=JWT_SECRET:latest"
+   </code></pre>
+<p>
+5. <strong>Deploy Frontend to Vercel:</strong>
+   <pre><code class="language-bash">   cd frontend
+   vercel --prod
+   </code></pre>
+<p>
+6. <strong>Run Migrations (via Cloud Run):</strong>
+   <pre><code class="language-bash">   gcloud run jobs create migration-job \
+     --image us-central1-docker.pkg.dev/bright-fastness-475700-j2/app/api:latest \
+     --region us-central1 \
+     --command alembic \
+     --args "upgrade,head"
+   gcloud run jobs execute migration-job
+   </code></pre>
+<p>
+7. <strong>Verify Health:</strong>
+   <pre><code class="language-bash">   curl https://ai-bookkeeper-api-644842661403.us-central1.run.app/healthz
+   curl https://ai-bookkeeper-api-644842661403.us-central1.run.app/readyz
+   curl https://ai-bookkeeper-api-644842661403.us-central1.run.app/docs
+   </code></pre>
+<p>
+<h3 id="cost-optimization">Cost Optimization</h3>
+<p>
+<strong>Google Cloud Run Pricing:</strong>
+<p>
+<ul>
+<li>Free tier: 2M requests/month</li>
+<li>Pay-per-use: Only charged for actual requests</li>
+<li>Estimated cost: $6-11/month for low-medium traffic</li>
+<li>99.95% SLA uptime guarantee</li>
+</ul>
+<p>
+<strong>Neon PostgreSQL:</strong>
+<p>
+<ul>
+<li>Free tier: 0.5 GB storage</li>
+<li>Automatic backups included</li>
+<li>Pay-as-you-go scaling</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="testing-strategy">Testing Strategy</h2>
+<p>
+<h3 id="backend-tests-74-passing">Backend Tests (74+ passing)</h3>
+<p>
+<strong>Test Organization:</strong>
+<p>
+<pre><code class="language-">tests/
+├── conftest.py                    # Shared fixtures
+├── test_posting.py                # Journal entry balance validation
+├── test_recon.py                  # Reconciliation matching
+├── test_csv_parser.py             # CSV parsing
+├── test_auth_hardening.py         # Security tests (5 tests)
+├── test_accessibility.py          # A11y tests (4 tests)
+├── test_ocr_tokens_iou.py         # OCR accuracy (5 tests)
+├── test_xero_export.py            # Xero integration (6 tests)
+├── test_rbac_auth.py              # RBAC enforcement (5 tests)
+├── test_firm_settings_persist.py  # Settings persistence (3 tests)
+├── test_rules_console_live.py     # Rules engine (5 tests)
+├── test_audit_export_stream.py    # Audit streaming (4 tests)
+└── qbo/                           # QBO integration tests
+    ├── test_oauth_flow.py         # OAuth (7 tests)
+    ├── test_token_refresh.py      # Token refresh (5 tests)
+    ├── test_idempotency.py        # Idempotency (5 tests)
+    ├── test_balance_validation.py # Balance (6 tests)
+    └── test_error_mapping.py      # Error handling (7 tests)
+</code></pre>
+<p>
+<strong>Test Categories:</strong>
+<p>
+1. <strong>Unit Tests:</strong> Individual functions and classes
+2. <strong>Integration Tests:</strong> API endpoints with database
+3. <strong>E2E Tests:</strong> Full user workflows
+4. <strong>Performance Tests:</strong> Locust load testing
+<p>
+<strong>Running Tests:</strong>
+<p>
+<pre><code class="language-bash"># All tests
+pytest tests/ -v
+
+# Specific suite
+pytest tests/test_ocr_tokens_iou.py -v
+
+# With coverage
+pytest tests/ --cov=app --cov-report=html
+</code></pre>
+<p>
+<h3 id="frontend-tests">Frontend Tests</h3>
+<p>
+<strong>E2E Tests (Playwright):</strong>
+<p>
+<pre><code class="language-typescript">// tests/e2e/test_login.spec.ts
+test('user can login', async ({ page }) =&gt; {
+  await page.goto('/login');
+  await page.click('text=Dev Magic Link');
+  await expect(page).toHaveURL('/');
+});
+</code></pre>
+<p>
+<strong>Running E2E Tests:</strong>
+<p>
+<pre><code class="language-bash">cd frontend
+npm run test:e2e
+</code></pre>
+<p>
+<h3 id="test-coverage">Test Coverage</h3>
+<p>
+<strong>Backend Coverage:</strong> ~85%
+<p>
+Key areas:
+<p>
+<ul>
+<li>Transaction processing: 95%</li>
+<li>Rules engine: 90%</li>
+<li>OCR processing: 85%</li>
+<li>Export system: 90%</li>
+<li>Authentication: 95%</li>
+<li>Billing: 80%</li>
+</ul>
+<p>
+<strong>Frontend Coverage:</strong> Build validation
+<p>
+<ul>
+<li>TypeScript compilation: 100%</li>
+<li>Linting: 0 errors</li>
+<li>Build: Successful</li>
+</ul>
+<p>
+<hr>
+<p>
+<h2 id="api-reference">API Reference</h2>
+<p>
+<h3 id="authentication-endpoints">Authentication Endpoints</h3>
+<p>
+<strong>POST /api/auth/login</strong>
+<p>
+Login with credentials:
+<p>
+<pre><code class="language-json">Request:
+{
+  "email": "user@example.com",
+  "password": "secure_password"
+}
+
+Response:
+{
+  "access_token": "eyJ...",
+  "token_type": "bearer",
+  "user": {
+    "user_id": "user-001",
+    "email": "user@example.com",
+    "role": "owner"
+  }
+}
+</code></pre>
+<p>
+<strong>GET /api/auth/me</strong>
+<p>
+Get current user:
+<p>
+<pre><code class="language-json">Response:
+{
+  "user_id": "user-001",
+  "email": "user@example.com",
+  "role": "owner",
+  "tenants": ["tenant-001", "tenant-002"]
+}
+</code></pre>
+<p>
+<h3 id="transaction-endpoints">Transaction Endpoints</h3>
+<p>
+<strong>GET /api/transactions</strong>
+<p>
+List transactions:
+<p>
+<pre><code class="language-json">Query Parameters:
+  tenant_id: string (required)
+  status: string (optional) - 'proposed', 'approved', 'posted'
+  date_from: string (optional) - ISO date
+  date_to: string (optional) - ISO date
+
+Response:
+{
+  "transactions": [
+    {
+      "txn_id": "txn-001",
+      "date": "2024-10-15",
+      "vendor": "Amazon Web Services",
+      "amount": -125.50,
+      "status": "proposed",
+      "confidence": 0.92,
+      "account": "6300 Software Subscriptions",
+      "rationale": "Recurring AWS charges"
+    }
+  ],
+  "total": 127
+}
+</code></pre>
+<p>
+<strong>POST /api/post/propose</strong>
+<p>
+Generate proposed journal entries:
+<p>
+<pre><code class="language-json">Request:
+{
+  "tenant_id": "tenant-001",
+  "txn_ids": ["txn-001", "txn-002"]
+}
+
+Response:
+{
+  "proposed": [
+    {
+      "je_id": "je-001",
+      "txn_id": "txn-001",
+      "lines": [
+        {"account": "6300 Software", "debit": 125.50, "credit": 0},
+        {"account": "1000 Cash", "debit": 0, "credit": 125.50}
+      ],
+      "confidence": 0.92,
+      "needs_review": false
+    }
+  ],
+  "review_needed": 0
+}
+</code></pre>
+<p>
+<h3 id="rules-endpoints">Rules Endpoints</h3>
+<p>
+<strong>GET /api/rules/candidates</strong>
+<p>
+List rule candidates:
+<p>
+<pre><code class="language-json">Response:
+{
+  "candidates": [
+    {
+      "id": "cand-001",
+      "pattern": "(?i)aws.*",
+      "account": "6300 Software Subscriptions",
+      "evidence": {
+        "count": 15,
+        "precision": 0.93,
+        "std_dev": 12.50
+      },
+      "status": "pending"
+    }
+  ]
+}
+</code></pre>
+<p>
+<strong>POST /api/rules/dryrun</strong>
+<p>
+Simulate rule impact:
+<p>
+<pre><code class="language-json">Request:
+{
+  "candidate_id": "cand-001",
+  "tenant_id": "tenant-001"
+}
+
+Response:
+{
+  "current_automation_rate": 0.65,
+  "projected_automation_rate": 0.72,
+  "transactions_affected": 12,
+  "sample_matches": [...]
+}
+</code></pre>
+<p>
+<h3 id="export-endpoints">Export Endpoints</h3>
+<p>
+<strong>POST /api/export/qbo</strong>
+<p>
+Export to QuickBooks:
+<p>
+<pre><code class="language-json">Request:
+{
+  "tenant_id": "tenant-001",
+  "date_from": "2024-10-01",
+  "date_to": "2024-10-31"
+}
+
+Response:
+{
+  "summary": {
+    "total": 45,
+    "posted": 42,
+    "skipped": 3,
+    "failed": 0
+  },
+  "results": {
+    "posted": ["je-001", "je-002", ...],
+    "skipped": ["je-010", "je-020", "je-030"],
+    "failed": []
+  }
+}
+</code></pre>
+<p>
+<h3 id="billing-endpoints">Billing Endpoints</h3>
+<p>
+<strong>POST /api/billing/checkout</strong>
+<p>
+Create checkout session:
+<p>
+<pre><code class="language-json">Request:
+{
+  "plan": "team",
+  "term": "monthly",
+  "addons": ["addon_sso"]
+}
+
+Response:
+{
+  "url": "https://checkout.stripe.com/c/pay/cs_test_..."
+}
+</code></pre>
+<p>
+<strong>GET /api/billing/status</strong>
+<p>
+Get billing status:
+<p>
+<pre><code class="language-json">Query Parameters:
+  tenant_id: string (required)
+
+Response:
+{
+  "plan": "team",
+  "term": "monthly",
+  "entities_allowed": 3,
+  "tx_quota_monthly": 2000,
+  "tx_used_monthly": 1247,
+  "overage_unit_price": 0.02,
+  "addons": {
+    "sso": true,
+    "white_label": false
+  }
+}
+</code></pre>
+<p>
+<hr>
+<p>
+<h2 id="development-workflow">Development Workflow</h2>
+<p>
+<h3 id="local-development-setup">Local Development Setup</h3>
+<p>
+<strong>Backend:</strong>
+<p>
+<pre><code class="language-bash"># Clone repository
+git clone https://github.com/your-org/ai-bookkeeper.git
+cd ai-bookkeeper
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -r requirements-postgres.txt
+
+# Install Tesseract (for OCR)
+brew install tesseract  # macOS
+# or
+sudo apt-get install tesseract-ocr  # Ubuntu
+
+# Set environment variables
+cp .env.example .env
+# Edit .env with your keys
+
+# Run migrations
+alembic upgrade head
+
+# Start server
+uvicorn app.api.main:app --reload --port 8000
+</code></pre>
+<p>
+<strong>Frontend:</strong>
+<p>
+<pre><code class="language-bash"># Navigate to frontend
+cd frontend
+
+# Install dependencies
+npm install
+
+# Set environment variables
+echo "NEXT_PUBLIC_API_URL=http://localhost:8000" &gt; .env.local
+
+# Start development server
+npm run dev
+
+# Frontend runs on http://localhost:3000 (or 3001 if 3000 is busy)
+</code></pre>
+<p>
+<h3 id="running-the-full-stack">Running the Full Stack</h3>
+<p>
+<strong>Terminal 1 - Backend:</strong>
+<p>
+<pre><code class="language-bash">uvicorn app.api.main:app --reload --port 8000
+</code></pre>
+<p>
+<strong>Terminal 2 - Frontend:</strong>
+<p>
+<pre><code class="language-bash">cd frontend &amp;&amp; npm run dev
+</code></pre>
+<p>
+<strong>Access:</strong>
+<p>
+<ul>
+<li>Frontend: http://localhost:3001</li>
+<li>Backend API: http://localhost:8000</li>
+<li>API Docs: http://localhost:8000/docs</li>
+<li>Login: http://localhost:3001/login (use dev magic link)</li>
+</ul>
+<p>
+<h3 id="database-migrations">Database Migrations</h3>
+<p>
+<strong>Create new migration:</strong>
+<p>
+<pre><code class="language-bash">alembic revision -m "description"
+</code></pre>
+<p>
+<strong>Apply migrations:</strong>
+<p>
+<pre><code class="language-bash">alembic upgrade head
+</code></pre>
+<p>
+<strong>Rollback:</strong>
+<p>
+<pre><code class="language-bash">alembic downgrade -1
+</code></pre>
+<p>
+<strong>Check current version:</strong>
+<p>
+<pre><code class="language-bash">alembic current
+</code></pre>
+<p>
+<h3 id="code-quality">Code Quality</h3>
+<p>
+<strong>Linting:</strong>
+<p>
+<pre><code class="language-bash"># Python
+flake8 app/
+black app/
+
+# TypeScript
+cd frontend
+npm run lint
+</code></pre>
+<p>
+<strong>Type Checking:</strong>
+<p>
+<pre><code class="language-bash"># Python
+mypy app/
+
+# TypeScript
+cd frontend
+npm run type-check
+</code></pre>
+<p>
+<h3 id="git-workflow">Git Workflow</h3>
+<p>
+<strong>Branching:</strong>
+<p>
+<ul>
+<li><code>main</code> - Production branch</li>
+<li><code>develop</code> - Development branch</li>
+<li><code>feature/*</code> - Feature branches</li>
+<li><code>fix/*</code> - Bug fix branches</li>
+</ul>
+<p>
+<strong>Commit Convention:</strong>
+<p>
+<pre><code class="language-">feat: Add CSV cleaner tool
+fix: Fix OCR confidence calculation
+docs: Update deployment guide
+test: Add QBO integration tests
+</code></pre>
+<p>
+<hr>
+<p>
+<h2 id="summary">Summary</h2>
+<p>
+AI Bookkeeper is a production-ready, full-stack bookkeeping automation platform with:
+<p>
+<strong>Core Capabilities:</strong>
+<p>
+<ul>
+<li>Multi-format transaction ingestion (CSV, OFX, PDF)</li>
+<li>Tiered AI decisioning (Rules → Embeddings → LLM → Human)</li>
+<li>OCR receipt processing with visual highlights</li>
+<li>Rules management with dry-run simulation</li>
+<li>Idempotent exports to QuickBooks and Xero</li>
+<li>Stripe billing with usage metering</li>
+<li>Multi-tenant architecture with RBAC</li>
+<li>Comprehensive audit trails</li>
+</ul>
+<p>
+<strong>Technical Excellence:</strong>
+<p>
+<ul>
+<li>13,000+ lines of production code</li>
+<li>74+ tests passing (100% critical paths)</li>
+<li>Modern tech stack (FastAPI, Next.js 15, PostgreSQL)</li>
+<li>Security hardened (JWT, RBAC, rate limiting, CSRF)</li>
+<li>Scalable architecture (multi-tenant, feature gates)</li>
+<li>Complete documentation (17+ guides)</li>
+</ul>
+<p>
+<strong>Deployment Ready:</strong>
+<p>
+<ul>
+<li>Docker-based deployment</li>
+<li>Render.com hosting</li>
+<li>Neon Serverless Postgres</li>
+<li>Environment-based configuration</li>
+<li>Health checks and monitoring</li>
+<li>Automated migrations</li>
+</ul>
+<p>
+<strong>Business Ready:</strong>
+<p>
+<ul>
+<li>Tiered pricing (Starter to Enterprise)</li>
+<li>Usage-based billing with Stripe</li>
+<li>Feature gates and entitlements</li>
+<li>Self-service checkout</li>
+<li>Customer portal</li>
+<li>Webhook integrations</li>
+</ul>
+<p>
+<strong>Status:</strong> Ready for pilot program and production deployment
+<p>
+<hr>
+<p>
+<strong>Document Version:</strong> 1.0  
+<strong>Last Updated:</strong> October 26, 2025  
+<strong>For Questions:</strong> Contact development team
+<p>
+
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" title="Back to Top">↑</button>
+    
+    <script>
+        // Back to Top Button functionality
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        // Show button when user scrolls down 300px
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        });
+        
+        // Smooth scroll to top when button is clicked
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

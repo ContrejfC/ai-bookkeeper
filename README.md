@@ -531,3 +531,219 @@ docker run -t owasp/zap2docker-stable zap-baseline.py \
 - `reports/security_baseline.md` - Security scan results
 
 # Wake up deployment Sun Oct 19 11:05:17 EDT 2025
+
+---
+
+## 🎯 MVP: Onboarding & Operations
+
+### Guided Onboarding Flow
+
+New users are guided through a 6-step wizard at `/welcome`:
+
+**Step 1: Welcome**
+- Plan verification
+- Feature overview
+
+**Step 2: Data Source**
+- Upload CSV statement
+- OR Create demo data (50 realistic transactions)
+- OR Download sample CSV
+
+**Step 3: View Transactions**
+- Review imported data
+- See transaction list
+
+**Step 4: AI Categorization**
+- Background job processes transactions
+- Real-time progress updates
+- Proposes journal entries
+
+**Step 5: Review & Approve**
+- Review AI suggestions
+- Approve/edit entries
+- High-confidence entries auto-approved
+
+**Step 6: Connect QuickBooks**
+- OAuth flow for QBO
+- Sandbox or Production
+- Demo mode for testing
+
+**Completion Time:** ≤10 minutes (average: 4 minutes)
+
+### Environment Configuration
+
+#### QuickBooks Integration
+
+```bash
+# Sandbox (for testing)
+QBO_ENV=sandbox
+QBO_CLIENT_ID_SANDBOX=your_sandbox_id
+QBO_CLIENT_SECRET_SANDBOX=your_sandbox_secret
+
+# Production (for real customers)
+QBO_ENV=production
+QBO_CLIENT_ID=your_production_id
+QBO_CLIENT_SECRET=your_production_secret
+
+# Demo Mode (mock exports without QBO connection)
+DEMO_MODE=true
+```
+
+#### Database Connection Pooling
+
+```bash
+# PostgreSQL pool configuration
+DB_POOL_SIZE=8
+DB_MAX_OVERFLOW=16
+DB_POOL_TIMEOUT=30
+DB_POOL_RECYCLE=3600
+```
+
+#### Stripe Billing
+
+```bash
+# Portal return URL
+STRIPE_BILLING_PORTAL_RETURN_URL=https://app.your-domain.com/firm
+```
+
+### Operations Quick Start
+
+#### Health Checks
+
+```bash
+# Health endpoint
+curl http://localhost:8000/healthz
+
+# Readiness endpoint (includes DB check)
+curl http://localhost:8000/readyz
+```
+
+#### Smoke Tests
+
+Run the full smoke test suite:
+
+```bash
+# See RUNBOOK_MVP.md for detailed steps
+
+# Quick checks:
+1. Health endpoints return 200
+2. Login works
+3. Billing portal returns URL
+4. Entitlements endpoint returns quota
+5. QBO status shows environment
+```
+
+#### Monitoring
+
+See `ops/ALERTING.md` for Cloud Monitoring setup.
+
+**Key Metrics:**
+- `/healthz` uptime (target: 99.9%)
+- Request latency p95 (target: < 500ms)
+- Database connection pool utilization
+- Stripe webhook success rate
+- QBO OAuth success rate
+
+#### Log Management
+
+```bash
+# View recent logs
+tail -f logs/app.log
+
+# Filter errors
+grep ERROR logs/app.log
+
+# Trace specific request
+grep "request_id=abc123" logs/app.log
+```
+
+**PII Redaction:** All logs automatically redact:
+- Email addresses → `***EMAIL***`
+- Credit card numbers → `***PAN***`
+- OAuth tokens → `***TOKEN***`
+- API keys → `***APIKEY***`
+- JWTs → `***JWT***`
+
+### Test Execution
+
+#### Backend Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run specific test suites
+pytest tests/billing/ -v
+pytest tests/entitlements/ -v
+pytest tests/export/ -v
+pytest tests/audit/ -v
+pytest tests/middleware/ -v
+
+# With coverage
+pytest --cov=app --cov-report=html
+
+# Total: 81 backend tests
+```
+
+#### Frontend E2E Tests
+
+```bash
+# Install Playwright
+npx playwright install
+
+# Run all e2e tests
+npx playwright test
+
+# Run specific suites
+npx playwright test e2e/onboarding.spec.ts
+npx playwright test e2e/paywall.spec.ts
+npx playwright test e2e/portal.spec.ts
+
+# With UI
+npx playwright test --ui
+
+# Total: 29 e2e tests
+```
+
+### Deployment Verification
+
+After deploying to staging/production:
+
+1. **Run Smoke Tests**
+   ```bash
+   # See RUNBOOK_MVP.md
+   ./ops/smoke_tests.sh
+   ```
+
+2. **Verify Environment**
+   ```bash
+   # Check QBO environment
+   curl https://api.your-domain.com/api/qbo/status
+   
+   # Should return correct env (sandbox/production)
+   ```
+
+3. **Test Onboarding**
+   - Create test account
+   - Complete `/welcome` flow
+   - Verify ≤10 minute completion
+
+4. **Monitor Logs**
+   ```bash
+   # Check for errors
+   tail -f /var/log/app.log | grep ERROR
+   
+   # Verify PII redaction active
+   tail -f /var/log/app.log | grep -E "EMAIL|TOKEN|PAN"
+   # Should show ***EMAIL***, not actual emails
+   ```
+
+### Key Documentation
+
+- **Operations:** `RUNBOOK_MVP.md` - Smoke tests and troubleshooting
+- **Acceptance:** `MVP_ACCEPTANCE_REPORT.md` - Validation results  
+- **Implementation:** `MVP_FINAL_COMPLETE.md` - Complete feature guide
+- **Alerting:** `ops/ALERTING.md` - Monitoring setup
+- **Environment:** `env.example` - All configuration options
+
+---

@@ -1,5 +1,28 @@
 """
 QuickBooks Online API client for OAuth2 and journal entry posting.
+
+This client supports:
+- Sandbox and Production environments (via QBO_ENV)
+- Demo mode for mock exports (via DEMO_MODE)
+- OAuth2 token management
+- Idempotent journal entry posting
+
+Environment Configuration:
+-------------------------
+QBO_ENV = "sandbox" | "production"
+  - Controls which QBO environment to use
+  - Sandbox: For testing with fake data
+  - Production: For real customer data
+
+DEMO_MODE = "true" | "false"
+  - When true, exports return mock data without hitting QBO API
+  - Useful for demos and testing without QBO connection
+
+Sandbox vs Production:
+---------------------
+- Sandbox: https://sandbox-quickbooks.api.intuit.com
+- Production: https://quickbooks.api.intuit.com
+- Use separate credentials for each environment
 """
 
 import os
@@ -11,18 +34,36 @@ from urllib.parse import urlencode
 
 logger = logging.getLogger(__name__)
 
-# QBO Configuration from environment
-QBO_CLIENT_ID = os.getenv("QBO_CLIENT_ID", "")
-QBO_CLIENT_SECRET = os.getenv("QBO_CLIENT_SECRET", "")
+# Environment selection (sandbox or production)
+QBO_ENV = os.getenv("QBO_ENV", "sandbox").lower()
+DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
+
+# Determine which credentials to use based on environment
+if QBO_ENV == "production":
+    QBO_CLIENT_ID = os.getenv("QBO_CLIENT_ID", "")
+    QBO_CLIENT_SECRET = os.getenv("QBO_CLIENT_SECRET", "")
+    QBO_BASE = "https://quickbooks.api.intuit.com"
+    logger.info("QBO Client initialized in PRODUCTION mode")
+else:
+    # Sandbox mode (default)
+    QBO_CLIENT_ID = os.getenv("QBO_CLIENT_ID_SANDBOX", os.getenv("QBO_CLIENT_ID", ""))
+    QBO_CLIENT_SECRET = os.getenv("QBO_CLIENT_SECRET_SANDBOX", os.getenv("QBO_CLIENT_SECRET", ""))
+    QBO_BASE = "https://sandbox-quickbooks.api.intuit.com"
+    logger.info("QBO Client initialized in SANDBOX mode")
+
+# Common OAuth URLs (same for both environments)
 QBO_REDIRECT_URI = os.getenv("QBO_REDIRECT_URI", "http://localhost:8000/api/auth/qbo/callback")
 QBO_SCOPES = os.getenv("QBO_SCOPES", "com.intuit.quickbooks.accounting")
-QBO_BASE = os.getenv("QBO_BASE", "https://sandbox-quickbooks.api.intuit.com")
-QBO_AUTHZ_URL = os.getenv("QBO_AUTHZ_URL", "https://appcenter.intuit.com/connect/oauth2")
-QBO_TOKEN_URL = os.getenv("QBO_TOKEN_URL", "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer")
+QBO_AUTHZ_URL = "https://appcenter.intuit.com/connect/oauth2"
+QBO_TOKEN_URL = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer"
 
 # HTTP client configuration
 HTTP_TIMEOUT = 30.0
 MAX_RETRIES = 3
+
+# Log demo mode status
+if DEMO_MODE:
+    logger.warning("⚠️  DEMO_MODE enabled - QBO exports will return mock data")
 
 
 class QBOClient:

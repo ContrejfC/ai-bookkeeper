@@ -1,0 +1,5 @@
+Deploying container to Cloud Run service [ai-bookkeeper-api] in project [bright-fastness-475700-j2] region [us-central1]
+Deploying...
+Creating Revision................................................................................................................................................................................................................................................................done
+Done.
+Service [ai-bookkeeper-api] revision [ai-bookkeeper-api-00011-8mn] has been deployed and is serving 0 percent of traffic.

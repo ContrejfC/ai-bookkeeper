@@ -2,6 +2,7 @@
 
 import AppShell from "@/components/layout/AppShell";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { EntitlementsGate } from "@/components/EntitlementsGate";
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Input, Select, SelectItem, Button, Modal, ModalContent, ModalHeader,
@@ -42,8 +43,9 @@ export default function TransactionsPage() {
 
   return (
     <ProtectedRoute>
-      <AppShell>
-        <div className="space-y-8">
+      <EntitlementsGate showQuota requireActive>
+        <AppShell>
+          <div className="space-y-8">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -228,8 +230,9 @@ export default function TransactionsPage() {
             )}
           </ModalContent>
         </Modal>
-        </div>
-      </AppShell>
+          </div>
+        </AppShell>
+      </EntitlementsGate>
     </ProtectedRoute>
   );
 }

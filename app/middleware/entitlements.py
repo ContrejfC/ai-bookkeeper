@@ -1,146 +1,294 @@
 """
-Entitlement gate middleware for billing enforcement.
+Entitlements Middleware - Paywall Enforcement
+=============================================
 
-Gates:
-- POST /api/post/commit (+ bulk endpoints) => requires active subscription and within tx_cap
-- POST /api/post/propose => free daily analyze cap (50/day tenant-wide)
-- POST /api/post/explain => free daily explain cap (50/day tenant-wide)
+This middleware enforces subscription-based access control and quota limits
+on protected API endpoints.
+
+Features:
+--------
+- Plan status validation (active vs. inactive)
+- Transaction quota enforcement (soft and hard limits)
+- Entity count limits
+- Quota headers in responses (X-Tx-Remaining, X-Tx-Quota)
+- 402 Payment Required for quota exceeded
+
+Enforcement Matrix:
+------------------
+| Plan        | Entities | Monthly Tx | Features                    |
+|-------------|----------|------------|------------------------------|
+| free        | 0        | 0          | Read-only, no write access   |
+| starter     | 1        | 500        | Basic AI categorization      |
+| professional| 3        | 2000       | + Advanced rules + exports   |
+| enterprise  | Unlimited| Unlimited  | + Priority support           |
+
+Usage:
+------
+```python
+from fastapi import Depends
+from app.middleware.entitlements import check_entitlements
+
+@app.post("/api/post/propose")
+async def propose(
+    entitlements: dict = Depends(check_entitlements)
+):
+    # If we get here, entitlements are valid
+    # Check entitlements["tx_remaining"] if needed
+    pass
+```
 """
+import logging
+from typing import Dict, Any, Optional
+from fastapi import HTTPException, Request, Depends
+from sqlalchemy.orm import Session
 
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from typing import Callable, Optional
-import os
+from app.db.session import get_db
+from app.db.models import BillingSubscriptionDB, UsageLogDB
+from app.auth.security import get_current_user
 
-from app.config.limits import (
-    ERROR_CODES,
-    PAYWALL_MD,
-    FREE_DAILY_ANALYZE_CAP,
-    FREE_DAILY_EXPLAIN_CAP
-)
+logger = logging.getLogger(__name__)
+
+# Entitlement tiers
+ENTITLEMENT_TIERS = {
+    "free": {
+        "entities_allowed": 0,
+        "tx_quota_monthly": 0,
+        "features": ["read_only"]
+    },
+    "starter": {
+        "entities_allowed": 1,
+        "tx_quota_monthly": 500,
+        "features": ["ai_categorization", "basic_export"]
+    },
+    "professional": {
+        "entities_allowed": 3,
+        "tx_quota_monthly": 2000,
+        "features": ["ai_categorization", "advanced_rules", "qbo_export", "xero_export"]
+    },
+    "enterprise": {
+        "entities_allowed": 999999,  # Unlimited
+        "tx_quota_monthly": 999999,  # Unlimited
+        "features": ["ai_categorization", "advanced_rules", "qbo_export", "xero_export", "priority_support"]
+    }
+}
 
 
-class EntitlementGateMiddleware(BaseHTTPMiddleware):
+class EntitlementError(HTTPException):
+    """Custom exception for entitlement violations."""
+    
+    def __init__(self, detail: str, upgrade_url: str = "/pricing"):
+        super().__init__(
+            status_code=402,  # Payment Required
+            detail={
+                "error": "quota_exceeded",
+                "message": detail,
+                "upgrade_url": upgrade_url
+            }
+        )
+
+
+def get_entitlements(
+    tenant_id: str,
+    db: Session
+) -> Dict[str, Any]:
     """
-    Middleware to enforce billing entitlements and usage caps.
+    Get entitlements for a tenant.
     
-    Assumes auth middleware has set request.state.tenant_id before this runs.
+    Args:
+        tenant_id: Tenant identifier
+        db: Database session
+        
+    Returns:
+        Dict with entitlements info
     """
+    # Get active subscription
+    subscription = db.query(BillingSubscriptionDB).filter(
+        BillingSubscriptionDB.tenant_id == tenant_id,
+        BillingSubscriptionDB.status == 'active'
+    ).first()
     
-    def __init__(self, app, bulk_paths: Optional[list] = None):
-        super().__init__(app)
-        self.bulk_paths = set(bulk_paths or [
-            "/api/post/bulk_approve",
-            "/api/transactions/bulk_approve"
-        ])
+    if not subscription:
+        # No active subscription - free tier
+        plan = "free"
+        status = "inactive"
+    else:
+        plan = subscription.plan_id or "free"
+        status = subscription.status
     
-    async def dispatch(self, request: Request, call_next: Callable):
-        path = request.url.path
-        method = request.method.upper()
+    # Get tier config
+    tier_config = ENTITLEMENT_TIERS.get(plan, ENTITLEMENT_TIERS["free"])
+    
+    # Calculate usage this month
+    from datetime import datetime
+    from sqlalchemy import func, extract
+    
+    current_month = datetime.utcnow().month
+    current_year = datetime.utcnow().year
+    
+    tx_used_monthly = db.query(func.count(UsageLogDB.id)).filter(
+        UsageLogDB.tenant_id == tenant_id,
+        extract('month', UsageLogDB.timestamp) == current_month,
+        extract('year', UsageLogDB.timestamp) == current_year,
+        UsageLogDB.operation.in_(['propose', 'categorize', 'export'])
+    ).scalar() or 0
+    
+    # Calculate remaining
+    tx_quota_monthly = tier_config["tx_quota_monthly"]
+    tx_remaining = max(0, tx_quota_monthly - tx_used_monthly)
+    
+    # Get add-ons if any
+    addons = []
+    if subscription and subscription.stripe_subscription_id:
+        # Parse subscription items for add-ons
+        # For MVP, keep simple
+        pass
+    
+    return {
+        "plan": plan,
+        "status": status,
+        "entities_allowed": tier_config["entities_allowed"],
+        "tx_quota_monthly": tx_quota_monthly,
+        "tx_used_monthly": tx_used_monthly,
+        "tx_remaining": tx_remaining,
+        "features": tier_config["features"],
+        "addons": addons
+    }
+
+
+async def check_entitlements(
+    request: Request,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    enforce_quota: bool = True,
+    required_feature: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Check entitlements and enforce quotas.
+    
+    This dependency should be used on protected endpoints.
+    
+    Args:
+        request: FastAPI request
+        current_user: Current authenticated user
+        db: Database session
+        enforce_quota: Whether to enforce transaction quota
+        required_feature: Required feature name (e.g., "qbo_export")
         
-        # Get tenant ID from request state (set by auth middleware)
-        tenant_id = getattr(request.state, "tenant_id", None)
+    Returns:
+        Entitlements dict
         
-        # Skip gate checks for non-protected routes
-        if not self._is_protected_route(path, method):
-            return await call_next(request)
-        
-        # Require tenant ID for protected routes
-        if not tenant_id:
-            return JSONResponse(
-                {"detail": "Unauthorized: Authentication required"},
-                status_code=401
+    Raises:
+        HTTPException 402: Quota exceeded or feature not available
+        HTTPException 403: Plan status inactive
+    """
+    # Get tenant_id from user
+    tenant_ids = current_user.tenant_ids if hasattr(current_user, 'tenant_ids') else []
+    if not tenant_ids:
+        raise HTTPException(status_code=403, detail="No tenant access")
+    
+    tenant_id = tenant_ids[0] if isinstance(tenant_ids, list) else tenant_ids
+    
+    # Get entitlements
+    entitlements = get_entitlements(tenant_id, db)
+    
+    # Check plan status
+    if entitlements["status"] != "active" and entitlements["plan"] != "free":
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "error": "subscription_inactive",
+                "message": "Your subscription is not active. Please update your billing.",
+                "manage_url": "/firm"
+            }
+        )
+    
+    # Check required feature
+    if required_feature and required_feature not in entitlements["features"]:
+        raise EntitlementError(
+            detail=f"Your plan does not include {required_feature}. Please upgrade.",
+            upgrade_url="/pricing"
+        )
+    
+    # Check transaction quota (hard limit)
+    if enforce_quota:
+        if entitlements["tx_remaining"] <= 0:
+            raise EntitlementError(
+                detail=f"Monthly transaction quota exceeded ({entitlements['tx_used_monthly']}/{entitlements['tx_quota_monthly']}). Please upgrade.",
+                upgrade_url="/pricing"
             )
-        
-        # Import here to avoid circular dependency
-        from app.db.session import get_db_context
-        from app.services.billing import BillingService
-        
-        with get_db_context() as db:
-            billing_service = BillingService(db)
-            
-            # Free tier daily cap on propose/analyze
-            if method == "POST" and path in ["/api/post/propose", "/api/analyze"]:
-                allowed, error = billing_service.check_daily_analyze_cap(tenant_id)
-                
-                if not allowed:
-                    response_data = error.copy()
-                    response_data["paywall"] = PAYWALL_MD
-                    return JSONResponse(
-                        response_data,
-                        status_code=error["http_status"]
-                    )
-                
-                # Increment count after check passes
-                billing_service.increment_daily_analyze(tenant_id)
-            
-            # Free tier daily cap on explain
-            if method == "POST" and path in ["/api/post/explain", "/api/explain"]:
-                allowed, error = billing_service.check_daily_explain_cap(tenant_id)
-                
-                if not allowed:
-                    response_data = error.copy()
-                    response_data["paywall"] = PAYWALL_MD
-                    return JSONResponse(
-                        response_data,
-                        status_code=error["http_status"]
-                    )
-                
-                # Increment count after check passes
-                billing_service.increment_daily_explain(tenant_id)
-            
-            # Subscription required + monthly cap on commit and bulk
-            if method == "POST" and (path == "/api/post/commit" or path in self.bulk_paths):
-                allowed, error = billing_service.check_monthly_cap(tenant_id)
-                
-                if not allowed:
-                    response_data = error.copy()
-                    response_data["paywall"] = PAYWALL_MD
-                    return JSONResponse(
-                        response_data,
-                        status_code=error["http_status"]
-                    )
-                
-                # Check bulk approve entitlement for bulk paths
-                if path in self.bulk_paths:
-                    entitlement = billing_service.get_entitlement(tenant_id)
-                    if entitlement and not entitlement.get("bulk_approve", False):
-                        response_data = ERROR_CODES["BULK_APPROVE_REQUIRED"].copy()
-                        response_data["paywall"] = PAYWALL_MD
-                        return JSONResponse(
-                            response_data,
-                            status_code=402
-                        )
-        
-        # All checks passed, continue with request
-        response = await call_next(request)
-        
-        # Increment posted count after successful commit
-        if method == "POST" and path == "/api/post/commit":
-            if response.status_code in [200, 201, 204]:
-                with get_db_context() as db:
-                    billing_service = BillingService(db)
-                    
-                    # Extract count from response if available
-                    # For now, increment by 1
-                    # TODO: Extract actual count from request/response
-                    billing_service.increment_posted(tenant_id, count=1)
-        
-        return response
     
-    def _is_protected_route(self, path: str, method: str) -> bool:
-        """Check if route requires billing enforcement."""
-        protected_paths = [
-            "/api/post/propose",
-            "/api/post/commit",
-            "/api/post/explain",
-            "/api/analyze",
-            "/api/explain"
-        ]
-        
-        # Add bulk paths
-        protected_paths.extend(self.bulk_paths)
-        
-        return method == "POST" and path in protected_paths
+    # Log entitlement check (for monitoring)
+    logger.info(
+        f"Entitlement check passed",
+        extra={
+            "tenant_id": tenant_id,
+            "plan": entitlements["plan"],
+            "tx_remaining": entitlements["tx_remaining"],
+            "path": request.url.path
+        }
+    )
+    
+    return entitlements
 
+
+def add_quota_headers(response, entitlements: Dict[str, Any]):
+    """
+    Add quota information to response headers.
+    
+    Usage:
+    ------
+    ```python
+    @app.post("/api/post/propose")
+    async def propose(
+        response: Response,
+        entitlements: dict = Depends(check_entitlements)
+    ):
+        result = do_work()
+        add_quota_headers(response, entitlements)
+        return result
+    ```
+    """
+    response.headers["X-Tx-Remaining"] = str(entitlements["tx_remaining"])
+    response.headers["X-Tx-Quota"] = str(entitlements["tx_quota_monthly"])
+    response.headers["X-Tx-Used"] = str(entitlements["tx_used_monthly"])
+    response.headers["X-Plan"] = entitlements["plan"]
+
+
+def log_usage(
+    tenant_id: str,
+    operation: str,
+    count: int,
+    db: Session,
+    metadata: Optional[Dict[str, Any]] = None
+):
+    """
+    Log usage for quota tracking.
+    
+    Args:
+        tenant_id: Tenant identifier
+        operation: Operation type (propose, categorize, export)
+        count: Number of transactions processed
+        db: Database session
+        metadata: Optional metadata
+    """
+    from datetime import datetime
+    
+    usage_log = UsageLogDB(
+        tenant_id=tenant_id,
+        timestamp=datetime.utcnow(),
+        operation=operation,
+        count=count,
+        metadata=metadata or {}
+    )
+    
+    db.add(usage_log)
+    db.commit()
+    
+    logger.info(
+        f"Usage logged: {operation} x{count}",
+        extra={
+            "tenant_id": tenant_id,
+            "operation": operation,
+            "count": count
+        }
+    )

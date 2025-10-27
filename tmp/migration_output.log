@@ -1,0 +1,28 @@
+[0;34mℹ️  Starting Google Cloud Run migration...[0m
+[0;34mℹ️  Project: bright-fastness-475700-j2[0m
+[0;34mℹ️  Region: us-central1[0m
+[0;34mℹ️  Migrate Web: false[0m
+[0;34mℹ️  Cloud SQL: false[0m
+[0;34mℹ️  Checking prerequisites...[0m
+[0;32m✅ All prerequisites met[0m
+[0;34mℹ️  Setting up Google Cloud Platform...[0m
+Activated service account credentials for: [id-ai-bookkeeper-migration@bright-fastness-475700-j2.iam.gserviceaccount.com]
+Updated property [core/project].
+Operation "operations/acat.p2-644842661403-89ec5a23-050d-4034-a2e4-1e8cf6c75d5d" finished successfully.
+[0;32m✅ GCP setup complete[0m
+[0;34mℹ️  Managing secrets in Secret Manager...[0m
+[0;34mℹ️  Creating secret: JWT_SECRET[0m
+ERROR: (gcloud.secrets.create) Resource in projects [bright-fastness-475700-j2] is the subject of a conflict: Secret [projects/644842661403/secrets/JWT_SECRET] already exists.
+Created version [3] of the secret [JWT_SECRET].
+[0;32m✅ Secrets management complete[0m
+[0;34mℹ️  Deploying API to Cloud Run...[0m
+ERROR: (gcloud.artifacts.repositories.create) PERMISSION_DENIED: Permission 'artifactregistry.repositories.create' denied on resource '//artifactregistry.googleapis.com/projects/bright-fastness-475700-j2/locations/us-central1' (or it may not exist). This command is authenticated as id-ai-bookkeeper-migration@bright-fastness-475700-j2.iam.gserviceaccount.com which is the active account specified by the [core/account] property.
+- '@type': type.googleapis.com/google.rpc.ErrorInfo
+  domain: artifactregistry.googleapis.com
+  metadata:
+    permission: artifactregistry.repositories.create
+    resource: projects/bright-fastness-475700-j2/locations/us-central1
+  reason: IAM_PERMISSION_DENIED
+Creating temporary archive of 224 file(s) totalling 1.4 MiB before compression.
+Uploading tarball of [./app] to [gs://bright-fastness-475700-j2_cloudbuild/source/1760922070.254314-1df293c1e40740fd803739a7fffde2d1.tgz]
+ERROR: (gcloud.builds.submit) PERMISSION_DENIED: generic::permission_denied: caller does not have permission to act as service account projects/bright-fastness-475700-j2/serviceAccounts/108280552423305078080. This command is authenticated as id-ai-bookkeeper-migration@bright-fastness-475700-j2.iam.gserviceaccount.com which is the active account specified by the [core/account] property

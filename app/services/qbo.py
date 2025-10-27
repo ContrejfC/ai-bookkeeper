@@ -1,17 +1,62 @@
 """
-QuickBooks Online service layer with token management and idempotent posting.
+QuickBooks Online Service Layer
+================================
+
+This service provides:
+- OAuth token management (storage, refresh)
+- Idempotent journal entry posting
+- Balance validation
+- Demo/mock export support
+
+Key Features:
+------------
+1. **Token Management**
+   - Stores OAuth tokens per tenant
+   - Auto-refreshes expired tokens (5-min buffer)
+   - Handles token expiration gracefully
+
+2. **Idempotent Posting**
+   - Computes payload hash for deduplication
+   - Checks if JE already posted before API call
+   - Returns existing QBO doc ID if duplicate
+
+3. **Demo Mode Support**
+   - When DEMO_MODE=true, returns mock data
+   - No actual QBO API calls made
+   - Useful for demos and testing
+
+4. **Audit Logging**
+   - Logs all QBO connections
+   - Logs all JE posts (success/failure)
+   - Tracks payload hashes for debugging
+
+Usage:
+------
+```python
+from app.services.qbo import QBOService
+
+service = QBOService(db)
+
+# Store OAuth tokens after callback
+service.store_tokens(tenant_id, realm_id, access_token, refresh_token, expires_at)
+
+# Post journal entry with idempotency
+result = await service.post_idempotent_je(tenant_id, payload)
+# Returns: { "qbo_doc_id": "123", "idempotent": False, ... }
+```
 """
 
 import hashlib
 import json
 import logging
+import os
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, Tuple, List
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from app.db.models import QBOTokenDB, JEIdempotencyDB, DecisionAuditLogDB
-from app.integrations.qbo.client import QBOClient
+from app.integrations.qbo.client import QBOClient, DEMO_MODE, QBO_ENV
 
 logger = logging.getLogger(__name__)
 
@@ -177,6 +222,100 @@ class QBOService:
         # Compute SHA-256
         return hashlib.sha256(hash_input.encode('utf-8')).hexdigest()
     
+    async def _post_mock_je(
+        self,
+        tenant_id: str,
+        payload: Dict[str, Any],
+        payload_hash: str
+    ) -> Dict[str, Any]:
+        """
+        Post mock journal entry for demo mode.
+        
+        This method simulates a QBO export without making actual API calls.
+        Used when DEMO_MODE=true for testing and demos.
+        
+        Args:
+            tenant_id: Tenant identifier
+            payload: JE payload
+            payload_hash: Hash of payload for idempotency
+        
+        Returns:
+            Mock response matching real QBO response format
+        """
+        logger.info(f"[DEMO MODE] Mock JE post for tenant {tenant_id}")
+        
+        # Check idempotency (same as real mode)
+        existing = self.db.query(JEIdempotencyDB).filter(
+            JEIdempotencyDB.tenant_id == tenant_id,
+            JEIdempotencyDB.payload_hash == payload_hash
+        ).first()
+        
+        if existing:
+            # Already "posted" - idempotent response
+            logger.info(f"[DEMO MODE] Idempotent mock JE, doc {existing.qbo_doc_id}")
+            return {
+                "status": 200,
+                "qbo_doc_id": existing.qbo_doc_id,
+                "idempotent": True,
+                "posted_mock": True,
+                "message": "Mock journal entry already posted (idempotent)"
+            }
+        
+        # Generate fake QBO doc ID
+        import uuid
+        qbo_doc_id = f"mock_{uuid.uuid4().hex[:12]}"
+        
+        # Store idempotency record (so future calls return same ID)
+        try:
+            idempotency = JEIdempotencyDB(
+                tenant_id=tenant_id,
+                payload_hash=payload_hash,
+                qbo_doc_id=qbo_doc_id,
+                qbo_sync_token="MOCK",
+                posted_at=datetime.utcnow(),
+                payload_json=payload
+            )
+            self.db.add(idempotency)
+            self.db.commit()
+        except IntegrityError:
+            # Race condition - another request posted the same JE
+            self.db.rollback()
+            existing = self.db.query(JEIdempotencyDB).filter(
+                JEIdempotencyDB.tenant_id == tenant_id,
+                JEIdempotencyDB.payload_hash == payload_hash
+            ).first()
+            
+            if existing:
+                return {
+                    "status": 200,
+                    "qbo_doc_id": existing.qbo_doc_id,
+                    "idempotent": True,
+                    "posted_mock": True,
+                    "message": "Mock journal entry already posted (race condition)"
+                }
+            else:
+                raise
+        
+        # Audit log
+        audit = DecisionAuditLogDB(
+            timestamp=datetime.utcnow(),
+            tenant_id=tenant_id,
+            action="QBO_JE_POSTED_MOCK",
+            metadata={"qbo_doc_id": qbo_doc_id, "payload_hash": payload_hash[:16]}
+        )
+        self.db.add(audit)
+        self.db.commit()
+        
+        logger.info(f"[DEMO MODE] Mock JE posted, doc {qbo_doc_id}")
+        
+        return {
+            "status": 201,
+            "qbo_doc_id": qbo_doc_id,
+            "idempotent": False,
+            "posted_mock": True,
+            "message": "Mock journal entry posted successfully (DEMO MODE)"
+        }
+    
     def validate_balance(self, lines: List[Dict[str, Any]]) -> Tuple[bool, Optional[str]]:
         """
         Validate that debits equal credits.
@@ -213,25 +352,45 @@ class QBOService:
         """
         Post journal entry to QBO with idempotency.
         
+        Supports demo mode for testing without QBO connection.
+        
         Args:
             tenant_id: Tenant identifier
             payload: JE payload in simplified format
+                {
+                    "txnDate": "2025-10-27",
+                    "lines": [
+                        {"account": "1000", "debit": 100, "credit": 0},
+                        {"account": "4000", "debit": 0, "credit": 100}
+                    ],
+                    "refNumber": "JE-001",
+                    "privateNote": "Optional memo"
+                }
         
         Returns:
             {
                 "status": 201 or 200,
                 "qbo_doc_id": str,
                 "idempotent": bool,
+                "posted_mock": bool (only in demo mode),
                 "message": str
             }
+        
+        Raises:
+            ValueError: If journal entry is unbalanced
+            Exception: If QBO API call fails
         """
         # Validate balance
         is_balanced, balance_error = self.validate_balance(payload.get("lines", []))
         if not is_balanced:
             raise ValueError(f"UNBALANCED_JE:{balance_error}")
         
-        # Compute payload hash
+        # Compute payload hash for idempotency
         payload_hash = self.compute_payload_hash(tenant_id, payload)
+        
+        # DEMO MODE: Return mock response without calling QBO API
+        if DEMO_MODE:
+            return await self._post_mock_je(tenant_id, payload, payload_hash)
         
         # Check idempotency
         existing = self.db.query(JEIdempotencyDB).filter(

@@ -1,0 +1,93 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║  🚀 GOOGLE CLOUD RUN CUTOVER - QUICK START                  ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+📊 STATUS: 95% Complete - Frontend Update Required
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 YOUR MISSION: Update frontend in 10 minutes!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ALREADY DONE FOR YOU:
+  • Cloud Run API deployed and operational
+  • Database connected (Neon PostgreSQL)
+  • CORS configured for your domains
+  • Automation scripts created
+  • Comprehensive documentation written
+  • Rollback procedures documented
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 DO THIS NOW (3 EASY STEPS):
+
+STEP 1: Update Frontend (5 minutes)
+────────────────────────────────────────────────────────────
+1. Go to: https://dashboard.render.com/
+2. Click on: ai-bookkeeper-web
+3. Click: Environment (left sidebar)
+4. Find: NEXT_PUBLIC_API_URL
+5. Click: Edit
+6. Paste: https://ai-bookkeeper-api-644842661403.us-central1.run.app
+7. Click: Save Changes
+8. Wait for deployment (3-5 minutes)
+
+STEP 2: Run Tests (2 minutes)
+────────────────────────────────────────────────────────────
+Open terminal and run:
+
+bash scripts/smoke_cutover.sh \
+  "https://ai-bookkeeper-api-644842661403.us-central1.run.app" \
+  "https://ai-bookkeeper-web.onrender.com"
+
+Expected: ✅ All tests pass
+
+STEP 3: Verify in Browser (3 minutes)
+────────────────────────────────────────────────────────────
+1. Open: https://ai-bookkeeper-web.onrender.com
+2. Press F12 (open console)
+3. Try logging in or signing up
+4. Check: No red errors in console
+5. Verify: API calls succeed
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ AFTER COMPLETING THESE STEPS:
+  → Your backend is on Google Cloud Run! 🎉
+  → Your frontend is talking to Cloud Run! 🚀
+  → You're ready to launch Google Ads! 💰
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DETAILED GUIDES (if you need help):
+
+• Full Guide:        FINAL_CUTOVER_GUIDE.md
+• Step-by-Step:      tmp/MANUAL_FRONTEND_UPDATE.md
+• Troubleshooting:   FINAL_CUTOVER_GUIDE.md (section 🔧)
+• Execution Summary: CUTOVER_EXECUTION_SUMMARY.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🆘 IF SOMETHING GOES WRONG:
+
+Rollback is easy! Just:
+1. Change NEXT_PUBLIC_API_URL back to old value
+2. Redeploy
+3. All Render services are still running as backup
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏱️  TIMELINE:
+  • Right now:     Update frontend (5 min)
+  • 5 minutes:     Run tests (2 min)
+  • 7 minutes:     Verify browser (3 min)
+  • 10 minutes:    DONE! Ready for Google Ads! 🚀
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 YOU'VE GOT THIS! 10 minutes to launch! 🚀
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

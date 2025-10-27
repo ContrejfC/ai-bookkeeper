@@ -26,6 +26,7 @@ export default function FirmPage() {
   const [loading, setLoading] = useState(true);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [billingLoading, setBillingLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     autopost_enabled: false,
@@ -34,6 +35,32 @@ export default function FirmPage() {
   });
 
   const isOwner = user?.role === "owner";
+
+  // Handle Manage Billing button click
+  const handleManageBilling = async () => {
+    if (!isOwner) return;
+    
+    setBillingLoading(true);
+    try {
+      const response = await fetch('/api/billing/portal', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create billing portal session');
+      }
+      
+      const data = await response.json();
+      
+      // Redirect to Stripe Customer Portal
+      window.location.href = data.url;
+    } catch (err) {
+      console.error('Failed to open billing portal:', err);
+      alert('Failed to open billing portal. Please try again.');
+      setBillingLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadTenants();
@@ -83,9 +110,21 @@ export default function FirmPage() {
               Manage tenant settings and automation thresholds
             </p>
           </div>
-          {!isOwner && (
-            <Chip color="primary" variant="flat">Staff View</Chip>
-          )}
+          <div className="flex gap-2 items-center">
+            {isOwner && (
+              <Button
+                color="primary"
+                variant="flat"
+                onPress={handleManageBilling}
+                isLoading={billingLoading}
+              >
+                💳 Manage Billing
+              </Button>
+            )}
+            {!isOwner && (
+              <Chip color="primary" variant="flat">Staff View</Chip>
+            )}
+          </div>
         </div>
 
         <Card>

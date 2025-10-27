@@ -1,10 +1,57 @@
 """
-Authentication endpoints for Wave-2 Phase 1.
+Authentication API - User Login, Signup, and JWT Token Management
+=================================================================
 
-Endpoints:
-- POST /api/auth/login - Issue JWT token
-- POST /api/auth/logout - Clear session cookie
-- GET /api/auth/me - Get current user info
+This module handles user authentication with JWT tokens and HTTP-only cookies.
+
+API Endpoints:
+-------------
+- POST /api/auth/signup - Create new user account
+- POST /api/auth/login - Authenticate and issue JWT token
+- POST /api/auth/logout - Clear session cookie (logout)
+- GET /api/auth/me - Get current user information
+- POST /api/auth/qbo/start - Initiate QuickBooks OAuth flow
+- GET /api/auth/qbo/callback - Handle QBO OAuth redirect
+
+Authentication Flow:
+-------------------
+1. User submits email/password to /api/auth/login
+2. Server validates credentials against UserDB table
+3. Server generates JWT token with user_id, email, role
+4. Server sets HttpOnly cookie with JWT (secure in production)
+5. Client includes cookie in subsequent requests
+6. Server validates JWT on protected routes
+
+Security Features:
+-----------------
+- Passwords hashed with bcrypt (never stored plain text)
+- JWT tokens signed with SECRET_KEY (validate authenticity)
+- HttpOnly cookies (prevent XSS attacks)
+- Secure flag in production (HTTPS only)
+- SameSite=Lax (CSRF protection)
+- CSRF tokens for state-changing operations
+
+Development vs Production:
+-------------------------
+- DEV mode (AUTH_MODE=dev):
+  * Allows magic token bypass for testing
+  * Less strict validation
+  * HTTP cookies allowed (localhost)
+
+- PROD mode (AUTH_MODE=prod):
+  * Strict password validation required
+  * HTTPS-only cookies (Secure flag)
+  * Full security enforcement
+
+Role-Based Access Control (RBAC):
+---------------------------------
+- owner: Full access to tenant settings and data
+- staff: Read-only access, can review but not approve
+
+Multi-Tenancy:
+-------------
+Users can belong to multiple tenants (companies).
+UserTenantDB table maps users to their accessible tenants.
 """
 import os
 from fastapi import APIRouter, Depends, HTTPException, Response, Cookie, Header

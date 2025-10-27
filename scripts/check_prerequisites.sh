@@ -197,3 +197,9 @@ echo "   bash scripts/gcp_migrate.sh"
 
 echo ""
 print_status "INFO" "Prerequisites check complete!"
+
+
+
+
+
+

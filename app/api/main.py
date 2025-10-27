@@ -103,7 +103,8 @@ except ImportError as e:
 # Wave-2 Phase 1, 2a & 2b: Import and register API routes
 # ============================================================================
 try:
-    from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, billing_v2, notifications, onboarding, receipts, analytics as analytics_api, tools, post_idempotency
+    from app.api import tenants, auth as wave2_auth, rules, audit_export, billing, billing_v2, notifications, receipts, analytics as analytics_api, tools, post_idempotency, background_jobs
+    from app.api import onboarding as onboarding_api
     # from app.ui import routes as ui_routes  # DISABLED: Next.js serves UI pages
     from app.routers import qbo as qbo_router, actions as actions_router, privacy as privacy_router
     
@@ -112,6 +113,8 @@ try:
     app.include_router(tenants.router)
     app.include_router(rules.router)
     app.include_router(audit_export.router)
+    app.include_router(background_jobs.router)  # Background jobs API
+    app.include_router(onboarding_api.router)  # Onboarding API
     
     # Include Phase 2a routers
     app.include_router(billing.router)  # Original billing
@@ -652,14 +655,57 @@ async def upload_statement(
 
 @app.post("/api/post/propose")
 async def propose_journal_entries(
+    request: Request,
+    response: Response,
     txn_ids: Optional[List[str]] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     """
     Generate proposed journal entries for transactions.
     
     Uses tiered decisioning: rules → embeddings → LLM → human review
+    
+    Idempotency:
+    -----------
+    - Send `Idempotency-Key` header to prevent duplicate processing
+    - If same key is received within 24 hours, cached result is returned
+    - Key format: any unique string (e.g., UUID)
+    
+    Entitlements:
+    ------------
+    - Checks transaction quota
+    - Returns quota headers in response
+    - 402 if quota exceeded
     """
+    # Check entitlements
+    from app.middleware.entitlements import check_entitlements, add_quota_headers, log_usage
+    entitlements = await check_entitlements(request, current_user, db, enforce_quota=True)
+    
+    # Get tenant_id
+    tenant_ids = current_user.tenant_ids if hasattr(current_user, 'tenant_ids') else []
+    tenant_id = tenant_ids[0] if isinstance(tenant_ids, list) and tenant_ids else None
+    
+    # Check idempotency
+    idempotency_key = request.headers.get("Idempotency-Key")
+    if idempotency_key:
+        # Check if we've processed this request before
+        from app.db.models import IdempotencyLogDB
+        from datetime import datetime, timedelta
+        
+        cutoff = datetime.utcnow() - timedelta(hours=24)
+        existing = db.query(IdempotencyLogDB).filter(
+            IdempotencyLogDB.idempotency_key == idempotency_key,
+            IdempotencyLogDB.endpoint == "/api/post/propose",
+            IdempotencyLogDB.created_at >= cutoff
+        ).first()
+        
+        if existing:
+            logger.info(f"Idempotent request detected: {idempotency_key}")
+            # Return cached response
+            add_quota_headers(response, entitlements)
+            return existing.response_data
+    
     # Get transactions to process
     if txn_ids:
         db_txns = db.query(TransactionDB).filter(TransactionDB.txn_id.in_(txn_ids)).all()
@@ -744,11 +790,33 @@ async def propose_journal_entries(
     
     db.commit()
     
-    return {
+    # Log usage for quota tracking
+    if tenant_id:
+        log_usage(tenant_id, "propose", len(proposed_jes), db)
+    
+    # Prepare response
+    result = {
         "message": f"Proposed {len(proposed_jes)} journal entries",
         "proposed": proposed_jes,
         "review_needed": sum(1 for je in proposed_jes if je.get('needs_review'))
     }
+    
+    # Store idempotency record
+    if idempotency_key:
+        from app.db.models import IdempotencyLogDB
+        idempotency_log = IdempotencyLogDB(
+            idempotency_key=idempotency_key,
+            endpoint="/api/post/propose",
+            response_data=result,
+            created_at=datetime.utcnow()
+        )
+        db.add(idempotency_log)
+        db.commit()
+    
+    # Add quota headers
+    add_quota_headers(response, entitlements)
+    
+    return result
 
 
 def _create_simple_je_from_rule(txn: Transaction, rule_match: dict) -> dict:

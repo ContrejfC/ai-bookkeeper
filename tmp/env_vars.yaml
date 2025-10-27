@@ -1,0 +1,5 @@
+env_vars:
+  DATABASE_URL: "postgresql://neondb_owner:npg_Gt8ocPATC3hQ@ep-summer-fog-aftcltuf-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  ALLOWED_ORIGINS: "https://frontend-ma4iv9gxo-contrejfcs-projects.vercel.app,https://app.ai-bookkeeper.app"
+  JWT_SECRET_KEY: "c4060bd41fdabe2c8997e2a8d95f8294c86f3855245da0754d58bbbedca4a81c"
+  APP_ENV: "production"

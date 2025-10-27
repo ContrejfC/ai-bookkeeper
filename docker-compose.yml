@@ -1,47 +1,150 @@
+#===============================================================================
+# Docker Compose - Local Development Environment
+#===============================================================================
+#
+# This file defines the local development infrastructure for AI Bookkeeper.
+# It provides PostgreSQL and Redis services without requiring local installation.
+#
+# Usage:
+# ------
+# Start all services:
+#   docker-compose up -d
+#
+# Stop all services:
+#   docker-compose down
+#
+# View logs:
+#   docker-compose logs -f postgres
+#   docker-compose logs -f redis
+#
+# Reset database (WARNING: destroys data):
+#   docker-compose down -v
+#   docker-compose up -d
+#
+# Services:
+# ---------
+# 1. PostgreSQL - Primary database
+# 2. Redis - Cache and background job queue (optional)
+#
+# Note: This is for LOCAL DEVELOPMENT only. Production uses:
+# - Neon PostgreSQL (cloud-hosted)
+# - No Redis (may add in future for job queues)
+#
+#===============================================================================
+
 version: '3.8'
 
 services:
+  # ==========================================================================
+  # PostgreSQL Database - Primary Data Store
+  # ==========================================================================
   postgres:
+    # Use Alpine variant for smaller image size
     image: postgres:15-alpine
     container_name: ai-bookkeeper-postgres
+    
+    # Database Configuration
     environment:
-      POSTGRES_USER: bookkeeper
-      POSTGRES_PASSWORD: bookkeeper_dev_pass
-      POSTGRES_DB: aibookkeeper
-      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: bookkeeper              # Default username
+      POSTGRES_PASSWORD: bookkeeper_dev_pass # Password (change in prod!)
+      POSTGRES_DB: aibookkeeper              # Database name
+      PGDATA: /var/lib/postgresql/data/pgdata  # Data directory inside container
+    
+    # Expose PostgreSQL port to host machine
+    # Host:Container mapping (5432:5432)
     ports:
       - "5432:5432"
+    
+    # Persistent volume for database data
+    # Data survives container restarts but not "docker-compose down -v"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    
+    # Health Check - Verifies database is ready
+    # Application should wait for this before connecting
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bookkeeper -d aibookkeeper"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
+      interval: 10s      # Check every 10 seconds
+      timeout: 5s        # Fail if check takes >5 seconds
+      retries: 5         # Try 5 times before marking unhealthy
+      start_period: 10s  # Wait 10 seconds before first check (startup time)
+    
+    # Restart policy: always restart unless explicitly stopped
     restart: unless-stopped
 
+  # ==========================================================================
+  # Redis - Cache and Background Job Queue (Optional)
+  # ==========================================================================
   redis:
+    # Use Alpine variant for smaller image size
     image: redis:7-alpine
     container_name: ai-bookkeeper-redis
+    
+    # Expose Redis port to host machine
     ports:
       - "6379:6379"
+    
+    # Persistent volume for Redis data
+    # AOF (Append-Only File) persistence enabled for durability
     volumes:
       - redis_data:/data
+    
+    # Redis Configuration
+    # --appendonly yes: Enable persistence (write log of all operations)
     command: redis-server --appendonly yes
+    
+    # Health Check - Verifies Redis is responding
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      interval: 10s   # Check every 10 seconds
+      timeout: 3s     # Fail if no response in 3 seconds
+      retries: 5      # Try 5 times before marking unhealthy
+    
+    # Restart policy: always restart unless explicitly stopped
     restart: unless-stopped
 
+#===============================================================================
+# Volumes - Persistent Data Storage
+#===============================================================================
+# These volumes persist data between container restarts.
+# Data is stored in Docker's volume directory on the host.
+#
+# To view volumes: docker volume ls
+# To inspect volume: docker volume inspect ai-bookkeeper_postgres_data
+# To remove volumes: docker-compose down -v (WARNING: destroys all data!)
+#
 volumes:
   postgres_data:
-    driver: local
+    driver: local  # Store on local filesystem
   redis_data:
-    driver: local
+    driver: local  # Store on local filesystem
 
+#===============================================================================
+# Network Configuration
+#===============================================================================
+# All services run on a shared Docker network for inter-container communication.
+# Services can reach each other using container names as hostnames:
+# - postgres:5432 (from backend)
+# - redis:6379 (from backend)
+#
 networks:
   default:
     name: ai-bookkeeper-network
+
+#===============================================================================
+# Connecting Your Application:
+#===============================================================================
+#
+# Set these environment variables in your FastAPI app:
+#
+# For PostgreSQL:
+#   DATABASE_URL=postgresql://bookkeeper:bookkeeper_dev_pass@localhost:5432/aibookkeeper
+#
+# For Redis (optional):
+#   REDIS_URL=redis://localhost:6379/0
+#
+# Or use Docker network (if running app in container):
+#   DATABASE_URL=postgresql://bookkeeper:bookkeeper_dev_pass@postgres:5432/aibookkeeper
+#   REDIS_URL=redis://redis:6379/0
+#
+#===============================================================================

@@ -10,3 +10,4 @@ if [[ -n "${DB_URL:-}" ]]; then ARGS+=(--set-env-vars "DATABASE_URL=${DB_URL}");
 gcloud run deploy ai-bookkeeper-api "${ARGS[@]}"
 API_URL=$(gcloud run services describe ai-bookkeeper-api --region "$REGION" --format='value(status.url)')
 mkdir -p tmp && echo "$API_URL" > tmp/API_URL.txt && echo "API_URL=$API_URL"
+

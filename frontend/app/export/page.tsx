@@ -1,11 +1,48 @@
+/**
+ * Export Page
+ * ===========
+ * 
+ * This page handles exporting journal entries to accounting systems:
+ * - QuickBooks Online (QBO)
+ * - Xero
+ * 
+ * Features:
+ * ---------
+ * 1. **QBO Integration**
+ *    - Shows current environment (Sandbox/Production)
+ *    - Connect button for OAuth flow
+ *    - Demo mode support for testing without QBO account
+ * 
+ * 2. **Date Range Selection**
+ *    - Filter JEs by date range
+ *    - Prevents exporting old data
+ * 
+ * 3. **Export Summary**
+ *    - Shows total/posted/skipped/failed counts
+ *    - Modal with detailed results
+ * 
+ * 4. **Entitlement Gating**
+ *    - Requires active subscription
+ *    - Requires qbo_export feature
+ *    - Shows upgrade CTA if not available
+ * 
+ * Environment Variables:
+ * ----------------------
+ * - QBO_ENV: "sandbox" or "production"
+ * - DEMO_MODE: "true" or "false"
+ * - QBO_CLIENT_ID_SANDBOX: OAuth client ID for sandbox
+ * - QBO_CLIENT_ID: OAuth client ID for production
+ */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AppShell from "@/components/layout/AppShell";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { EntitlementsGate } from "@/components/EntitlementsGate";
 import {
   Card, CardHeader, CardBody, Button, Select, SelectItem,
   Input, Divider, Chip, Modal, ModalContent, ModalHeader,
-  ModalBody, ModalFooter, useDisclosure
+  ModalBody, ModalFooter, useDisclosure, Snippet
 } from "@nextui-org/react";
 import { exportAPI } from "@/lib/api";
 
@@ -27,8 +64,50 @@ export default function ExportPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ExportResult | null>(null);
   
+  // QBO connection state
+  const [qboConnected, setQboConnected] = useState(false);
+  const [qboEnv, setQboEnv] = useState<"sandbox" | "production" | "unknown">("unknown");
+  const [demoMode, setDemoMode] = useState(false);
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
+  
+  /**
+   * Check QBO connection status on mount
+   */
+  useEffect(() => {
+    const checkQBOStatus = async () => {
+      try {
+        // Call backend to check if QBO is connected
+        const response = await fetch('/api/qbo/status', {
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setQboConnected(data.connected || false);
+          setQboEnv(data.environment || "unknown");
+          setDemoMode(data.demo_mode || false);
+        }
+      } catch (err) {
+        console.error("Failed to check QBO status:", err);
+      }
+    };
+    
+    checkQBOStatus();
+  }, []);
 
+  /**
+   * Start OAuth flow to connect QuickBooks
+   */
+  const handleConnectQBO = () => {
+    // Redirect to QBO OAuth flow
+    // The backend will redirect back to /api/qbo/callback
+    window.location.href = '/api/qbo/connect';
+  };
+
+  /**
+   * Export journal entries to selected provider
+   */
   const handleExport = async () => {
     setLoading(true);
     try {
@@ -44,6 +123,9 @@ export default function ExportPage() {
     }
   };
 
+  /**
+   * Check Xero connection status
+   */
   const handleCheckXeroStatus = async () => {
     try {
       const data = await exportAPI.getXeroStatus(tenantId);
@@ -55,8 +137,10 @@ export default function ExportPage() {
   };
 
   return (
-    <AppShell>
-      <div className="flex flex-col gap-6">
+    <ProtectedRoute>
+      <EntitlementsGate showQuota requireActive requiredFeature="qbo_export" softBlock>
+        <AppShell>
+          <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-bold">Export to Accounting Systems</h1>
           <p className="text-sm opacity-60 mt-1">
@@ -72,23 +156,77 @@ export default function ExportPage() {
                 <h3 className="text-lg font-semibold">QuickBooks Online</h3>
                 <p className="text-xs opacity-60 mt-1">Export to QBO via API</p>
               </div>
-              <Chip color="success" variant="flat">
-                Enabled
-              </Chip>
+              <div className="flex gap-2">
+                {qboConnected && (
+                  <Chip color="success" variant="flat" size="sm">
+                    Connected
+                  </Chip>
+                )}
+                {qboEnv !== "unknown" && (
+                  <Chip 
+                    color={qboEnv === "sandbox" ? "warning" : "primary"} 
+                    variant="flat"
+                    size="sm"
+                  >
+                    {qboEnv === "sandbox" ? "🧪 Sandbox" : "🏭 Production"}
+                  </Chip>
+                )}
+                {demoMode && (
+                  <Chip color="secondary" variant="flat" size="sm">
+                    🎭 Demo
+                  </Chip>
+                )}
+              </div>
             </CardHeader>
             <CardBody>
-              <p className="text-sm mb-4">
-                Export journal entries with balanced line items. Idempotent
-                exports prevent duplicates.
-              </p>
-              <Button
-                color="primary"
-                variant={provider === "qbo" ? "solid" : "flat"}
-                onPress={() => setProvider("qbo")}
-                fullWidth
-              >
-                {provider === "qbo" ? "✓ Selected" : "Select QBO"}
-              </Button>
+              <div className="space-y-4">
+                <p className="text-sm">
+                  Export journal entries with balanced line items. Idempotent
+                  exports prevent duplicates.
+                </p>
+                
+                {/* Connection Status */}
+                {!qboConnected && !demoMode && (
+                  <div className="bg-warning-50 dark:bg-warning-900/20 p-3 rounded-lg">
+                    <p className="text-sm text-warning-800 dark:text-warning-200">
+                      ⚠️ Not connected to QuickBooks. Connect to enable exports.
+                    </p>
+                  </div>
+                )}
+                
+                {demoMode && (
+                  <div className="bg-secondary-50 dark:bg-secondary-900/20 p-3 rounded-lg">
+                    <p className="text-sm text-secondary-800 dark:text-secondary-200">
+                      🎭 <strong>Demo Mode Active:</strong> Exports will return mock data without hitting QBO API. Perfect for testing!
+                    </p>
+                  </div>
+                )}
+                
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  {!qboConnected && !demoMode && (
+                    <Button
+                      color="primary"
+                      variant="solid"
+                      onPress={handleConnectQBO}
+                      fullWidth
+                    >
+                      Connect QuickBooks {qboEnv === "sandbox" ? "(Sandbox)" : ""}
+                    </Button>
+                  )}
+                  
+                  {(qboConnected || demoMode) && (
+                    <Button
+                      color="primary"
+                      variant={provider === "qbo" ? "solid" : "flat"}
+                      onPress={() => setProvider("qbo")}
+                      fullWidth
+                    >
+                      {provider === "qbo" ? "✓ Selected" : "Select QBO"}
+                    </Button>
+                  )}
+                </div>
+              </div>
             </CardBody>
           </Card>
 
@@ -265,8 +403,10 @@ export default function ExportPage() {
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </div>
-    </AppShell>
+          </div>
+        </AppShell>
+      </EntitlementsGate>
+    </ProtectedRoute>
   );
 }
 

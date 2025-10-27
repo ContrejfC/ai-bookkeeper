@@ -1,10 +1,89 @@
 """
-Billing API (Phase 2a - Stripe Integration).
+Billing API - Stripe Subscription Management
+============================================
 
-Endpoints:
-- POST /api/billing/create_checkout_session
-- GET /api/billing/portal_link
-- POST /api/billing/stripe_webhook
+This module handles all billing operations including subscription management,
+payment processing, usage tracking, and Stripe webhook integration.
+
+API Endpoints:
+-------------
+- GET /api/billing/status - Get plan, limits, and current usage
+- POST /api/billing/create_checkout_session - Start Stripe checkout
+- GET /api/billing/portal_link - Get link to Stripe customer portal
+- POST /api/billing/stripe_webhook - Handle Stripe events (webhooks)
+
+Subscription Plans:
+------------------
+Starter Plan ($49/month):
+- 300 transactions/month
+- 1 company
+- Basic support
+- Auto-categorization with AI
+
+Professional Plan ($149/month):
+- 1,500 transactions/month
+- 1 company
+- Priority support
+- Advanced features (bulk approve, auto-post)
+
+Firm Plan ($499/month):
+- Unlimited transactions
+- 10 companies
+- Premium support
+- White-label options
+
+Billing Flow:
+------------
+1. User clicks upgrade on pricing page
+2. Frontend calls /api/billing/create_checkout_session
+3. Backend creates Stripe Checkout Session
+4. User redirected to Stripe-hosted payment page
+5. User enters card details and confirms
+6. Stripe webhook fires (checkout.session.completed)
+7. Webhook handler creates BillingSubscriptionDB record
+8. User redirected back to success page
+9. Access granted to premium features
+
+Usage Tracking:
+--------------
+- tx_analyzed: Transactions processed by AI
+- tx_posted: Transactions posted to QuickBooks
+- daily_analyze: Free tier daily limit (20/day)
+- daily_explain: AI explanation daily limit (10/day)
+
+Entitlement Checks:
+------------------
+Before processing requests, middleware checks:
+1. Does tenant have active subscription?
+2. Are they within monthly transaction cap?
+3. Are they within daily rate limits (free tier)?
+4. Do they have permission for requested feature?
+
+Stripe Webhook Events:
+---------------------
+The app listens for these webhook events:
+- checkout.session.completed: New subscription created
+- customer.subscription.updated: Plan changed or renewed
+- customer.subscription.deleted: Subscription canceled
+- invoice.payment_succeeded: Successful payment
+- invoice.payment_failed: Failed payment (past_due)
+
+Webhook Security:
+----------------
+All webhooks are verified using Stripe signature:
+1. Stripe includes signature in Stripe-Signature header
+2. Server computes signature from webhook secret + payload
+3. Signatures must match to accept webhook
+4. Prevents unauthorized webhook calls
+
+Free Tier:
+---------
+Users without subscription get free tier access:
+- 20 transactions/day (analyze)
+- 10 AI explanations/day
+- No auto-posting
+- No bulk operations
+- Single company only
 """
 import os
 import logging
@@ -271,6 +350,117 @@ async def get_portal_link(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.get("/entitlements")
+async def get_entitlements_endpoint(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get entitlements for the current user's tenant.
+    
+    Returns:
+    -------
+    - plan: Current plan name (free, starter, professional, enterprise)
+    - status: Subscription status (active, inactive, cancelled, past_due)
+    - entities_allowed: Number of companies/entities allowed
+    - tx_quota_monthly: Monthly transaction quota
+    - tx_used_monthly: Transactions used this month
+    - tx_remaining: Transactions remaining this month
+    - features: List of enabled features
+    - addons: List of active add-ons
+    
+    Usage:
+    ------
+    Frontend can call this to:
+    - Show quota usage in UI
+    - Disable features not in plan
+    - Show upgrade CTAs when approaching limit
+    """
+    from app.middleware.entitlements import get_entitlements
+    
+    # Get tenant_id from user
+    tenant_ids = user.tenant_ids if hasattr(user, 'tenant_ids') else []
+    if not tenant_ids:
+        raise HTTPException(status_code=403, detail="No tenant access")
+    
+    tenant_id = tenant_ids[0] if isinstance(tenant_ids, list) else tenant_ids
+    
+    # Get entitlements
+    entitlements = get_entitlements(tenant_id, db)
+    
+    return entitlements
+
+
+@router.post("/portal")
+async def create_portal_session(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Create Stripe billing portal session.
+    
+    This endpoint creates a portal session and returns the URL where
+    the user can manage their subscription, update payment methods,
+    view invoices, etc.
+    
+    Returns:
+    -------
+    { "url": "https://billing.stripe.com/session/..." }
+    
+    The frontend should redirect the user to this URL.
+    """
+    from app.auth.rbac import require_role, Role
+    
+    # RBAC: Owner only
+    require_role(Role.OWNER, user)
+    
+    # Check Stripe configured
+    if not STRIPE_AVAILABLE or not STRIPE_SECRET_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="Billing portal not configured"
+        )
+    
+    # Get tenant_id
+    tenant_ids = user.tenant_ids if hasattr(user, 'tenant_ids') else []
+    if not tenant_ids:
+        raise HTTPException(status_code=403, detail="No tenant access")
+    
+    tenant_id = tenant_ids[0] if isinstance(tenant_ids, list) else tenant_ids
+    
+    # Get subscription
+    subscription = db.query(BillingSubscriptionDB).filter_by(
+        tenant_id=tenant_id
+    ).first()
+    
+    if not subscription or not subscription.stripe_customer_id:
+        raise HTTPException(
+            status_code=404,
+            detail="No subscription found. Please create a subscription first."
+        )
+    
+    # Create portal session
+    try:
+        import os
+        return_url = os.getenv("STRIPE_BILLING_PORTAL_RETURN_URL", f"{APP_URL}/firm")
+        
+        session = stripe.billing_portal.Session.create(
+            customer=subscription.stripe_customer_id,
+            return_url=return_url
+        )
+        
+        logger.info(
+            f"Billing portal session created",
+            extra={"tenant_id": tenant_id, "user_id": user.user_id}
+        )
+        
+        return {"url": session.url}
+    
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe error creating portal session: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @router.post("/stripe_webhook")
 async def stripe_webhook(
     request: Request,
@@ -341,6 +531,8 @@ async def stripe_webhook(
             handle_subscription_deleted(event["data"]["object"], db)
         elif event["type"] == "invoice.payment_failed":
             handle_payment_failed(event["data"]["object"], db)
+        elif event["type"] == "invoice.paid":
+            handle_invoice_paid(event["data"]["object"], db)
         elif event["type"] == "customer.subscription.trial_will_end":
             handle_trial_will_end(event["data"]["object"], db)
         else:
@@ -570,6 +762,49 @@ def handle_payment_failed(invoice_data, db):
         db.commit()
         
         logger.warning(f"Payment failed for tenant {subscription.tenant_id}")
+
+
+def handle_invoice_paid(invoice_data, db):
+    """Handle successful invoice payment."""
+    customer_id = invoice_data.get("customer")
+    if not customer_id:
+        return
+    
+    # Find subscription by customer_id
+    subscription = db.query(BillingSubscriptionDB).filter_by(
+        stripe_customer_id=customer_id
+    ).first()
+    
+    if subscription:
+        # Update status to active if it was past_due
+        if subscription.status == "past_due":
+            subscription.status = "active"
+            subscription.updated_at = datetime.utcnow()
+            
+            # Reactivate entitlement
+            try:
+                from app.db.models import EntitlementDB
+                entitlement = db.query(EntitlementDB).filter(
+                    EntitlementDB.tenant_id == subscription.tenant_id
+                ).first()
+                
+                if entitlement:
+                    entitlement.active = True
+                    entitlement.subscription_status = "active"
+                    entitlement.updated_at = datetime.utcnow()
+            except Exception as e:
+                logger.error(f"Error reactivating entitlement for tenant {subscription.tenant_id}: {e}")
+            
+            # Audit entry
+            audit = DecisionAuditLogDB(
+                timestamp=datetime.utcnow(),
+                tenant_id=subscription.tenant_id,
+                action="billing_payment_successful"
+            )
+            db.add(audit)
+            db.commit()
+            
+            logger.info(f"Payment successful for tenant {subscription.tenant_id}, subscription reactivated")
 
 
 def handle_checkout_completed(session_data, db):

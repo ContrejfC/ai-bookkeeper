@@ -1,0 +1,6 @@
+ERROR: (gcloud.run.domain-mappings.describe) unrecognized arguments:
+  api.ai-bookkeeper.app
+  --region
+  us-central1
+  To search the help text of gcloud commands, run:
+  gcloud help -- SEARCH_TERMS

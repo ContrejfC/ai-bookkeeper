@@ -17,10 +17,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Core MVP navigation - simplified for production launch
+  // Core MVP navigation - clear workflow: Upload → Review → Export
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: DashboardIcon },
     { href: "/welcome", label: "Upload", icon: TransactionIcon },
+    { href: "/transactions", label: "Transactions", icon: TransactionIcon },
     { href: "/export", label: "Export", icon: ExportIcon },
     { href: "/firm", label: "Settings", icon: SettingsIcon },
   ];

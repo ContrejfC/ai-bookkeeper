@@ -43,7 +43,8 @@ export default function TransactionsPage() {
 
   return (
     <ProtectedRoute>
-      <EntitlementsGate showQuota requireActive>
+      {/* Temporarily disabled EntitlementsGate for debugging */}
+      {/* <EntitlementsGate showQuota requireActive> */}
         <AppShell>
           <div className="space-y-8">
           {/* Header */}
@@ -232,7 +233,7 @@ export default function TransactionsPage() {
         </Modal>
           </div>
         </AppShell>
-      </EntitlementsGate>
+      {/* </EntitlementsGate> */}
     </ProtectedRoute>
   );
 }

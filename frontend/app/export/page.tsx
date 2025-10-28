@@ -138,7 +138,8 @@ export default function ExportPage() {
 
   return (
     <ProtectedRoute>
-      <EntitlementsGate showQuota requireActive requiredFeature="qbo_export" softBlock>
+      {/* Temporarily disabled EntitlementsGate for debugging */}
+      {/* <EntitlementsGate showQuota requireActive requiredFeature="qbo_export" softBlock> */}
         <AppShell>
           <div className="flex flex-col gap-6">
         <div>
@@ -405,7 +406,7 @@ export default function ExportPage() {
         </Modal>
           </div>
         </AppShell>
-      </EntitlementsGate>
+      {/* </EntitlementsGate> */}
     </ProtectedRoute>
   );
 }

@@ -76,8 +76,11 @@ interface EntitlementsGateProps {
  */
 async function fetchEntitlements(): Promise<Entitlements | null> {
   try {
-    const response = await fetch('/api/billing/entitlements');
+    const response = await fetch('/api/billing/entitlements', {
+      credentials: 'include',  // Send cookies for authentication
+    });
     if (!response.ok) {
+      console.error('Entitlements API error:', response.status, response.statusText);
       return null;
     }
     return await response.json();

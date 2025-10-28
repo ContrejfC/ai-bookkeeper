@@ -8,12 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { 
   DashboardIcon, 
   TransactionIcon, 
-  ReceiptIcon, 
-  RulesIcon, 
-  VendorIcon, 
   SettingsIcon, 
-  AuditIcon, 
-  AnalyticsIcon, 
   ExportIcon 
 } from "../icons";
 
@@ -22,16 +17,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Core MVP navigation - simplified for production launch
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: DashboardIcon },
-    { href: "/transactions", label: "Transactions", icon: TransactionIcon },
-    { href: "/receipts", label: "Receipts", icon: ReceiptIcon },
-    { href: "/rules", label: "Rules", icon: RulesIcon },
-    { href: "/vendors", label: "Vendors", icon: VendorIcon },
-    { href: "/firm", label: "Firm Settings", icon: SettingsIcon },
-    { href: "/audit", label: "Audit", icon: AuditIcon },
-    { href: "/analytics", label: "Analytics", icon: AnalyticsIcon },
+    { href: "/welcome", label: "Upload", icon: TransactionIcon },
     { href: "/export", label: "Export", icon: ExportIcon },
+    { href: "/firm", label: "Settings", icon: SettingsIcon },
   ];
 
   return (

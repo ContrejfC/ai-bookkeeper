@@ -102,7 +102,6 @@ export function EntitlementsGate({
   const router = useRouter();
   const [entitlements, setEntitlements] = useState<Entitlements | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEntitlements().then((data) => {
@@ -122,7 +121,6 @@ export function EntitlementsGate({
 
   // Error state
   if (!entitlements) {
-    setError('Unable to check access. Please try again.');
     return (
       <div className="p-4">
         <Card>

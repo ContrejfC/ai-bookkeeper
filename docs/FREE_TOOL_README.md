@@ -1,0 +1,456 @@
+# Free Tool: Statement → Categorized CSV
+
+## Overview
+
+Public middle-funnel tool that converts bank statements (CSV, OFX, PDF, images) into categorized CSVs with AI-powered category suggestions.
+
+**Purpose**: Capture emails, demonstrate value, drive upgrades to paid plans.
+
+## Features
+
+✅ Drag-and-drop file upload (CSV, OFX, QFX, PDF, JPG, PNG, ZIP)
+✅ AI-powered categorization with confidence scores
+✅ Email-gated CSV export
+✅ Watermarked output (500 row limit)
+✅ Rate limiting and abuse protection
+✅ Full telemetry and conversion tracking
+✅ Mobile-responsive UI
+
+## Architecture
+
+```
+User uploads file
+    ↓
+API validates & stores (24h TTL)
+    ↓
+Backend ingests & categorizes (free mode)
+    ↓
+Preview shown (first 25 rows)
+    ↓
+Email verification required
+    ↓
+Watermarked CSV export
+    ↓
+Upgrade CTA modal
+```
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm
+- Backend API running
+- Email provider (SendGrid/Mailgun)
+- Redis (optional, for rate limiting)
+- Turnstile or hCaptcha account
+
+### Environment Variables
+
+Create `.env.local`:
+
+```bash
+# Free Tool Mode
+FREE_MODE=true
+FREE_TOOL_CONFIG_PATH=configs/free_tool.yaml
+
+# Backend API
+BACKEND_API_BASE=https://api.aibookkeeper.com
+BACKEND_API_KEY=your_api_key_here
+
+# Email Provider (SendGrid example)
+EMAIL_PROVIDER=sendgrid
+EMAIL_PROVIDER_API_KEY=SG.xxx
+EMAIL_FROM="AI Bookkeeper <no-reply@aibookkeeper.com>"
+
+# CAPTCHA (Cloudflare Turnstile)
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAA...
+TURNSTILE_SECRET_KEY=0x4AAA...
+
+# Rate Limiting (optional Redis)
+RATE_LIMIT_REDIS_URL=redis://localhost:6379
+RATE_LIMIT_FALLBACK=memory
+
+# Telemetry
+NEXT_PUBLIC_POSTHOG_KEY=phc_xxx
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+# KPI Reporting
+FREE_KPI_SLACK_URL=https://hooks.slack.com/services/xxx
+
+# Temp File Storage
+TEMP_STORAGE_PATH=/tmp/free_uploads
+TEMP_STORAGE_PROVIDER=local  # or s3, gcs
+```
+
+### Installation
+
+```bash
+cd apps/web
+pnpm install
+```
+
+### Development
+
+```bash
+pnpm dev
+```
+
+Visit `http://localhost:3000/free/categorizer`
+
+### Build
+
+```bash
+pnpm build
+```
+
+### Deploy to Vercel
+
+```bash
+vercel --prod
+```
+
+Set all environment variables in Vercel dashboard.
+
+## Configuration
+
+Edit `configs/free_tool.yaml` to adjust:
+
+- **Row limits**: Default 500 rows
+- **File size limits**: CSV 10MB, PDF 50MB, images 25MB, ZIP 200MB
+- **Rate limits**: 20 uploads/IP/hour, 3 exports/email/day
+- **Watermark text**: Customize header and column
+- **Preview rows**: Default 25 rows shown before email gate
+- **Email verification**: Code TTL, token TTL
+- **Upgrade CTAs**: Modal text and links
+
+## Quotas & Limits
+
+| Resource | Limit | Reason |
+|----------|-------|--------|
+| Max rows | 500 | Free tier cap |
+| Max file size (CSV) | 10 MB | Bandwidth |
+| Max file size (PDF) | 50 MB | Processing time |
+| Max file size (Image) | 25 MB | OCR cost |
+| Max file size (ZIP) | 200 MB | Extraction time |
+| Uploads per IP/hour | 20 | Abuse prevention |
+| Exports per email/day | 3 | Fair use |
+| File retention | 24 hours | Privacy |
+| Preview rows | 25 | Email gate incentive |
+
+## Security
+
+### File Validation
+
+1. Extension whitelist check
+2. MIME type validation
+3. Magic bytes verification
+4. Size limit enforcement
+5. Password-protected PDF rejection
+6. Optional virus scanning (ClamAV)
+
+### Rate Limiting
+
+- Per-IP limits (Redis or in-memory)
+- Per-email limits (database)
+- Global rate limit
+- CAPTCHA on upload and export
+- Ban list support
+
+### Privacy
+
+- No raw transaction descriptions logged
+- Descriptions truncated to 80 chars in preview
+- All temp files deleted after 24h
+- Email addresses hashed in logs
+- GDPR/CCPA compliant
+
+## API Endpoints
+
+### `POST /api/free/upload`
+
+**Request**:
+```typescript
+Content-Type: multipart/form-data
+{
+  file: File
+  captcha_token: string
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+}
+```
+
+**Response**:
+```json
+{
+  "upload_id": "uuid",
+  "filename": "statement.csv",
+  "size_bytes": 1024000,
+  "mime_type": "text/csv"
+}
+```
+
+### `POST /api/free/propose`
+
+**Request**:
+```json
+{
+  "upload_id": "uuid"
+}
+```
+
+**Response**:
+```json
+{
+  "upload_id": "uuid",
+  "preview_rows": [...],
+  "total_rows": 450,
+  "categories_seen": 12,
+  "confidence_avg": 0.87,
+  "metrics": {...}
+}
+```
+
+### `POST /api/free/verify_email`
+
+**Request (send code)**:
+```json
+{
+  "email": "user@example.com",
+  "captcha_token": "xxx"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Verification code sent"
+}
+```
+
+**Request (verify code)**:
+```json
+{
+  "email": "user@example.com",
+  "code": "123456"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "token": "jwt_token_here"
+}
+```
+
+### `POST /api/free/export_csv`
+
+**Request**:
+```json
+{
+  "upload_id": "uuid",
+  "email_token": "jwt",
+  "consent": true
+}
+```
+
+**Response**:
+```
+Content-Type: text/csv
+Content-Disposition: attachment; filename="free_2025-10-30_categorized.csv"
+
+# Generated by AI-Bookkeeper Free Tool • Watermarked • Not for production use
+date,description,amount,category,confidence,notes,free_tier
+2025-01-01,Grocery Store,-45.23,Groceries,0.95,,watermarked
+...
+```
+
+## Telemetry Events
+
+Track conversion funnel:
+
+```typescript
+// Upload started
+track('free_upload_start', {
+  file_type: 'csv',
+  file_size: 1024000,
+  utm_source: 'google',
+  utm_medium: 'cpc'
+})
+
+// Upload successful
+track('free_upload_ok', {
+  upload_id: 'uuid',
+  file_type: 'csv',
+  rows_total: 450,
+  parse_ms: 1234
+})
+
+// Preview shown
+track('free_preview_view', {
+  upload_id: 'uuid',
+  rows_total: 450,
+  categories_count: 12,
+  confidence_avg: 0.87
+})
+
+// Email submitted
+track('free_email_submit', {
+  upload_id: 'uuid',
+  email_domain: 'gmail.com'
+})
+
+// Email verified
+track('free_email_verified', {
+  upload_id: 'uuid',
+  verification_ms: 45000
+})
+
+// CSV exported
+track('free_export_ok', {
+  upload_id: 'uuid',
+  rows_exported: 450,
+  categories_count: 12
+})
+
+// Upgrade CTA clicked
+track('cta_upgrade_click', {
+  upload_id: 'uuid',
+  cta_location: 'post_export_modal'
+})
+```
+
+## Weekly KPI Report
+
+Automated weekly report includes:
+
+- **Total uploads**: Count and success rate
+- **Total exports**: Conversion from upload → export
+- **Average rows**: Per file
+- **Top categories**: Most common
+- **Top failure codes**: Error analysis
+- **Upgrade CTR**: Click-through rate
+- **Email verification rate**: % who verify
+- **Retention**: % returning users
+
+Run manually:
+```bash
+python ops/cron/weekly_free_kpis.py
+```
+
+Or schedule in cron:
+```bash
+0 9 * * MON python ops/cron/weekly_free_kpis.py
+```
+
+## Troubleshooting
+
+### Upload fails with "File too large"
+
+**Cause**: File exceeds size limit
+
+**Solution**: Check `configs/free_tool.yaml` max_file_mb settings
+
+### Email verification not working
+
+**Cause**: Email provider not configured
+
+**Solution**: 
+1. Verify `EMAIL_PROVIDER_API_KEY` is set
+2. Check `EMAIL_FROM` is verified sender
+3. Test email delivery manually
+
+### Rate limit errors
+
+**Cause**: IP or email exceeded quota
+
+**Solution**:
+1. Check Redis connection if using Redis
+2. Verify rate limits in config
+3. Clear rate limit: `redis-cli DEL "rate_limit:ip:xxx"`
+
+### Export missing categories
+
+**Cause**: Backend categorization failed
+
+**Solution**:
+1. Check backend API logs
+2. Verify `X-Free-Mode: true` header sent
+3. Ensure backend has category model loaded
+
+## Testing
+
+### Unit Tests
+
+```bash
+pnpm test tests/web/free/unit
+```
+
+### E2E Tests
+
+```bash
+pnpm exec playwright test tests/web/free/e2e
+```
+
+### Load Tests
+
+```bash
+k6 run tests/web/free/load/k6_free_export.js
+```
+
+## Monitoring
+
+### Key Metrics
+
+- Upload success rate (target: >95%)
+- Parse success rate (target: >90%)
+- Email verification rate (target: >70%)
+- Export conversion rate (target: >80%)
+- Upgrade CTR (target: >5%)
+- P95 latency (target: <10s)
+
+### Alerts
+
+Set up alerts for:
+
+- Upload success rate < 90%
+- Email delivery failures
+- Rate limit abuse (>100 requests from single IP)
+- Storage usage > 80%
+
+## Compliance
+
+### GDPR/CCPA
+
+- ✅ Email consent captured
+- ✅ Right to deletion (24h auto-delete)
+- ✅ No sensitive data logged
+- ✅ Privacy policy link
+- ✅ Opt-out mechanism
+
+### Data Retention
+
+- Temp files: 24 hours
+- Email verification tokens: 24 hours
+- Analytics data: 90 days (aggregated only)
+
+## Roadmap
+
+- [ ] A/B test different CTAs
+- [ ] Add more file formats (MT940, BAI2)
+- [ ] Social auth (Google, Microsoft)
+- [ ] Direct QuickBooks/Xero preview
+- [ ] Multi-file batch upload
+- [ ] API for programmatic access
+
+## Support
+
+For issues or questions:
+
+- GitHub Issues: https://github.com/yourusername/ai-bookkeeper/issues
+- Email: support@aibookkeeper.com
+- Docs: https://docs.aibookkeeper.com
+

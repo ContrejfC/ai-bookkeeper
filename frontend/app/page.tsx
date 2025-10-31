@@ -361,53 +361,69 @@ export default function LandingPage() {
           }}
         />
         
-        {/* Floating Particles */}
-        {[...Array(30)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-emerald-500/20 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-30, 30, -30],
-              x: [-10, 10, -10],
-              opacity: [0.1, 0.6, 0.1],
-              scale: [0.3, 1.2, 0.3],
-            }}
-            transition={{
-              duration: 8 + Math.random() * 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
+        {/* Floating Particles - use fixed positions for hydration */}
+        {[...Array(30)].map((_, i) => {
+          // Generate consistent positions using index-based seeding
+          const left = ((i * 37) % 100);
+          const top = ((i * 53) % 100);
+          const duration = 8 + ((i * 23) % 12);
+          const delay = (i * 0.5) % 5;
+          
+          return (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-emerald-500/20 rounded-full"
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+              }}
+              animate={{
+                y: [-30, 30, -30],
+                x: [-10, 10, -10],
+                opacity: [0.1, 0.6, 0.1],
+                scale: [0.3, 1.2, 0.3],
+              }}
+              transition={{
+                duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay,
+              }}
+            />
+          );
+        })}
         
-        {/* Additional Slow-Moving Particles */}
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={`slow-${i}`}
-            className="absolute w-0.5 h-0.5 bg-cyan-500/15 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-50, 50, -50],
-              x: [-20, 20, -20],
-              opacity: [0.05, 0.3, 0.05],
-              scale: [0.2, 0.8, 0.2],
-            }}
-            transition={{
-              duration: 20 + Math.random() * 20,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: Math.random() * 10,
-            }}
-          />
-        ))}
+        {/* Additional Slow-Moving Particles - use fixed positions for hydration */}
+        {[...Array(15)].map((_, i) => {
+          // Generate consistent positions using index-based seeding
+          const left = ((i * 41 + 13) % 100);
+          const top = ((i * 67 + 19) % 100);
+          const duration = 20 + ((i * 29) % 20);
+          const delay = (i * 0.7) % 10;
+          
+          return (
+            <motion.div
+              key={`slow-${i}`}
+              className="absolute w-0.5 h-0.5 bg-cyan-500/15 rounded-full"
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+              }}
+              animate={{
+                y: [-50, 50, -50],
+                x: [-20, 20, -20],
+                opacity: [0.05, 0.3, 0.05],
+                scale: [0.2, 0.8, 0.2],
+              }}
+              transition={{
+                duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay,
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Content */}

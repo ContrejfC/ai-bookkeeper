@@ -1,0 +1,9 @@
+# Ignore all feedback files
+*.json
+*.jsonl
+
+# Keep this .gitignore
+!.gitignore
+
+# Keep README if present
+!README.md

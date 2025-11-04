@@ -202,3 +202,20 @@ export function trackExportPaywalled(action: string) {
     console.log('[Analytics] trackExportPaywalled', { action });
   }
 }
+
+// AI/LLM tracking
+export function trackLLMModelUsed(model: string, fallback: boolean = false, properties: AnalyticsProperties = {}) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackLLMModelUsed', { model, fallback, ...properties });
+  }
+  // In production, this would send to your analytics provider
+  // analytics.track('llm_model_used', { model, fallback, ...properties });
+}
+
+export function trackLLMFallback(primaryModel: string, fallbackModel: string, reason: string, properties: AnalyticsProperties = {}) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackLLMFallback', { primaryModel, fallbackModel, reason, ...properties });
+  }
+  // In production, this would send to your analytics provider
+  // analytics.track('llm_fallback', { primaryModel, fallbackModel, reason, ...properties });
+}

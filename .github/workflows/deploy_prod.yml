@@ -105,6 +105,36 @@ jobs:
           
           echo "✅ All smoke test assertions passed"
       
+      - name: "Smoke: AI model health"
+        run: |
+          echo "Checking /api/ai/health..."
+          curl -sSf "$HOST/api/ai/health" | tee /tmp/ai-health.json | jq .
+          
+          # Verify model is responding
+          jq -e '.ok == true' /tmp/ai-health.json
+          MODEL=$(jq -r '.model' /tmp/ai-health.json)
+          echo "✅ AI model healthy: $MODEL"
+      
+      - name: "Smoke: Free Categorizer SEO"
+        run: |
+          echo "Checking Free Categorizer SEO elements..."
+          
+          # Title tag
+          curl -sSf "$HOST/free/categorizer?cache-bust=$(date +%s)" | grep -o '<title>[^<]*</title>' | grep "Free Bank Transaction Categorizer"
+          echo "✅ Title tag correct"
+          
+          # JSON-LD count (should be 3)
+          COUNT=$(curl -sSf "$HOST/free/categorizer?cache-bust=$(date +%s)" | grep -c 'application/ld+json')
+          if [ "$COUNT" != "3" ]; then
+            echo "❌ Expected 3 JSON-LD schemas, found $COUNT"
+            exit 1
+          fi
+          echo "✅ JSON-LD schemas present: $COUNT"
+          
+          # OG image
+          curl -sSfI "$HOST/api/og/free-categorizer" | grep "content-type: image/png"
+          echo "✅ OG image endpoint working"
+      
       - name: Post deployment summary
         if: always()
         run: |

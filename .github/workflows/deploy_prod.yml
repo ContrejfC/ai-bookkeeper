@@ -44,22 +44,24 @@ jobs:
           echo "Alias set: ai-bookkeeper-nine.vercel.app"
       
       - name: Wait for deployment propagation
-        run: sleep 10
+        run: |
+          echo "Waiting 60 seconds for Vercel CDN propagation..."
+          sleep 60
       
       - name: "Smoke: Policy dates (privacy)"
         run: |
           echo "Checking /privacy for November 3, 2025..."
-          curl -sSf $HOST/privacy | grep "November 3, 2025"
+          curl -sSf "$HOST/privacy?cache-bust=$(date +%s)" | grep "November 3, 2025"
       
       - name: "Smoke: Policy dates (terms)"
         run: |
           echo "Checking /terms for November 3, 2025..."
-          curl -sSf $HOST/terms | grep "November 3, 2025"
+          curl -sSf "$HOST/terms?cache-bust=$(date +%s)" | grep "November 3, 2025"
       
       - name: "Smoke: SOC2 compliance copy"
         run: |
           echo "Checking /security for SOC2 copy..."
-          curl -sSf $HOST/security | grep -iE "aligned controls|Type II"
+          curl -sSf "$HOST/security?cache-bust=$(date +%s)" | grep -iE "aligned controls|Type II"
       
       - name: "Smoke: API route method guard"
         run: |
@@ -74,18 +76,18 @@ jobs:
       - name: "Smoke: UI controls present"
         run: |
           echo "Checking /free/categorizer for UI controls..."
-          curl -sSf $HOST/free/categorizer | grep -E "Allow anonymized data to improve models|Use Sample Statement|See Sample CSV Output"
+          curl -sSf "$HOST/free/categorizer?cache-bust=$(date +%s)" | grep -E "Allow anonymized data to improve models|Use Sample Statement|See Sample CSV Output"
       
       - name: "Smoke: /api-version endpoint"
         run: |
           echo "Checking /api-version..."
-          curl -sSf $HOST/api-version | jq .
+          curl -sSf "$HOST/api-version?cache-bust=$(date +%s)" | jq .
           echo "✅ /api-version returned valid JSON"
       
       - name: "Smoke: /api-smoke assertions"
         run: |
           echo "Checking /api-smoke assertions..."
-          curl -sSf $HOST/api-smoke | tee /tmp/smoke.json
+          curl -sSf "$HOST/api-smoke?cache-bust=$(date +%s)" | tee /tmp/smoke.json
           
           # Install jq if not available
           if ! command -v jq &> /dev/null; then

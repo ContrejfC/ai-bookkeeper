@@ -1,11 +1,8 @@
-'use client';
-
 import { Card, CardBody } from '@nextui-org/react';
-import { formatPolicyDate } from '@/lib/config';
 
 export default function TermsPage() {
   // Use November 3, 2025 as the last updated date
-  const lastUpdated = formatPolicyDate(new Date('2025-11-03'));
+  const lastUpdated = 'November 3, 2025';
   
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16">

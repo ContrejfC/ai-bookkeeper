@@ -1,10 +1,7 @@
-'use client';
-
 import { Card, CardBody } from '@nextui-org/react';
-import { getSOC2StatusText } from '@/lib/config';
 
 export default function SecurityPage() {
-  const soc2Text = getSOC2StatusText();
+  const soc2Text = 'SOC 2-aligned controls';
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16">
       <div className="container mx-auto px-4 max-w-4xl">

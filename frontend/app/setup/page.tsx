@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Button, Link, Card, CardBody, CardHeader, Accordion, AccordionItem, Chip, Code } from "@nextui-org/react";
 import { motion } from "framer-motion";
 
+// Note: Metadata must be in layout or server component
+// This page has noindex set in app/setup/layout.tsx
+
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },

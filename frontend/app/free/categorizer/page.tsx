@@ -18,6 +18,7 @@ import { Button, Checkbox, Modal, ModalContent, ModalHeader, ModalBody, ModalFoo
 import { FreeDropzone } from '@/components/FreeDropzone';
 import { ResultsPreview } from '@/components/ResultsPreview';
 import { ErrorAlert } from '@/components/ErrorAlert';
+import { FreeCategorizerContent } from '@/components/FreeCategorizerContent';
 import { sendVerificationCode, verifyEmailCode, exportCategorizedCSV, saveFeedback, deleteUpload } from './actions';
 import { 
   trackUploadStarted, 
@@ -67,6 +68,7 @@ export default function FreeCategorizerPage() {
   // Modals
   const sampleModal = useDisclosure();
   const deleteModal = useDisclosure();
+  const qboModal = useDisclosure();
   
   // Track sample modal open
   const handleSampleClick = () => {
@@ -308,20 +310,31 @@ export default function FreeCategorizerPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Turn Your Bank Statement Into a Categorized CSV
+            Free Bank Transaction Categorizer (CSV, OFX, QFX)
           </h1>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-lg text-gray-700">
+          <p className="text-xl text-gray-700 mb-6">
+            Upload. Auto-categorize. Verify. Download CSV or export to QuickBooks.
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-3 text-sm text-gray-600">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🚀</span>
-              <span>Upload any format</span>
+              <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>Uploads deleted within 24 hours</span>
             </div>
+            <span className="text-gray-400">•</span>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🤖</span>
-              <span>AI categorizes instantly</span>
+              <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>Opt-in training only</span>
             </div>
+            <span className="text-gray-400">•</span>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">📊</span>
-              <span>Export in seconds</span>
+              <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>SOC 2-aligned controls</span>
             </div>
           </div>
         </div>
@@ -603,13 +616,26 @@ export default function FreeCategorizerPage() {
                 Your categorized CSV is ready to download.
               </p>
               
-              <button
-                onClick={handleDownload}
-                className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors text-lg focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                aria-label="Download categorized CSV file"
-              >
-                📥 Download CSV
-              </button>
+              <div className="space-y-3">
+                <button
+                  onClick={handleDownload}
+                  className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors text-lg focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  aria-label="Download categorized CSV file"
+                >
+                  📥 Download CSV
+                </button>
+                
+                <button
+                  onClick={() => {
+                    trackUpgradeClicked({ source: 'qbo_export', upload_id: uploadId });
+                    qboModal.onOpen();
+                  }}
+                  className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  aria-label="Export to QuickBooks Online"
+                >
+                  🚀 Export to QuickBooks
+                </button>
+              </div>
               
               <p className="text-sm text-gray-500 mt-4">
                 {Math.min(totalRows, config.maxRows)} rows • {categoriesCount} categories • {(confidenceAvg * 100).toFixed(0)}% avg confidence
@@ -716,6 +742,68 @@ export default function FreeCategorizerPage() {
         </ModalContent>
       </Modal>
 
+      {/* QuickBooks Export Modal */}
+      <Modal isOpen={qboModal.isOpen} onClose={qboModal.onClose} size="lg">
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            <span className="text-2xl">🚀 QuickBooks Online Export</span>
+          </ModalHeader>
+          <ModalBody>
+            <div className="space-y-4">
+              <p className="text-gray-700">
+                <strong>Direct QuickBooks Online integration</strong> is available on paid plans.
+              </p>
+              
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  What you get with an account:
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 flex-shrink-0">✓</span>
+                    <span>Direct QuickBooks Online & Xero integration</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 flex-shrink-0">✓</span>
+                    <span>Automatic journal entry creation</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 flex-shrink-0">✓</span>
+                    <span>Custom categorization rules</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 flex-shrink-0">✓</span>
+                    <span>Unlimited transactions</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 flex-shrink-0">✓</span>
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <p className="text-sm text-gray-600">
+                <strong>For now:</strong> Download your categorized CSV above and manually import it into QuickBooks.
+              </p>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="default" variant="light" onPress={qboModal.onClose}>
+              Close
+            </Button>
+            <Button 
+              color="primary" 
+              onPress={() => {
+                qboModal.onClose();
+                window.location.href = '/pricing';
+              }}
+            >
+              View Pricing
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       {/* Upgrade Modal */}
       {showUpgradeModal && (
         <div 
@@ -763,6 +851,9 @@ export default function FreeCategorizerPage() {
           </div>
         </div>
       )}
+      
+      {/* Rich Content Section for SEO */}
+      <FreeCategorizerContent />
     </div>
   );
 }

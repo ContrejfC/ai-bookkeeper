@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     // Calculate metrics
     const categories = new Set(cappedTransactions.map((t: any) => t.category || 'Uncategorized'));
     const confidences = cappedTransactions.map((t: any) => parseFloat(t.confidence || 0));
-    const avgConfidence = confidences.reduce((a, b) => a + b, 0) / confidences.length;
+    const avgConfidence = confidences.reduce((a: number, b: number) => a + b, 0) / confidences.length;
     
     return NextResponse.json({
       upload_id,

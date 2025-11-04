@@ -4,8 +4,8 @@ import { Card, CardBody } from '@nextui-org/react';
 import { formatPolicyDate } from '@/lib/config';
 
 export default function PrivacyPage() {
-  // Use November 4, 2025 as the last updated date (today's date based on user info)
-  const lastUpdated = formatPolicyDate(new Date('2025-11-04'));
+  // Use November 3, 2025 as the last updated date
+  const lastUpdated = formatPolicyDate(new Date('2025-11-03'));
   
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16">

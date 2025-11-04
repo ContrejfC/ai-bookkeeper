@@ -76,7 +76,8 @@ interface EntitlementsGateProps {
  */
 async function fetchEntitlements(): Promise<Entitlements | null> {
   try {
-    const response = await fetch('/api/billing/entitlements', {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const response = await fetch(`${API_BASE}/api/billing/entitlements`, {
       credentials: 'include',  // Send cookies for authentication
     });
     if (!response.ok) {

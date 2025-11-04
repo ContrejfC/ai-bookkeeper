@@ -2,6 +2,7 @@
  * Authentication utilities for JWT token management
  */
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const TOKEN_KEY = 'ai_bookkeeper_token';
 const USER_KEY = 'ai_bookkeeper_user';
 
@@ -86,7 +87,7 @@ export function isAuthenticated(): boolean {
  * Login user with email and password (or magic token for dev mode)
  */
 export async function login(email: string, password?: string, magicToken?: string): Promise<LoginResponse> {
-  const response = await fetch('/api/auth/login?use_cookie=false', {
+  const response = await fetch(`${API_BASE}/api/auth/login?use_cookie=false`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -142,7 +143,7 @@ export async function login(email: string, password?: string, magicToken?: strin
  */
 export async function logout(): Promise<void> {
   try {
-    await fetch('/api/auth/logout', {
+    await fetch(`${API_BASE}/api/auth/logout`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${getToken()}`,

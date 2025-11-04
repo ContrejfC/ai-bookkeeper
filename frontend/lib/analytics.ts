@@ -145,3 +145,60 @@ export function trackDeleteClicked(properties: AnalyticsProperties) {
 export function trackLeadSubmitted(properties: AnalyticsProperties) {
   analytics.track('lead_submitted', properties);
 }
+
+// Legacy/placeholder exports for other pages (to be implemented)
+export function trackBridgeViewed(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when GPT bridge analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackBridgeViewed', properties);
+  }
+}
+
+export function trackOpenGptClicked(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when GPT bridge analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackOpenGptClicked', properties);
+  }
+}
+
+export function trackCheckoutClicked(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when pricing analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackCheckoutClicked', properties);
+  }
+}
+
+export function trackPurchase(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when purchase analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackPurchase', properties);
+  }
+}
+
+export function trackSubscriptionStarted(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when subscription analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackSubscriptionStarted', properties);
+  }
+}
+
+export function trackToolOpened(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when tool analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackToolOpened', properties);
+  }
+}
+
+export function trackRowsPreviewed(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when preview analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackRowsPreviewed', properties);
+  }
+}
+
+export function trackExportPaywalled(properties: AnalyticsProperties = {}) {
+  // Placeholder - implement when paywall analytics is needed
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] trackExportPaywalled', properties);
+  }
+}

@@ -15,9 +15,10 @@ interface FreeDropzoneProps {
   onUploadSuccess: (uploadId: string, filename: string, rowCount?: number) => void;
   onUploadError: (error: string) => void;
   disabled?: boolean;
+  consentTraining?: boolean;
 }
 
-export function FreeDropzone({ onUploadSuccess, onUploadError, disabled }: FreeDropzoneProps) {
+export function FreeDropzone({ onUploadSuccess, onUploadError, disabled, consentTraining = false }: FreeDropzoneProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -50,6 +51,7 @@ export function FreeDropzone({ onUploadSuccess, onUploadError, disabled }: FreeD
       const formData = new FormData();
       formData.append('file', file);
       formData.append('captcha_token', captchaToken || '');
+      formData.append('consentTraining', consentTraining.toString());
       
       // Add UTM params from session
       const utmParams = getUTMParams();
@@ -59,7 +61,7 @@ export function FreeDropzone({ onUploadSuccess, onUploadError, disabled }: FreeD
       
       setProgress(40);
       
-      const response = await fetch('/api/free/upload', {
+      const response = await fetch('/api/free/categorizer/upload', {
         method: 'POST',
         body: formData
       });
@@ -83,7 +85,7 @@ export function FreeDropzone({ onUploadSuccess, onUploadError, disabled }: FreeD
       });
       
       // Notify parent
-      onUploadSuccess(result.upload_id, result.filename);
+      onUploadSuccess(result.uploadId, result.filename, result.row_count);
       
     } catch (error) {
       console.error('Upload error:', error);

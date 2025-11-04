@@ -49,13 +49,13 @@ export function getSOC2StatusText(): string {
  * Format date for policy pages using America/New_York timezone
  */
 export function formatPolicyDate(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === 'string' ? new Date(date + 'T12:00:00Z') : date;
   
   return dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    timeZone: 'America/New_York'
+    timeZone: 'UTC'
   });
 }
 

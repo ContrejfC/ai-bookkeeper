@@ -9,10 +9,10 @@ import { join } from 'path';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const uploadId = params.id;
+    const { id: uploadId } = await params;
     const uploadDir = process.env.FREE_UPLOAD_DIR || '/tmp/free_uploads';
     
     // Read metadata to get filename

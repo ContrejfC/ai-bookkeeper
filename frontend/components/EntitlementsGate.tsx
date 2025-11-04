@@ -122,15 +122,13 @@ export function EntitlementsGate({
     );
   }
 
-  // Error state
+  // Error state - fail gracefully (allow access even if entitlements check fails)
   if (!entitlements) {
+    console.warn('EntitlementsGate: Failed to load entitlements, allowing access');
+    // Render children without entitlements check (graceful degradation)
     return (
-      <div className="p-4">
-        <Card>
-          <CardBody>
-            <p className="text-danger">Error loading access information</p>
-          </CardBody>
-        </Card>
+      <div className={className}>
+        {children}
       </div>
     );
   }

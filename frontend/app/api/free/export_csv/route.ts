@@ -8,7 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { exportCsvSchema, loadFreeToolConfig } from '@/lib/validators';
+import { exportCsvSchema } from '@/lib/validators';
+import { loadFreeToolConfig } from '@/lib/config-server';
 import { checkEmailRateLimit } from '@/lib/rateLimit';
 
 export async function POST(request: NextRequest) {
@@ -202,4 +203,6 @@ function escapeCSV(field: string): string {
   
   return fieldStr;
 }
+
+
 

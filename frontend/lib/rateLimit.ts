@@ -6,7 +6,7 @@
  */
 
 import { Redis } from 'ioredis';
-import { loadFreeToolConfig } from './validators';
+import { loadFreeToolConfig } from './config-server';
 
 // Redis client (singleton)
 let redisClient: Redis | null = null;
@@ -397,4 +397,6 @@ export function formatRateLimitError(resetAt: Date): {
     retry_after: retryAfter
   };
 }
+
+
 

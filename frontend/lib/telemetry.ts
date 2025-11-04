@@ -5,7 +5,7 @@
  * Integrates with PostHog or custom analytics backend.
  */
 
-import { loadFreeToolConfig } from './validators';
+import { loadFreeToolConfig } from './config-server';
 
 // PostHog client (browser-side)
 declare global {
@@ -324,4 +324,6 @@ export function getStoredUTMParams(): {
   
   return {};
 }
+
+
 

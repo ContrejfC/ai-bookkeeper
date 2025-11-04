@@ -72,7 +72,7 @@ async function handleSendCode(body: any) {
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   
   // Store code in cookie (expires in 15 minutes)
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   
   cookieStore.set('verification_code', code, {
     httpOnly: true,
@@ -113,7 +113,7 @@ async function handleVerifyCode(body: any) {
   const { email, code } = validated;
   
   // Get stored values from cookies
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const storedCode = cookieStore.get('verification_code')?.value;
   const storedEmail = cookieStore.get('verification_email')?.value;
   const sentAt = cookieStore.get('verification_sent_at')?.value;

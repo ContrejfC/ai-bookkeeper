@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Verify email token from cookie
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const storedToken = cookieStore.get('email_token')?.value;
     
     if (!storedToken || storedToken !== email_token) {

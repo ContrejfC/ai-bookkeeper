@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: 'INVALID_INPUT',
           hint: 'Invalid feedback data format',
-          details: error.errors
+          details: error.issues
         },
         { status: 400 }
       );

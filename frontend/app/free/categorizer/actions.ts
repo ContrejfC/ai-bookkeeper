@@ -127,7 +127,7 @@ export async function sendVerificationCode(email: string): Promise<VerifyEmailRe
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     
     // Store code in cookie (expires in 15 minutes)
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set('verification_code', code, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -165,7 +165,7 @@ export async function sendVerificationCode(email: string): Promise<VerifyEmailRe
  */
 export async function verifyEmailCode(email: string, code: string): Promise<VerifyEmailResult> {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const storedCode = cookieStore.get('verification_code')?.value;
     const storedEmail = cookieStore.get('verification_email')?.value;
     
@@ -225,7 +225,7 @@ export async function verifyEmailCode(email: string, code: string): Promise<Veri
  */
 export async function exportCategorizedCSV(uploadId: string): Promise<ExportResult> {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const emailToken = cookieStore.get('email_token')?.value;
     
     if (!emailToken) {

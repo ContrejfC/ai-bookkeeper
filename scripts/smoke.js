@@ -32,6 +32,32 @@ function curl(path, method = 'GET') {
   
   try {
     // Fetch all pages and APIs
+    // Use the /__smoke endpoint if available, otherwise run individual checks
+    const smokeEndpoint = await fetch(host + '/api-smoke', { method: 'GET' });
+    
+    if (smokeEndpoint.ok) {
+      // Use server-side smoke test
+      const result = await smokeEndpoint.json();
+      console.log(JSON.stringify(result, null, 2));
+      
+      const allOk = Object.values(result.assertions).every(Boolean);
+      console.log('\n' + '='.repeat(50));
+      console.log('SMOKE TEST SUMMARY');
+      console.log('='.repeat(50));
+      
+      for (const [key, value] of Object.entries(result.assertions)) {
+        const status = value ? '✅ PASS' : '❌ FAIL';
+        console.log(`${status} - ${key}`);
+      }
+      
+      console.log('='.repeat(50));
+      console.log(`Overall: ${allOk ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}`);
+      console.log('='.repeat(50) + '\n');
+      
+      process.exit(allOk ? 0 : 1);
+    }
+    
+    // Fallback: Run individual checks
     const privacy = await curl('/privacy');
     const terms = await curl('/terms');
     const security = await curl('/security');

@@ -18,10 +18,10 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Check /__smoke endpoint
+      - name: Check /api-smoke endpoint
         run: |
-          echo "🧪 Curling /__smoke endpoint..."
-          curl -sS https://ai-bookkeeper-nine.vercel.app/__smoke | tee /tmp/smoke.json
+          echo "🧪 Curling /api-smoke endpoint..."
+          curl -sS https://ai-bookkeeper-nine.vercel.app/api-smoke | tee /tmp/smoke.json
       
       - name: Verify smoke test results
         run: |
@@ -49,10 +49,10 @@ jobs:
           
           echo "✅ All smoke tests passed!"
       
-      - name: Check /__version endpoint
+      - name: Check /api-version endpoint
         run: |
-          echo "📦 Checking /__version endpoint..."
-          curl -sS https://ai-bookkeeper-nine.vercel.app/__version | jq .
+          echo "📦 Checking /api-version endpoint..."
+          curl -sS https://ai-bookkeeper-nine.vercel.app/api-version | jq .
       
       - name: Post results to summary
         if: always()

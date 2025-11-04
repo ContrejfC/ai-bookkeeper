@@ -123,7 +123,7 @@ async function getCategorizedTransactions(uploadId: string, uploadDir: string, m
     const fileBuffer = await readFile(filePath);
     
     const formData = new FormData();
-    const blob = new Blob([fileBuffer], { type: metadata.mime_type });
+    const blob = new Blob([new Uint8Array(fileBuffer)], { type: metadata.mime_type });
     formData.append('file', blob, metadata.filename);
     
     const response = await fetch(`${apiBase}/api/ingestion/upload`, {

@@ -125,10 +125,11 @@ export async function POST(request: NextRequest) {
       consent_ts: consentTraining ? new Date().toISOString() : null,
       ip_hash: ipHash,
       file_hash: fileHash,
-      retention_scope: 'ephemeral',
+      retention_scope: 'ephemeral' as const,
       utm_source: utmSource,
       utm_medium: utmMedium,
-      utm_campaign: utmCampaign
+      utm_campaign: utmCampaign,
+      row_count: 0 as number
     };
     
     const metadataPath = join(uploadDir, `${uploadId}_metadata.json`);

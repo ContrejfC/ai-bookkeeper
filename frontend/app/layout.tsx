@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { BuildTag } from "@/components/BuildTag";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "AI Bookkeeper - Automated Bookkeeping with AI",
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Providers>{children}</Providers>
-        <BuildTag />
+        <Suspense fallback={null}>
+          <BuildTag />
+        </Suspense>
       </body>
     </html>
   );

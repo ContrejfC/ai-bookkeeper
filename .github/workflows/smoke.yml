@@ -21,7 +21,7 @@ jobs:
       - name: Check /api-smoke endpoint
         run: |
           echo "🧪 Curling /api-smoke endpoint..."
-          curl -sS https://ai-bookkeeper-nine.vercel.app/api-smoke | tee /tmp/smoke.json
+          curl -sS https://ai-bookkeeper.app/api-smoke | tee /tmp/smoke.json
       
       - name: Verify smoke test results
         run: |
@@ -52,7 +52,7 @@ jobs:
       - name: Check /api-version endpoint
         run: |
           echo "📦 Checking /api-version endpoint..."
-          curl -sS https://ai-bookkeeper-nine.vercel.app/api-version | jq .
+          curl -sS https://ai-bookkeeper.app/api-version | jq .
       
       - name: Post results to summary
         if: always()

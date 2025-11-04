@@ -6,7 +6,7 @@
 import { Metadata } from 'next';
 import { metadata as categorizerMetadata } from './metadata';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper-nine.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
 
 export const metadata: Metadata = categorizerMetadata;
 

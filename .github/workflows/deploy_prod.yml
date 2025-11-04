@@ -12,7 +12,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      HOST: https://ai-bookkeeper-nine.vercel.app
+      HOST: https://ai-bookkeeper.app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,8 +40,8 @@ jobs:
       
       - name: Force alias to production domain
         run: |
-          vercel alias set ${{ steps.deploy.outputs.URL }} ai-bookkeeper-nine.vercel.app --token $VERCEL_TOKEN
-          echo "Alias set: ai-bookkeeper-nine.vercel.app"
+          vercel alias set ${{ steps.deploy.outputs.URL }} ai-bookkeeper.app --token $VERCEL_TOKEN
+          echo "Alias set: ai-bookkeeper.app"
       
       - name: Wait for deployment propagation
         run: |
@@ -141,7 +141,7 @@ jobs:
           echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Deployment URL:** ${{ steps.deploy.outputs.URL }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Production Alias:** https://ai-bookkeeper-nine.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "**Production Alias:** https://ai-bookkeeper.app" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY

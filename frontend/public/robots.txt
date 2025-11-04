@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://ai-bookkeeper-nine.vercel.app/sitemap.xml
+Sitemap: https://ai-bookkeeper.app/sitemap.xml
 
 # Disallow admin, API, and internal tool routes
 Disallow: /api/

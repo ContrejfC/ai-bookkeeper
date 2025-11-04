@@ -271,20 +271,20 @@ vercel link`} />
           <div className="space-y-4">
             <div>
               <h4 className="text-white font-semibold mb-2">Test 1: Version Endpoint</h4>
-              <CodeBlock code="curl -s https://ai-bookkeeper-nine.vercel.app/api-version | jq ." />
+              <CodeBlock code="curl -s https://ai-bookkeeper.app/api-version | jq ." />
               <p className="text-sm text-gray-400">✅ Should return JSON with commit SHA, environment, and build info</p>
             </div>
             
             <div>
               <h4 className="text-white font-semibold mb-2">Test 2: Smoke Test Endpoint</h4>
-              <CodeBlock code="curl -s https://ai-bookkeeper-nine.vercel.app/api-smoke | jq ." />
+              <CodeBlock code="curl -s https://ai-bookkeeper.app/api-smoke | jq ." />
               <p className="text-sm text-gray-400">✅ All assertions should be <Code className="text-xs">true</Code></p>
             </div>
             
             <div>
               <h4 className="text-white font-semibold mb-2">Test 3: UI Build Tag</h4>
               <Link 
-                href="https://ai-bookkeeper-nine.vercel.app/free/categorizer?verify=1" 
+                href="https://ai-bookkeeper.app/free/categorizer?verify=1" 
                 target="_blank"
                 className="text-emerald-400 hover:text-emerald-300 text-sm"
               >
@@ -451,7 +451,7 @@ npm run smoke:prod`} />
                 <Link href="https://vercel.com/account/tokens" target="_blank" className="text-emerald-400 hover:text-emerald-300">
                   Vercel Tokens →
                 </Link>
-                <Link href="https://ai-bookkeeper-nine.vercel.app" target="_blank" className="text-emerald-400 hover:text-emerald-300">
+                <Link href="https://ai-bookkeeper.app" target="_blank" className="text-emerald-400 hover:text-emerald-300">
                   Production URL →
                 </Link>
               </div>

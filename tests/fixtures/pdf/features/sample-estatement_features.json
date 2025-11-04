@@ -1,0 +1,19 @@
+{
+  "filename": "sample-estatement.pdf",
+  "header_text": "Savvy Saver",
+  "footer_text": "Your email address is: saver@capitalone360.com. Update this and all your information at capitalone360.com in the My Info section.\ncapitalone360.com Interactive Phone Service: 1-888-464-7868 P.O. Box 60\nComments: sales@capitalone360.com Sales/Service Number: 1-888-464-0727 St. Cloud, MN 56302",
+  "table_headers": [],
+  "detected_bank": "capital_one",
+  "geometry": {
+    "header_band": [
+      0.0,
+      0.2
+    ],
+    "table_band": [
+      0.25,
+      0.8
+    ]
+  },
+  "page_count": 1,
+  "sample_text": "Savvy Saver\n360 Market St. Thanks for saving with Capital One 360\nAnywhere, US 12345\nSince you became a Saver on 12/18/2006,\nyour account(s) have earned:\n$194.17\nCustomer Number 46587699\nYour Savings Summary as of 03/31/2013\nAccount Type Nickname Account Number Account Balance Joint Name\n360 Savings 12345678 $1,194.17 Savvy Saver\nYour 360 Savings Activity\nAccount: 12345678 Current Interest Rate: 2.467% Annual Percentage Yield Earned: 2.49% Interest Life To Date: $194.17\nYear to date Interest: $7.24\nActivity Date Amount Balance\nOpening Balance 01/01/2013 $1,186.93\nMonthly Interest Paid 01/31/2013 $2.49 $1,189.42\nMonthly Interest Paid 02/28/2013 $2.25 $1,191.67\nMonthly Interest Paid 03/31/2013 $2.50 $1,194.17\nClosing Balance 03/31/2013 $1,194.17\nYour email address is: saver@capitalone360.com. Update this and all your information at capitalone360.com in the My Info section.\ncapitalone360.com Interactive Phone Service: 1-888-464-7868 P.O. Box 60\nComments: sales@capitalone360.com Sales/Service Number: 1-888-464-0727 St. Cloud, MN 56302"
+}

@@ -1,0 +1,63 @@
+# Account Analysis Statement Style
+# Generic style for business account analysis/treasury statements
+
+name: account_analysis_v1
+type: account_analysis
+
+header:
+  tokens:
+    - "Account Analysis Statement"
+    - "Business Account"
+    - "Account Number"
+    - "Analysis Period"
+    - "Average Balance"
+    - "Earnings Credit"
+    - "Service Charges"
+  
+  position:
+    top_pct: 0.00
+    bottom_pct: 0.22
+
+table:
+  headers:
+    - "Date"
+    - "Transaction Type"
+    - "Description"
+    - "Debit"
+    - "Credit"
+    - "Balance"
+  
+  # Column alignments
+  alignments:
+    - left   # Date
+    - left   # Type
+    - left   # Description
+    - right  # Debit
+    - right  # Credit
+    - right  # Balance
+  
+  # Separate debit/credit columns
+  debit_negative: false
+  credit_markers: []
+  split_columns: true  # Debit and Credit as separate columns
+
+layout:
+  # Page regions
+  header_band_pct: [0.00, 0.22]
+  table_band_pct: [0.22, 0.82]
+  footer_band_pct: [0.82, 1.00]
+  
+  # Colors (business theme - green)
+  header_bg: "#2d7a3e"
+  header_text: "#ffffff"
+  row_even_bg: "#ffffff"
+  row_odd_bg: "#f0f8f0"
+
+noise:
+  rotate_degrees: [0, 1, -1]
+  dpi: 150
+  add_speckle: true
+  jpeg_quality: 85
+
+
+

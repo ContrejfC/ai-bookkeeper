@@ -2,6 +2,7 @@
 
 import { Button, Link, Card, CardBody } from "@nextui-org/react";
 import { motion } from "framer-motion";
+import { getSOC2StatusText } from "@/lib/config";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -153,6 +154,8 @@ const stats = [
 ];
 
 export default function LandingPage() {
+  const soc2Text = getSOC2StatusText();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-500/5 via-background to-cyan-500/5 relative overflow-hidden">
       {/* Flowing Pattern Background */}
@@ -547,7 +550,7 @@ export default function LandingPage() {
               transition={{ delay: 0.8 }}
               className="flex flex-wrap justify-center gap-6 text-sm text-foreground/40 mb-16"
             >
-              {["SOC 2 Controls", "PII Redaction", "JWT Auth + CSRF Protection"].map((item, i) => (
+              {[soc2Text, "PII Redaction", "JWT Auth + CSRF Protection"].map((item, i) => (
                 <motion.div
                   key={item}
                   initial={{ opacity: 0, x: -20 }}
@@ -809,7 +812,7 @@ export default function LandingPage() {
                 },
                 {
                   feature: "Audit Trail & Compliance",
-                  description: "Complete audit logging, PII redaction, request tracing, and SOC 2 control implementation",
+                  description: `Complete audit logging, PII redaction, request tracing, and ${soc2Text.toLowerCase()}`,
                   icon: "📋",
                   gradient: "from-teal-500/10 to-cyan-500/10"
                 },

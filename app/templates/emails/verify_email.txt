@@ -1,0 +1,19 @@
+AI Bookkeeper - Verify Your Email Address
+
+Thanks for signing up!
+
+Please verify your email address to complete your account setup.
+
+Your verification code: {{ verification_code }}
+
+Or click this link: {{ verification_url }}
+
+This link will expire in {{ expires_in_hours }} hours.
+
+If you didn't create an account, you can safely ignore this email.
+
+---
+AI Bookkeeper - Automated Bookkeeping with AI
+Privacy Policy: https://ai-bookkeeper.app/privacy
+Terms of Service: https://ai-bookkeeper.app/terms
+

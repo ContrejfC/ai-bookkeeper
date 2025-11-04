@@ -1,0 +1,13 @@
+date,description,amount,vendor
+2024-10-01,"AWS Cloud Services,127.45,Amazon Web Services
+2024-10-02,Office Supplies,45.67,Staples
+"2024-invalid-date","Bad Quote""s Here",abc,Vendor
+2024-10-04;Semicolon Delimiter;100.00;Wrong Delimiter
+2024-10-05,Missing columns,50.00
+2024-10-06,Extra,columns,here,100.00,and,more,columns
+,Empty date field,25.00,Vendor
+2024-10-07,,50.00,Empty description
+2024-10-08,Normal Row,75.00,Normal Vendor
+
+
+

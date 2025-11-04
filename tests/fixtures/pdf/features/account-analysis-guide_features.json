@@ -1,0 +1,24 @@
+{
+  "filename": "account-analysis-guide.pdf",
+  "header_text": "Account Analysis Statement Guide",
+  "footer_text": "",
+  "table_headers": [
+    [
+      "Charge Type",
+      "Charge Description"
+    ]
+  ],
+  "detected_bank": "truist",
+  "geometry": {
+    "header_band": [
+      0.0,
+      0.2
+    ],
+    "table_band": [
+      0.25,
+      0.8
+    ]
+  },
+  "page_count": 4,
+  "sample_text": "Account Analysis Statement Guide\nHere\u2019s how Truist calculates monthly fees.\nThis guide will help you understand the prior period\u2019s service charges in your Account Analysis statement. It is provided\nmonthly and is in addition to your deposit account statement.\nPlease review the cost details of the services you are receiving, as well as any applicable earnings credits. Truist charges\nwill appear directly on your deposit account statement and/or on your Account Analysis statement. Each product may have\ndifferent types of service charges (For example, implementation, maintenance, activity, and per-item fees). Review the table\nbelow for Charge Type and how each service is charged.\nCharge Type Charge Description\nBilled separately Fees charged directly to the deposit account at the time of the activity.\nExplicit service charges Fees charged through the monthly Account Analysis process, regardless of account type and\nbenefits. These fees cannot be offset by earnings credit.\nAnalyzed service charges All general banking and treasury services not considered \u201cbilled separately\u201d or \u201cexplicit\u201d\nwill be analyzed. Eligible deposit accounts may have analyzed fees reduced or offset by\nearnings credit.*\n* Earnings credit only applies to certain types of accounts typically used by commercial or corporate clients with a high volume of activity, including Analyzed Checking, Analyzed\nInterest Checking and other specialty account types. Accounts typically used by Small Business clients are not eligible for earnings credit because they include a certain number of\ntransactions, cash processing and other services at no charge.\nAccount Analysis Statements are available in the Statement areas of Truist One View, Digital Treasury, and Truist online and\nmobile banking.\nWhen you\u2019ll be charged.\nMost business deposit and treasury fees will be charged through Account Analysis, bundled monthly, and available the first\nbusiness day after the fifth day of each month. Service charges are combined and char"
+}

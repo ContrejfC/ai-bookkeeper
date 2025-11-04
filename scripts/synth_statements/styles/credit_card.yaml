@@ -1,0 +1,56 @@
+# Credit Card Statement Style
+# Generic style for credit card statements
+
+name: credit_card_v1
+type: credit_card
+
+header:
+  tokens:
+    - "Credit Card Statement"
+    - "Account Number"
+    - "Statement Period"
+    - "Previous Balance"
+    - "New Balance"
+    - "Minimum Payment Due"
+    - "Payment Due Date"
+  
+  position:
+    top_pct: 0.00
+    bottom_pct: 0.20
+
+table:
+  headers:
+    - "Date"
+    - "Description"
+    - "Amount"
+  
+  # Column alignments
+  alignments:
+    - left   # Date
+    - left   # Description
+    - right  # Amount
+  
+  # Credit cards show charges as positive, payments as negative
+  debit_negative: false
+  credit_markers: ["CR", "PAYMENT"]
+
+layout:
+  # Page regions
+  header_band_pct: [0.00, 0.20]
+  table_band_pct: [0.20, 0.84]
+  footer_band_pct: [0.84, 1.00]
+  
+  # Colors (credit card theme - darker)
+  header_bg: "#2c5aa0"
+  header_text: "#ffffff"
+  row_even_bg: "#ffffff"
+  row_odd_bg: "#f9f9f9"
+
+noise:
+  rotate_degrees: [0, 1, -1]
+  dpi: 150
+  add_speckle: true
+  jpeg_quality: 85
+
+
+

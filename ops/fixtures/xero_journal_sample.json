@@ -1,0 +1,21 @@
+{
+  "Narration": "Launch check test transaction",
+  "JournalDate": "2024-10-30",
+  "Reference": "LAUNCH-CHECK-001",
+  "JournalLines": [
+    {
+      "AccountCode": "200",
+      "Description": "Test debit entry",
+      "LineAmount": 100.00
+    },
+    {
+      "AccountCode": "400",
+      "Description": "Test credit entry",
+      "LineAmount": -100.00
+    }
+  ],
+  "SourceType": "MANUAL"
+}
+
+
+

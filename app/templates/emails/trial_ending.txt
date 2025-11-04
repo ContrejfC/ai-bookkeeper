@@ -1,0 +1,14 @@
+Your AI Bookkeeper trial ends in {{ days_remaining }} days
+
+Hi,
+
+Your {{ trial_days }}-day trial for {{ tenant_name }} ends in {{ days_remaining }} days.
+
+To continue using AI Bookkeeper after your trial ends, please upgrade your plan:
+
+{{ upgrade_url }}
+
+Questions? Reply to this email or visit our help center.
+
+— The AI Bookkeeper Team
+

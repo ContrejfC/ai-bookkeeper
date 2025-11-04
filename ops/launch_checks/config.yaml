@@ -1,0 +1,85 @@
+# Launch Checks Configuration
+# Environment variables are interpolated using ${VAR_NAME} syntax
+
+# Core API settings
+api_base: "${API_BASE}"
+tenant_id: "${TEST_TENANT_ID}"
+
+# Test mode settings
+demo_mode: true
+
+# Date range for audit exports
+date_from: "2024-01-01"
+date_to: "2024-12-31"
+
+# HTTP settings
+timeout_seconds: 30
+max_retries: 3
+
+# API endpoints (relative to api_base)
+endpoints:
+  health: "/healthz"
+  ready: "/readyz"
+  docs: "/docs"
+  audit_export: "/api/audit/export"
+  upload: "/api/upload"
+  propose: "/api/post/propose"
+  webhook: "/api/billing/stripe_webhook"
+  qbo_export: "/api/export/qbo/demo"
+  xero_export: "/api/export/xero/demo"
+  login: "/api/auth/login"
+  signup: "/api/auth/signup"
+
+# Check-specific settings
+checks:
+  # Which checks are required for CI to pass
+  required:
+    - healthz
+    - readyz
+    - cors_security
+    - pii_redaction
+    - ingestion_robustness
+    - ai_threshold_gate
+  
+  # Which checks are optional (skip if creds missing)
+  optional:
+    - stripe_idempotency
+    - webhook_idempotency
+    - qbo_demo_posting
+    - xero_demo_posting
+    - audit_export
+    - reader_eval
+  
+  # Reader evaluation settings
+  reader_eval:
+    enabled: false  # Set to true to enable reader eval in pre-deployment checks
+    min_pass_rate: 0.95  # 95% of datasets must pass
+    subset_datasets:
+      - camt053_min
+      - mt940_min
+      - bai2_min
+      - ofx_min
+
+# PII patterns to verify redaction
+pii_patterns:
+  - name: "email"
+    pattern: "test@example.com"
+    redacted: "***EMAIL***"
+  - name: "ssn"
+    pattern: "123-45-6789"
+    redacted: "***SSN***"
+  - name: "phone"
+    pattern: "(555) 123-4567"
+    redacted: "***PHONE***"
+
+# File upload limits
+upload_limits:
+  max_rows_small: 100
+  max_rows_large: 100000
+  max_file_size_mb: 50
+
+# AI confidence thresholds
+ai_thresholds:
+  min_confidence: 0.6
+  review_threshold: 0.8
+

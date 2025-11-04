@@ -1,0 +1,71 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+  push:
+    tags:
+      - 'release/*'
+      - 'v*.*.*'
+
+jobs:
+  launch_checks:
+    name: Pre-Deploy Verification
+    uses: ./.github/workflows/launch-checks.yml
+    secrets: inherit
+    with:
+      api_base: ${{ github.event.inputs.environment == 'production' && secrets.PRODUCTION_API_BASE || secrets.STAGING_API_BASE }}
+      required_mode: true
+
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    needs: launch_checks
+    if: success()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Validate launch checks passed
+        run: |
+          echo "✅ Launch checks passed - proceeding with deployment"
+      
+      - name: Deploy to environment
+        run: |
+          echo "🚀 Deploying to ${{ github.event.inputs.environment || 'production' }}"
+          echo "This is where actual deployment steps would go:"
+          echo "  - Build containers"
+          echo "  - Push to registry"
+          echo "  - Update Cloud Run service"
+          echo "  - Run smoke tests"
+          
+          # Example deployment command (uncomment when ready):
+          # gcloud run deploy ai-bookkeeper-api \
+          #   --image gcr.io/$PROJECT_ID/ai-bookkeeper:${{ github.sha }} \
+          #   --platform managed \
+          #   --region us-central1
+      
+      - name: Post-deployment verification
+        run: |
+          echo "Running post-deployment checks..."
+          echo "✅ Deployment complete"
+      
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "✅ Deployment successful"
+          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+
+

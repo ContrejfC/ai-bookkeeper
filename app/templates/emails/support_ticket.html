@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Support Ticket</title></head>
+<body style="font-family: sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #667eea;">🎫 New Support Ticket</h2>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr><td style="padding: 10px; background: #f5f5f5; font-weight: bold; width: 150px;">From:</td><td style="padding: 10px; background: #fafafa;">{{ user_email }}</td></tr>
+        <tr><td style="padding: 10px; background: #f5f5f5; font-weight: bold;">Tenant ID:</td><td style="padding: 10px; background: #fafafa;"><code>{{ tenant_id }}</code></td></tr>
+        <tr><td style="padding: 10px; background: #f5f5f5; font-weight: bold;">Request ID:</td><td style="padding: 10px; background: #fafafa;"><code>{{ request_id }}</code></td></tr>
+        <tr><td style="padding: 10px; background: #f5f5f5; font-weight: bold;">Subject:</td><td style="padding: 10px; background: #fafafa;">{{ subject }}</td></tr>
+    </table>
+    <div style="background: white; border-left: 4px solid #667eea; padding: 20px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Message:</h3>
+        <p style="white-space: pre-wrap;">{{ message }}</p>
+    </div>
+    <p><a href="{{ log_url }}" style="color: #667eea;">View Logs →</a></p>
+</body>
+</html>
+

@@ -1,0 +1,24 @@
+date,description,amount,vendor,category
+2024-10-01,AWS Cloud Services,127.45,Amazon Web Services,Cloud Hosting
+2024-10-02,Office Supplies - Staples,45.67,Staples,Office Expenses
+2024-10-03,Client Payment - Acme Corp,-5000.00,Acme Corporation,Revenue
+2024-10-05,Google Workspace Subscription,12.00,Google,Software
+2024-10-07,Slack Premium Plan,12.50,Slack,Software
+2024-10-08,Coffee with client,35.80,Starbucks,Meals & Entertainment
+2024-10-10,Domain renewal - godaddy.com,15.99,GoDaddy,Web Services
+2024-10-12,Stripe Processing Fees,47.23,Stripe,Payment Processing
+2024-10-14,LinkedIn Recruiter License,119.95,LinkedIn,Marketing
+2024-10-15,Client Payment - Beta Inc,-3500.00,Beta Inc,Revenue
+2024-10-16,Zoom Pro Subscription,14.99,Zoom,Software
+2024-10-18,FedEx Shipping,22.50,FedEx,Shipping
+2024-10-20,Microsoft 365 Business,20.00,Microsoft,Software
+2024-10-22,Dropbox Business,15.00,Dropbox,Software
+2024-10-23,GitHub Team Plan,44.00,GitHub,Development Tools
+2024-10-24,Advertising - Google Ads,350.00,Google,Marketing
+2024-10-25,Business Insurance Premium,245.00,State Farm,Insurance
+2024-10-27,Internet - Comcast Business,89.99,Comcast,Utilities
+2024-10-28,Mailchimp Marketing Platform,59.00,Mailchimp,Marketing
+2024-10-30,QuickBooks Online Subscription,30.00,Intuit,Accounting Software
+
+
+

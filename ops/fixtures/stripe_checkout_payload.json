@@ -1,0 +1,38 @@
+{
+  "mode": "subscription",
+  "line_items": [
+    {
+      "price_data": {
+        "currency": "usd",
+        "product_data": {
+          "name": "AI Bookkeeper - Starter Plan",
+          "description": "1 entity, 500 transactions/month"
+        },
+        "unit_amount": 4900,
+        "recurring": {
+          "interval": "month"
+        }
+      },
+      "quantity": 1
+    }
+  ],
+  "success_url": "https://app.ai-bookkeeper.com/success?session_id={CHECKOUT_SESSION_ID}",
+  "cancel_url": "https://app.ai-bookkeeper.com/pricing",
+  "customer_email": "test@example.com",
+  "client_reference_id": "tenant_550e8400-e29b-41d4-a716-446655440000",
+  "metadata": {
+    "tenant_id": "550e8400-e29b-41d4-a716-446655440000",
+    "plan": "starter"
+  },
+  "allow_promotion_codes": true,
+  "billing_address_collection": "required",
+  "payment_method_types": ["card"],
+  "subscription_data": {
+    "metadata": {
+      "tenant_id": "550e8400-e29b-41d4-a716-446655440000"
+    }
+  }
+}
+
+
+

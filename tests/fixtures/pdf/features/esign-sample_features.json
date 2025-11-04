@@ -1,0 +1,27 @@
+{
+  "filename": "esign-sample.pdf",
+  "header_text": "Customer Statement for the Period 11/01/2025 - 11/30/2025\nQuestions? We\u2019re here to help.\nP.O. Box 767, Buffalo, NY 14240-0767\nCall:\nTelephone Contact Center\n00 0 00087M NM 017 P\n1-800-724-2440\nMonday \u2013 Friday, 6am \u2013 9pm ET\nSaturday \u2013 Sunday, 9am \u2013 5pm ET\nACCOUNT OWNER 1 NAME",
+  "footer_text": "",
+  "table_headers": [
+    [
+      "Account",
+      "Number",
+      "Interest Paid\nYear-to-Date",
+      "Maturity Date",
+      "Ending\nBalance"
+    ]
+  ],
+  "detected_bank": "unknown",
+  "geometry": {
+    "header_band": [
+      0.0,
+      0.2
+    ],
+    "table_band": [
+      0.25,
+      0.8
+    ]
+  },
+  "page_count": 5,
+  "sample_text": "Customer Statement for the Period 11/01/2025 - 11/30/2025\n00000000-0000000-0000-0000-MIMR0000000-00-L\nQuestions? We\u2019re here to help.\nP.O. Box 767, Buffalo, NY 14240-0767\nCall:\nTelephone Contact Center\n00 0 00087M NM 017 P\n1-800-724-2440\nMonday \u2013 Friday, 6am \u2013 9pm ET\nSaturday \u2013 Sunday, 9am \u2013 5pm ET\nACCOUNT OWNER 1 NAME\nACCOUNT OWNER 2 NAME Online & Mobile Banking\nACCOUNT OWNER 3 NAME 1-800-790-9130\n123 ANY STREET Monday \u2013 Friday, 8am \u2013 9pm ET\nAPT 4 Saturday \u2013 Sunday, 9am \u2013 5pm ET\nANYTOWN USA 00000\nContact a branch:\nGo to mtb.com/locations to find\na location near you\nVisit us online: mtb.com\nStill receiving paper statements? Switch to eStatements at mtb.com/estatements.\nReduce the risk of identity theft: Keep your personal info out of the mail\nLess paper: Save space at home and in landfills\nStay updated: Receive email notifications when your statement is ready to view\nStatement Summary\nHere\u2019s a quick glance at your accounts on this statement:\nInterest Paid Ending\nAccount Number Maturity Date\nYear-to-Date Balance\nMyChoice Plus\n000000000000000 $0.00 $0.00\nChecking with Interest\u2020\nRelationship Savings 000000000000000 $0.00 $0.00\nTotal Deposits $0.00\n\u2020 This account incurred overdraft fees due to insufficient funds. Details are listed in the Overdraft Fee Summary section.\nM&T Routing/ABA Number\nYour routing number can be found at mtb.com/routingnumber. This number is used to complete various\ntransactions, including ordering checks, setting up direct deposits, receiving domestic wire transfers, etc."
+}

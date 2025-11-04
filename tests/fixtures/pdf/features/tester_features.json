@@ -1,0 +1,19 @@
+{
+  "filename": "tester.pdf",
+  "header_text": "Account Statement\nStatement Date: May 3, 2002\nPage 1 of 2\n111-2222222\nI-4\n10",
+  "footer_text": "05/03 Interest Payment 0.32\n................................................................................\nTotal deposits and interest $1,291.34\n--------------------------------------------------------------------------------",
+  "table_headers": [],
+  "detected_bank": "wells_fargo",
+  "geometry": {
+    "header_band": [
+      0.0,
+      0.2
+    ],
+    "table_band": [
+      0.25,
+      0.8
+    ]
+  },
+  "page_count": 2,
+  "sample_text": "Account Statement\nStatement Date: May 3, 2002\nPage 1 of 2\nE\n111-2222222\nI-4\n10\nANNIE SMITH\nMICHAEL SMITH L\n1234 PARK ST.\nANYTOWN, USA 00000\nQuestions about this statement or your accounts? Call: 800-869-3557\n(1-800-TO-WELLS). Or write: WELLS FARGO BANK, N.A., P.O. BOX 6995, PORTLAND,\nOR 97228-6995.\nP\n--------------------------------------------------------------------------------\nINTEREST RATES ARE AMONG THE LOWEST IN YEARS. NOW MAY BE A GOOD TIME TO\nREFINANCE YOUR CURRENT MORTGAGE OR BUY A NEW HOME. AS A WELLS FARGO BANK\nCUSTOMER YOU ARE ELIGIBLE FOR A SPECIAL DISCOUNT ON YOUR NEXT HOME LOAN WITH\nWELLS FARGO HOME MORTGAGE. WELLS FARGO HOME MORTGAGE IS THE NATION'S LEADING\nMORTGAGE LENDER OFFERING AN EXTENSIVE LINE OF MORTGAGE PROGRAMS TO SERVE YOUR\nSPECIFIC NEEDS. FOR DETAILS, CALL TODAY 1-877-836-7001, OR VISIT YOUR LOCAL\nWELLS FARGO BRANCH LOCATION AND MENTION OFFER DMX7ATW.\n-------------------M-------------------------------------------------------------\nAdvantage Checking\nAnnie Smith\nMichael Smith\nAccount Number: 111-2222222\n------------------------------------------------------\nActivity summary\nBalance on 04/03 $4,721.33\nDeposits and interest 1,291.34\nWithdrawals - 1,181.88\n......................................................\nBalance on 05/03 $4,830.79\nA\n------------------------------------------------------\nInterest you've earned\nInterest earned this period $0.32\nAverage collected balance this period $3,914.39\nAnnual percentage yield earned 0.10%\nInterest and bonuses paid this year $2.37\n--------------------------------------------------------------------------------\nASctivity detail\nDeposits and interest\nDate Description Amount\n................................................................................\n04/29 Deposit $31.20\n04/30 The Insurance Co.\nMonthly Deposit 40.76\n05/03 Us Treasury\nSmith 820.00\n05/03 Us Treasury\nSmith 399.06\n05/03 Interest Payment 0.32\n................................................................................\nTotal deposits "
+}

@@ -1,126 +1,147 @@
 /**
- * Google Analytics 4 tracking utilities
+ * Analytics Wrapper - Provider-Agnostic Event Tracking
+ * ====================================================
  * 
- * Events tracked:
- * - bridge_viewed: GPT bridge page loaded
- * - open_gpt_clicked: User clicked to open ChatGPT
- * - tool_opened: CSV cleaner tool loaded
- * - rows_previewed: CSV preview rendered
- * - export_paywalled: User tried to export but hit paywall
- * - checkout_clicked: User clicked to start checkout
- * - purchase: Checkout completed (value = first month fee)
- * - subscription_started: Subscription created (value = first month fee)
- * - overage_charged: Monthly overage billed (value = overage amount)
+ * Unified interface for tracking conversion funnel events.
+ * Supports GA4, PostHog, Amplitude, or no-op if not configured.
  */
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-    dataLayer?: any[];
-  }
-}
+type AnalyticsEvent =
+  | 'free_categorizer_upload_started'
+  | 'free_categorizer_upload_failed'
+  | 'free_categorizer_parse_ok'
+  | 'free_categorizer_preview_viewed'
+  | 'free_categorizer_verify_clicked'
+  | 'free_categorizer_download_clicked'
+  | 'free_categorizer_upgrade_clicked'
+  | 'free_categorizer_delete_clicked'
+  | 'lead_submitted';
 
-export interface GAEvent {
-  event_name: string;
-  event_params?: Record<string, any>;
-}
-
-/**
- * Send event to Google Analytics 4
- */
-export function trackEvent(eventName: string, params?: Record<string, any>): void {
-  if (typeof window === 'undefined') return;
+interface AnalyticsProperties {
+  // Upload events
+  ext?: string;
+  isZip?: boolean;
+  consentTraining?: boolean;
+  errorCode?: string;
   
-  if (window.gtag) {
-    window.gtag('event', eventName, params);
-    console.log('[GA4]', eventName, params);
-  } else {
-    console.warn('[GA4] gtag not loaded, event not sent:', eventName);
+  // Parse events
+  rows?: number;
+  sourceType?: string;
+  
+  // Preview events
+  watermark?: boolean;
+  
+  // Download events
+  gate?: 'email' | 'bypass';
+  
+  // Lead events
+  source?: string;
+  
+  // Common
+  upload_id?: string;
+  [key: string]: any;
+}
+
+class Analytics {
+  private enabled: boolean;
+  
+  constructor() {
+    this.enabled = typeof window !== 'undefined' && 
+                   (process.env.NODE_ENV === 'production' || 
+                    process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === 'true');
+  }
+  
+  /**
+   * Track an event
+   */
+  track(event: AnalyticsEvent, properties: AnalyticsProperties = {}): void {
+    if (!this.enabled || typeof window === 'undefined') {
+      return;
+    }
+    
+    // Try PostHog
+    if (typeof (window as any).posthog !== 'undefined') {
+      (window as any).posthog.capture(event, properties);
+      return;
+    }
+    
+    // Try GA4
+    if (typeof (window as any).gtag !== 'undefined') {
+      (window as any).gtag('event', event, properties);
+      return;
+    }
+    
+    // Try Amplitude
+    if (typeof (window as any).amplitude !== 'undefined') {
+      (window as any).amplitude.track(event, properties);
+      return;
+    }
+    
+    // Fallback: log to console in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Analytics]', event, properties);
+    }
+  }
+  
+  /**
+   * Identify user for tracking
+   */
+  identify(userId: string, traits: Record<string, any> = {}): void {
+    if (!this.enabled || typeof window === 'undefined') {
+      return;
+    }
+    
+    if (typeof (window as any).posthog !== 'undefined') {
+      (window as any).posthog.identify(userId, traits);
+    }
+    
+    if (typeof (window as any).gtag !== 'undefined') {
+      (window as any).gtag('set', 'user_properties', traits);
+    }
+    
+    if (typeof (window as any).amplitude !== 'undefined') {
+      (window as any).amplitude.setUserId(userId);
+      (window as any).amplitude.setUserProperties(traits);
+    }
   }
 }
 
-/**
- * Track page view
- */
-export function trackPageView(url: string): void {
-  trackEvent('page_view', {
-    page_location: url,
-    page_title: document.title
-  });
+// Export singleton instance
+export const analytics = new Analytics();
+
+// Export helper functions
+export function trackUploadStarted(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_upload_started', properties);
 }
 
-/**
- * Track bridge viewed
- */
-export function trackBridgeViewed(): void {
-  trackEvent('bridge_viewed');
+export function trackUploadFailed(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_upload_failed', properties);
 }
 
-/**
- * Track open GPT clicked
- */
-export function trackOpenGptClicked(): void {
-  trackEvent('open_gpt_clicked');
+export function trackParseOk(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_parse_ok', properties);
 }
 
-/**
- * Track tool opened
- */
-export function trackToolOpened(tool: string): void {
-  trackEvent('tool_opened', { tool });
+export function trackPreviewViewed(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_preview_viewed', properties);
 }
 
-/**
- * Track rows previewed
- */
-export function trackRowsPreviewed(rowCount: number): void {
-  trackEvent('rows_previewed', { row_count: rowCount });
+export function trackVerifyClicked(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_verify_clicked', properties);
 }
 
-/**
- * Track export paywalled
- */
-export function trackExportPaywalled(action: string): void {
-  trackEvent('export_paywalled', { action });
+export function trackDownloadClicked(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_download_clicked', properties);
 }
 
-/**
- * Track checkout clicked
- */
-export function trackCheckoutClicked(plan: string, term: string): void {
-  trackEvent('checkout_clicked', { plan, term });
+export function trackUpgradeClicked(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_upgrade_clicked', properties);
 }
 
-/**
- * Track purchase
- */
-export function trackPurchase(value: number, currency: string = 'USD', plan: string): void {
-  trackEvent('purchase', {
-    value,
-    currency,
-    plan,
-    transaction_id: Date.now().toString()
-  });
+export function trackDeleteClicked(properties: AnalyticsProperties) {
+  analytics.track('free_categorizer_delete_clicked', properties);
 }
 
-/**
- * Track subscription started
- */
-export function trackSubscriptionStarted(value: number, currency: string = 'USD', plan: string): void {
-  trackEvent('subscription_started', {
-    value,
-    currency,
-    plan
-  });
+export function trackLeadSubmitted(properties: AnalyticsProperties) {
+  analytics.track('lead_submitted', properties);
 }
-
-/**
- * Track overage charged
- */
-export function trackOverageCharged(value: number, currency: string = 'USD'): void {
-  trackEvent('overage_charged', {
-    value,
-    currency
-  });
-}
-

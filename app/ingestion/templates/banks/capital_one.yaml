@@ -1,0 +1,58 @@
+# Capital One Statement Template
+# ================================
+#
+# Based on real sample: sample-estatement.pdf
+# Capital One 360 savings/checking accounts
+
+name: "capital_one_checking_v1"
+version: 1
+
+bank_name: "Capital One"
+account_types:
+  - "checking"
+  - "savings"
+  - "360_savings"
+
+match:
+  header_keys:
+    - "Capital One"
+    - "Savings Summary"
+    - "Account Summary"
+    - "Statement"
+  
+  table_headers:
+    - "(?i)^(date|activity date|transaction date)$"
+    - "(?i)^(description|transaction|activity)$"
+    - "(?i)^(amount|debit|credit)$"
+    - "(?i)^(balance|account balance|closing balance)$"
+    - "(?i)^(account type|nickname)$"
+  
+  footer_keywords:
+    - "Capital One"
+    - "capitalone360.com"
+    - "Customer Number"
+  
+  date_format_pref: "MDY"
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.20]
+    table_band_pct: [0.25, 0.80]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.50
+
+notes: |
+  Capital One template for 360 Savings, checking, and standard accounts.
+  Recognizes both Capital One 360 and traditional Capital One statements.
+
+
+

@@ -1,0 +1,549 @@
+# Bank Statement & Financial Document Crawler Configuration
+# ==========================================================
+#
+# Discovers public sample/guide documents from financial institutions
+# Supports: PDF, CSV, XML, TXT (BAI2, MT940, camt.053/054, OFX)
+# Extracts layout features for template building (NO full content, NO PII)
+# Categories: banks, credit unions, brokerages, merchants, marketplaces, 
+#             gig platforms, utilities, government forms, accounting/ERP,
+#             open-banking standards, crypto exchanges
+
+allow_domains:
+  # Top 10 US Banks
+  - chase.com
+  - bankofamerica.com
+  - wellsfargo.com
+  - citi.com
+  - citibank.com
+  - usbank.com
+  - pnc.com
+  - truist.com
+  - tdbank.com
+  - bmo.com
+  - bmoharris.com
+  
+  # Regional Banks (11-50)
+  - 53.com  # Fifth Third Bank
+  - mtb.com  # M&T Bank
+  - huntington.com
+  - key.com
+  - keybank.com
+  - citizensbank.com
+  - citizensbankonline.com
+  - firstcitizens.com
+  - regions.com
+  - synovus.com
+  - comerica.com
+  - zionsbank.com
+  - umpquabank.com
+  - suntrust.com  # Now Truist
+  - bbandt.com  # Now Truist
+  - santanderbank.com
+  - mysynchrony.com
+  - synchronybank.com
+  - fnb-online.com  # FNB
+  - frostbank.com
+  - bankofthewest.com
+  - firsthorizon.com
+  - websterbank.com
+  - valleybank.com
+  - easternbank.com
+  - bankunited.com
+  - firstrepublic.com
+  - pacificwestbank.com
+  - westernu.com  # Western Union
+  
+  # Credit Unions
+  - navyfederal.org
+  - penfed.org
+  - alliantcreditunion.org
+  - schoolsfirst.org
+  - eecu.org
+  - becu.org
+  - stateemployees.org  # State Employees' Credit Union
+  - suncoastcreditunion.com
+  - securityservicefcu.org
+  - chartway.com
+  
+  # Online/Digital Banks
+  - ally.com
+  - allybank.com
+  - marcus.com  # Goldman Sachs
+  - discover.com
+  - sofi.com
+  - chime.com
+  - varo.com
+  - current.com
+  - aspiration.com
+  - simple.com
+  - monzo.com
+  - n26.com
+  - revolut.com
+  
+  # Investment/Brokerage Platforms
+  - schwab.com
+  - fidelity.com
+  - etrade.com
+  - tdameritrade.com
+  - interactivebrokers.com
+  - merrilledge.com
+  - vanguard.com
+  - robinhood.com
+  - webull.com
+  - tastyworks.com
+  
+  # Credit Card Issuers
+  - americanexpress.com
+  - amex.com
+  - capitalone.com
+  - capitalone360.com
+  - discovercard.com
+  - barclaysus.com
+  
+  # Business Banking
+  - brex.com
+  - ramp.com
+  - divvy.com
+  - mercury.com
+  - novo.co
+  - bluevine.com
+  - kabbage.com
+  - fundbox.com
+  
+  # Wealth Management
+  - morganstanley.com
+  - wellsfargoadvisors.com
+  - ubs.com
+  - ml.com  # Merrill Lynch
+  - janney.com
+  - raymondjames.com
+  
+  # Payment Processors (for merchant statements)
+  - stripe.com
+  - square.com
+  - squareup.com
+  - paypal.com
+  - braintreepayments.com
+  - adyen.com
+  
+  # Marketplaces / Payouts
+  - amazon.com
+  - ebay.com
+  - etsy.com
+  - shopify.com
+  
+  # Gig / Earnings Statements
+  - uber.com
+  - lyft.com
+  - doordash.com
+  - instacart.com
+  
+  # Loan Servicers
+  - navient.com
+  - nelnet.com
+  
+  # Utilities/Telecom (table-like bills for OCR training)
+  - att.com
+  - verizon.com
+  - comcast.com
+  - xfinity.com
+  
+  # Government Model Forms
+  - cfpb.gov
+  - consumerfinance.gov
+  
+  # Accounting / ERP / Data Aggregators
+  - intuit.com
+  - xero.com
+  - sage.com
+  - zoho.com
+  - waveapps.com
+  - plaid.com
+  - finicity.com
+  - yodlee.com
+  - quickbooks.intuit.com
+  
+  # Open-Banking Standards
+  - iso20022.org
+  - swift.com
+  - ofx.net
+  - bai.org
+  
+  # Crypto Exchanges
+  - coinbase.com
+  - kraken.com
+  - gemini.com
+  - binance.us
+
+# Seed URLs - known statement help/guide pages
+seed_urls:
+  # === TOP 10 US BANKS ===
+  # Chase
+  - https://www.chase.com/personal/online-banking/statements-documents
+  - https://www.chase.com/personal/checking/resources
+  
+  # Bank of America
+  - https://www.bankofamerica.com/online-banking/paperless-estatements.go
+  - https://www.bankofamerica.com/customer-service/help/
+  
+  # Wells Fargo
+  - https://www.wellsfargo.com/help/online-banking/statements/
+  - https://www.wellsfargo.com/help/
+  
+  # Citibank
+  - https://online.citi.com/US/JRS/pands/detail.do?ID=estatement
+  - https://www.citi.com/credit-cards/contactus/statements
+  
+  # U.S. Bank
+  - https://www.usbank.com/customer-service/online-mobile-banking/estatements.html
+  - https://www.usbank.com/bank-accounts/checking-accounts/understanding-statement.html
+  
+  # PNC
+  - https://www.pnc.com/en/customer-service/online-and-mobile-banking/estatements.html
+  
+  # Truist
+  - https://www.truist.com/online-banking/estatements
+  
+  # TD Bank
+  - https://www.td.com/us/en/personal-banking/resources/online-banking/estatements
+  
+  # BMO
+  - https://www.bmo.com/main/personal/bank-accounts/statements/
+  
+  # === REGIONAL BANKS ===
+  # Fifth Third
+  - https://www.53.com/content/fifth-third/en/support/online-estatements.html
+  
+  # KeyBank
+  - https://www.key.com/personal/online-banking/estatements.jsp
+  
+  # Huntington
+  - https://www.huntington.com/Personal/online-banking/estatements
+  
+  # Citizens Bank
+  - https://www.citizensbank.com/help/estatements.aspx
+  
+  # Regions
+  - https://www.regions.com/personal-banking/online-banking/estatements
+  
+  # M&T Bank
+  - https://www3.mtb.com/personal/online-banking/estatements
+  
+  # === CREDIT UNIONS ===
+  # Navy Federal
+  - https://www.navyfederal.org/estatements
+  
+  # PenFed
+  - https://www.penfed.org/help/statements
+  
+  # Alliant
+  - https://www.alliantcreditunion.org/bank/estatements
+  
+  # === ONLINE/DIGITAL BANKS ===
+  # Ally
+  - https://www.ally.com/help/bank/statements.html
+  - https://www.ally.com/resources/pdf/bank/sample-statements/
+  
+  # Marcus (Goldman Sachs)
+  - https://www.marcus.com/us/en/savings-account/statements
+  
+  # Discover
+  - https://www.discover.com/online-banking/banking-topics/understanding-bank-statements/
+  
+  # SoFi
+  - https://www.sofi.com/faq/
+  
+  # Capital One
+  - https://www.capitalone.com/support/account-statements/
+  - https://www.capitalone.com/help-center/bank/statements-and-notices/
+  
+  # === INVESTMENT/BROKERAGE ===
+  # Charles Schwab
+  - https://www.schwab.com/resource-center/insights/content/how-read-your-statement
+  - https://www.schwab.com/client-home/help
+  
+  # Fidelity
+  - https://www.fidelity.com/customer-service/statements-confirmations
+  - https://www.fidelity.com/learning-center/personal-finance/understanding-statements
+  
+  # E*TRADE
+  - https://us.etrade.com/knowledge/library/statements
+  
+  # TD Ameritrade
+  - https://www.tdameritrade.com/client-center/statements.html
+  
+  # Vanguard
+  - https://investor.vanguard.com/investor-resources-education/online-trading/statements-confirmations
+  
+  # === CREDIT CARD ISSUERS ===
+  # American Express
+  - https://www.americanexpress.com/us/customer-service/online-statements/
+  - https://www.americanexpress.com/us/customer-service/faq.understanding-your-statement.html
+  
+  # Discover Card
+  - https://www.discover.com/credit-cards/help-center/statements/
+  
+  # Barclays
+  - https://www.barclaysus.com/help/statements-confirmations.html
+  
+  # === BUSINESS BANKING ===
+  # Brex
+  - https://www.brex.com/support/what-is-a-statement/
+  
+  # Mercury
+  - https://mercury.com/resources
+  
+  # Ramp
+  - https://ramp.com/help
+  
+  # === PAYMENT PROCESSORS ===
+  # Stripe
+  - https://stripe.com/docs/reports/balance
+  - https://support.stripe.com/questions/understanding-balance-transaction-reports
+  
+  # Square
+  - https://squareup.com/help/us/en/article/5068-view-and-download-square-statements
+  
+  # PayPal
+  - https://www.paypal.com/us/smarthelp/article/how-do-i-get-a-copy-of-my-statement-faq1225
+  
+  # Morgan Stanley
+  - https://www.morganstanley.com/wealth-management/how-to-read-your-statement
+  
+  # === MARKETPLACES / PAYOUTS ===
+  # Amazon Seller Central
+  - https://sellercentral.amazon.com/help/hub/reference/
+  - https://sellercentral.amazon.com/gp/help/external/200204450
+  
+  # Etsy
+  - https://help.etsy.com/hc/en-us/categories/115001053007
+  - https://help.etsy.com/hc/en-us/articles/115015745428
+  
+  # Shopify
+  - https://help.shopify.com/en/manual/finances/finances-overview
+  - https://help.shopify.com/en/manual/reports-and-analytics/finances-reports
+  
+  # === GIG / EARNINGS ===
+  # Uber
+  - https://help.uber.com/driving-and-delivering/article/understanding-your-earnings-statement
+  
+  # DoorDash  
+  - https://help.doordash.com/dashers/s/article/DoorDash-Dasher-Support
+  
+  # === GOVERNMENT FORMS ===
+  # CFPB
+  - https://www.cfpb.gov/compliance/compliance-resources/mortgage-resources/tila-respa-integrated-disclosure-rule/
+  - https://www.consumerfinance.gov/data-research/consumer-credit-trends/
+  
+  # === ACCOUNTING / ERP ===
+  # QuickBooks
+  - https://quickbooks.intuit.com/learn-support/en-us/help-article/bank-accounts/import-bank-transactions-using-webconnect/L0c1AkVDy_US_en_US
+  - https://quickbooks.intuit.com/learn-support/en-us/reports/L6tOcv8jw_US_en_US
+  
+  # Xero
+  - https://central.xero.com/s/article/Import-a-bank-statement
+  - https://central.xero.com/s/article/Supported-file-formats-for-bank-statement-imports
+  
+  # Wave
+  - https://support.waveapps.com/hc/en-us/articles/208621426
+  
+  # Plaid
+  - https://plaid.com/docs/
+  - https://plaid.com/docs/api/products/statements/
+  
+  # Yodlee
+  - https://developer.yodlee.com/docs
+  
+  # === OPEN-BANKING STANDARDS ===
+  # ISO 20022
+  - https://www.iso20022.org/iso-20022-message-definitions
+  - https://www.iso20022.org/catalogue-messages
+  
+  # SWIFT
+  - https://www.swift.com/standards/iso-20022/iso-20022-programme
+  - https://www.swift.com/standards/mt-standards
+  
+  # OFX
+  - https://www.ofx.net/downloads.html
+  - https://www.ofx.net/DownloadPage/Files/ofx2.3.pdf
+  
+  # BAI
+  - https://www.bai.org/banking-strategies/cash-management-bai-file-format-basics/
+  
+  # === CRYPTO EXCHANGES ===
+  # Coinbase
+  - https://help.coinbase.com/en/coinbase/taxes-reports-and-financial-services/taxes/coinbase-tax-resource-center
+  
+  # Kraken
+  - https://support.kraken.com/hc/en-us/articles/360001169383-How-to-interpret-your-trade-history
+  
+  # Gemini
+  - https://support.gemini.com/hc/en-us/articles/205823016-How-do-I-export-my-transaction-history-
+
+# Keywords that indicate relevant content
+keyword_allow:
+  # Traditional statements
+  - sample statement
+  - example statement
+  - e-statement
+  - estatement
+  - electronic statement
+  - paperless statement
+  - how to read your statement
+  - understanding your statement
+  - account analysis statement
+  - business checking statement
+  - statement guide
+  - reading your statement
+  - sample checking statement
+  - sample savings statement
+  - monthly statement
+  - quarterly statement
+  - account statement
+  - transaction history
+  - statement period
+  - statement explanation
+  - statement tutorial
+  - interpret statement
+  - decode statement
+  - statement breakdown
+  - statement format
+  - brokerage statement
+  - investment statement
+  - credit card statement
+  - bank statement guide
+  - statement FAQ
+  - statement help
+  - download statement
+  - view statement
+  - access statement
+  - statement samples
+  - statement examples
+  - statement demo
+  - statement template
+  # Merchant/marketplace
+  - merchant statement
+  - settlement statement
+  - settlement report
+  - payout report
+  - payout statement
+  - transaction report
+  - sales report
+  - earnings statement
+  - earnings report
+  # Data formats
+  - camt.053
+  - camt.054
+  - MT940
+  - BAI2
+  - OFX
+  - QFX
+  - QBO
+  - QIF
+  - ISO20022
+  - SWIFT message
+  - bank statement import
+  - import bank statement
+  - reconciliation statement
+  - reconciliation report
+  - cash management
+  - account analysis
+  # File formats
+  - CSV export
+  - XML export
+  - download CSV
+  - download XML
+  - export transactions
+  - transaction export
+  - data export
+  # Accounting/ERP
+  - bank feed
+  - bank connection
+  - bank import
+  - supported formats
+  - file formats
+  - import format
+  - export format
+
+# Keywords that indicate irrelevant content
+keyword_deny:
+  - credit card agreement
+  - cardholder agreement
+  - prospectus
+  - annual report
+  - privacy notice
+  - privacy policy
+  - terms and conditions
+  - fee schedule
+  - rate sheet
+  - mortgage
+  - loan agreement
+
+# Content type restrictions
+content_type_whitelist:
+  - application/pdf
+  - application/x-pdf
+  - text/html
+  - text/csv
+  - application/csv
+  - text/comma-separated-values
+  - application/vnd.ms-excel
+  - application/xml
+  - text/xml
+  - application/x-xml
+  - text/plain
+  - application/octet-stream  # fallback, validate with magic bytes
+
+# Size and crawl limits (per file type)
+pdf_max_mb: 10
+csv_max_mb: 5
+xml_max_mb: 5
+txt_max_mb: 2
+html_max_pages_per_domain: 60
+max_pdfs_per_domain: 25
+max_csvs_per_domain: 15
+max_xmls_per_domain: 15
+max_txts_per_domain: 10
+max_depth: 3
+max_total_files: 250
+
+# Politeness settings
+respect_robots: true
+polite_delay_ms: 1500  # 1.5 seconds between requests to same domain
+timeout_connect_s: 10
+timeout_read_s: 10
+max_retries: 3
+retry_backoff_factor: 0.5
+retry_status_codes: [429, 500, 502, 503, 504]
+
+# User agent
+user_agent: "AI-Bookkeeper-ResearchBot/1.1 (Educational/Research; +contact: support@aibookkeeper.com)"
+
+# Storage settings
+save_files: false  # true = keep files in _public/ (gitignored), false = delete after extraction
+delete_after_extract: true
+output_features_dir: "tests/fixtures/features/crawled"
+output_pdf_features_dir: "tests/fixtures/pdf/features/crawled"
+output_csv_features_dir: "tests/fixtures/csv/features/crawled"
+output_xml_features_dir: "tests/fixtures/xml/features/crawled"
+output_txt_features_dir: "tests/fixtures/txt/features/crawled"
+output_files_dir: "tests/fixtures/_public/crawled"
+output_report_path: "out/crawler_report.json"
+
+# Feature extraction settings
+extract_features:
+  pii_redaction: true
+  max_pages_to_analyze: 3  # Only analyze first 3 pages for features
+  extract_text_sample: false  # Don't store full text
+  hash_sample_rows: true  # Hash any sample transaction rows
+
+# Optional: Search API integration (for discovery boost)
+serp_api:
+  enabled: false
+  api_key: ""  # Set SERP_API_KEY environment variable
+  queries_per_bank:
+    - "sample statement pdf"
+    - "how to read your statement pdf"
+    - "account analysis statement pdf"
+  max_results_per_query: 10
+

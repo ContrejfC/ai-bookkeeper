@@ -1,0 +1,14 @@
+# Ignore all PDF files (actual bank statements)
+*.pdf
+
+# Ignore the public samples download directory
+_public/
+_public_samples/
+
+# Keep features and metadata (JSON only, no PII)
+!features/
+!metadata/
+
+# But ignore all JSON files in the root pdf directory
+/*.json
+

@@ -1,0 +1,82 @@
+{
+  "banks_detected": [
+    "bank_of_america",
+    "truist",
+    "charles_schwab",
+    "capital_one",
+    "key_bank",
+    "wells_fargo"
+  ],
+  "banks_count": 6,
+  "samples_per_bank": {
+    "bank_of_america": 1,
+    "truist": 1,
+    "charles_schwab": 1,
+    "capital_one": 1,
+    "key_bank": 1,
+    "wells_fargo": 1
+  },
+  "recommendations": [
+    {
+      "bank": "bank_of_america",
+      "sample_count": 1,
+      "action": "update_template",
+      "common_keywords": [
+        "statement"
+      ],
+      "table_header_examples": []
+    },
+    {
+      "bank": "truist",
+      "sample_count": 1,
+      "action": "create_template",
+      "common_keywords": [
+        "statement",
+        "account"
+      ],
+      "table_header_examples": [
+        [
+          "Charge Type",
+          "Charge Description"
+        ]
+      ]
+    },
+    {
+      "bank": "charles_schwab",
+      "sample_count": 1,
+      "action": "create_template",
+      "common_keywords": [
+        "statement",
+        "account",
+        "period"
+      ],
+      "table_header_examples": []
+    },
+    {
+      "bank": "capital_one",
+      "sample_count": 1,
+      "action": "create_template",
+      "common_keywords": [],
+      "table_header_examples": []
+    },
+    {
+      "bank": "key_bank",
+      "sample_count": 1,
+      "action": "create_template",
+      "common_keywords": [
+        "statement"
+      ],
+      "table_header_examples": []
+    },
+    {
+      "bank": "wells_fargo",
+      "sample_count": 1,
+      "action": "update_template",
+      "common_keywords": [
+        "statement",
+        "account"
+      ],
+      "table_header_examples": []
+    }
+  ]
+}

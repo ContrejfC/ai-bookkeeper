@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OFX>
+  <SIGNONMSGSRSV1>
+    <SONRS>
+      <STATUS>
+        <CODE>0</CODE>
+        <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <DTSERVER>20240106120000</DTSERVER>
+      <LANGUAGE>ENG</LANGUAGE>
+    </SONRS>
+  </SIGNONMSGSRSV1>
+  <BANKMSGSRSV1>
+    <STMTTRNRS>
+      <TRNUID>20240106</TRNUID>
+      <STATUS>
+        <CODE>0</CODE>
+        <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <STMTRS>
+        <CURDEF>USD</CURDEF>
+        <BANKACCTFROM>
+          <BANKID>121000000</BANKID>
+          <ACCTID>1234567890</ACCTID>
+          <ACCTTYPE>CHECKING</ACCTTYPE>
+        </BANKACCTFROM>
+        <BANKTRANLIST>
+          <DTSTART>20240101000000</DTSTART>
+          <DTEND>20240106235959</DTEND>
+          <STMTTRN>
+            <TRNTYPE>DEBIT</TRNTYPE>
+            <DTPOSTED>20240102120000</DTPOSTED>
+            <TRNAMT>-500.00</TRNAMT>
+            <FITID>TXN20240102001</FITID>
+            <NAME>Office Supply Store</NAME>
+            <MEMO>Office Supplies Purchase</MEMO>
+          </STMTTRN>
+          <STMTTRN>
+            <TRNTYPE>CREDIT</TRNTYPE>
+            <DTPOSTED>20240103120000</DTPOSTED>
+            <TRNAMT>2500.00</TRNAMT>
+            <FITID>TXN20240103001</FITID>
+            <NAME>Client ABC Corp</NAME>
+            <MEMO>Payment Invoice 1001</MEMO>
+          </STMTTRN>
+          <STMTTRN>
+            <TRNTYPE>DEBIT</TRNTYPE>
+            <DTPOSTED>20240104120000</DTPOSTED>
+            <TRNAMT>-150.00</TRNAMT>
+            <FITID>TXN20240104001</FITID>
+            <NAME>Bank Service Charge</NAME>
+            <MEMO>Monthly Service Fee</MEMO>
+          </STMTTRN>
+          <STMTTRN>
+            <TRNTYPE>DEBIT</TRNTYPE>
+            <DTPOSTED>20240105120000</DTPOSTED>
+            <TRNAMT>-800.00</TRNAMT>
+            <FITID>TXN20240105001</FITID>
+            <NAME>Payroll Service</NAME>
+            <MEMO>Payroll Processing</MEMO>
+          </STMTTRN>
+          <STMTTRN>
+            <TRNTYPE>CREDIT</TRNTYPE>
+            <DTPOSTED>20240106120000</DTPOSTED>
+            <TRNAMT>1200.00</TRNAMT>
+            <FITID>TXN20240106001</FITID>
+            <NAME>Customer XYZ Inc</NAME>
+            <MEMO>Customer Deposit</MEMO>
+          </STMTTRN>
+        </BANKTRANLIST>
+        <LEDGERBAL>
+          <BALAMT>12250.00</BALAMT>
+          <DTASOF>20240106235959</DTASOF>
+        </LEDGERBAL>
+      </STMTRS>
+    </STMTTRNRS>
+  </BANKMSGSRSV1>
+</OFX>
+
+
+

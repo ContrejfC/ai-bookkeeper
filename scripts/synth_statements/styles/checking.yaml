@@ -1,0 +1,58 @@
+# Checking Account Statement Style
+# Generic style for personal/business checking accounts
+
+name: checking_v1
+type: checking
+
+header:
+  tokens:
+    - "Checking Account Statement"
+    - "Account Number"
+    - "Statement Period"
+    - "Beginning balance"
+    - "Ending balance"
+  
+  # Position as percentage of page height
+  position:
+    top_pct: 0.00
+    bottom_pct: 0.18
+
+table:
+  headers:
+    - "Date"
+    - "Description"
+    - "Amount"
+    - "Balance"
+  
+  # Column alignments
+  alignments:
+    - left   # Date
+    - left   # Description
+    - right  # Amount
+    - right  # Balance
+  
+  # Debit/credit conventions
+  debit_negative: true  # Show debits as negative
+  credit_markers: []    # No CR markers for checking
+
+layout:
+  # Page regions as percentages
+  header_band_pct: [0.00, 0.18]
+  table_band_pct: [0.18, 0.86]
+  footer_band_pct: [0.86, 1.00]
+  
+  # Colors
+  header_bg: "#4a90e2"
+  header_text: "#ffffff"
+  row_even_bg: "#ffffff"
+  row_odd_bg: "#f5f5f5"
+
+noise:
+  # Scan simulation settings
+  rotate_degrees: [0, 1, -1]  # Random rotation range
+  dpi: 150                     # Simulated scan DPI
+  add_speckle: true           # Add noise
+  jpeg_quality: 85            # Compression level
+
+
+

@@ -1,0 +1,59 @@
+# KeyBank Statement Template
+# ============================
+#
+# Based on real sample: single_accounts_redesign.pdf
+# KeyBank checking and savings accounts
+
+name: "key_bank_checking_v1"
+version: 1
+
+bank_name: "KeyBank"
+account_types:
+  - "checking"
+  - "savings"
+
+match:
+  header_keys:
+    - "KeyBank"
+    - "Statement"
+    - "Account Summary"
+    - "Beginning Balance"
+    - "Ending Balance"
+  
+  table_headers:
+    - "(?i)^date$"
+    - "(?i)^(description|transaction)$"
+    - "(?i)^(deposits|withdrawals)$"
+    - "(?i)^(amount|debit|credit)$"
+    - "(?i)^(balance|running balance)$"
+  
+  footer_keywords:
+    - "KeyBank"
+    - "key.com"
+    - "KEY2YOU"
+    - "Client Service"
+  
+  date_format_pref: "MDY"
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.20]
+    table_band_pct: [0.25, 0.80]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.50
+
+notes: |
+  KeyBank template for checking and savings accounts.
+  Recognizes redesigned statement format with "Money In" / "Money Out" sections.
+
+
+

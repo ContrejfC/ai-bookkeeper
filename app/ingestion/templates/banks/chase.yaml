@@ -1,0 +1,58 @@
+# Chase Bank Statement Template
+# ==============================
+#
+# Generic template based on common statement patterns.
+# No trademarks, logos, or copyrighted content.
+#
+# Derived from publicly available structure information.
+
+name: "chase_checking_v1"
+version: 1
+
+bank_name: "Chase"
+account_types:
+  - "checking"
+  - "savings"
+
+match:
+  header_keys:
+    - "Statement Period"
+    - "Account Number"
+    - "Beginning Balance"
+    - "Ending Balance"
+  
+  table_headers:
+    - "(?i)^(date|trans\\.? date)$"
+    - "(?i)^description$"
+    - "(?i)^amount$"
+    - "(?i)^balance$"
+  
+  footer_keywords:
+    - "Questions"
+    - "Call"
+    - "Member FDIC"
+  
+  date_format_pref: "MDY"  # MM/DD/YYYY
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.20]
+    table_band_pct: [0.25, 0.85]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.75
+
+notes: |
+  Generic Chase-style template recognizing common statement structure.
+  Expects MDY date format and negative amounts for debits.
+
+
+

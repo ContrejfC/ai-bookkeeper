@@ -1,0 +1,141 @@
+name: Crawl Bank Samples
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      max_pdfs:
+        description: 'Maximum PDFs to download'
+        required: false
+        default: '100'
+      domain:
+        description: 'Specific domain to crawl (optional)'
+        required: false
+        default: ''
+  
+  # Weekly schedule (Sundays at 2 AM UTC)
+  schedule:
+    - cron: '0 2 * * 0'
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install httpx pdfplumber beautifulsoup4 pyyaml
+      
+      - name: Create output directories
+        run: |
+          mkdir -p out
+          mkdir -p tests/fixtures/pdf/features/crawled
+      
+      - name: Run crawler
+        id: crawl
+        run: |
+          ARGS="--verbose"
+          
+          # Add domain if specified
+          if [ -n "${{ github.event.inputs.domain }}" ]; then
+            ARGS="$ARGS --domain ${{ github.event.inputs.domain }}"
+          fi
+          
+          # Add max-pdfs if specified
+          if [ -n "${{ github.event.inputs.max_pdfs }}" ]; then
+            ARGS="$ARGS --max-pdfs ${{ github.event.inputs.max_pdfs }}"
+          fi
+          
+          # Run crawler (don't keep PDFs in CI)
+          python -m scripts.crawler.cli crawl $ARGS
+        continue-on-error: true
+      
+      - name: Check report
+        id: check_report
+        run: |
+          if [ -f "out/crawler_report.json" ]; then
+            echo "report_exists=true" >> $GITHUB_OUTPUT
+            
+            # Extract summary
+            SUCCESS_COUNT=$(jq '.summary.pdfs_downloaded' out/crawler_report.json)
+            TOTAL_COUNT=$(jq '.summary.pdfs_discovered' out/crawler_report.json)
+            SUCCESS_RATE=$(jq '.summary.success_rate' out/crawler_report.json)
+            
+            echo "success_count=$SUCCESS_COUNT" >> $GITHUB_OUTPUT
+            echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
+            echo "success_rate=$SUCCESS_RATE" >> $GITHUB_OUTPUT
+            
+            echo "✅ Report generated: $SUCCESS_COUNT/$TOTAL_COUNT PDFs ($SUCCESS_RATE%)"
+          else
+            echo "report_exists=false" >> $GITHUB_OUTPUT
+            echo "❌ No report generated"
+          fi
+      
+      - name: Generate summary
+        if: steps.check_report.outputs.report_exists == 'true'
+        run: |
+          echo "## Crawler Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PDFs Downloaded:** ${{ steps.check_report.outputs.success_count }} / ${{ steps.check_report.outputs.total_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Success Rate:** ${{ steps.check_report.outputs.success_rate }}%" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Count features by domain
+          echo "### Features by Domain" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "tests/fixtures/pdf/features/crawled" ]; then
+            for domain_dir in tests/fixtures/pdf/features/crawled/*/; do
+              if [ -d "$domain_dir" ]; then
+                domain=$(basename "$domain_dir")
+                count=$(ls -1 "$domain_dir"/*.json 2>/dev/null | wc -l)
+                echo "- **$domain**: $count features" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+          fi
+      
+      - name: Upload feature files
+        if: steps.check_report.outputs.report_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawled-features-${{ github.run_number }}
+          path: |
+            tests/fixtures/pdf/features/crawled/**/*.json
+            out/crawler_report.json
+          retention-days: 90
+      
+      - name: Check for errors
+        if: steps.crawl.outcome == 'failure'
+        run: |
+          echo "⚠️ Crawler encountered errors"
+          if [ -f "out/crawler_report.json" ]; then
+            echo "Error count: $(jq '.summary.pdfs_failed' out/crawler_report.json)"
+            echo "See report artifact for details"
+          fi
+          exit 1
+      
+      - name: Notify on failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Scheduled crawler run failed',
+              body: 'The weekly bank sample crawler run failed. Check the workflow logs for details.',
+              labels: ['crawler', 'automated']
+            })
+
+
+

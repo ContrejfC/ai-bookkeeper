@@ -1,0 +1,88 @@
+# Reader Evaluation Harness Configuration
+#
+# Defines datasets to run through the ingestion pipeline and validation criteria.
+
+datasets:
+  # Standards-based formats
+  - name: camt053_min
+    kind: camt
+    path: tests/fixtures/standards/camt053_min.xml
+    expected_rows: 5
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+  
+  - name: camt054_min
+    kind: camt
+    path: tests/fixtures/standards/camt054_min.xml
+    expected_rows: 2
+    expected_currency: EUR
+    reconciliation_tolerance_cents: 1
+  
+  - name: mt940_min
+    kind: mt940
+    path: tests/fixtures/standards/mt940_min.txt
+    expected_rows: 5
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+  
+  - name: bai2_min
+    kind: bai2
+    path: tests/fixtures/standards/bai2_min.txt
+    expected_rows: 5
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+  
+  - name: ofx_min
+    kind: ofx
+    path: tests/fixtures/standards/ofx_min.ofx
+    expected_rows: 5
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+  
+  # CSV templates
+  - name: qbo_3col
+    kind: csv
+    path: app/ingestion/csv_templates/qbo_3col.csv
+    expected_rows: 10
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+  
+  - name: qbo_4col
+    kind: csv
+    path: app/ingestion/csv_templates/qbo_4col.csv
+    expected_rows: 10
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+  
+  - name: xero_template
+    kind: csv
+    path: app/ingestion/csv_templates/xero_template.csv
+    expected_rows: 10
+    expected_currency: USD
+    reconciliation_tolerance_cents: 1
+
+# Validation thresholds
+validation:
+  min_date_parse_rate: 1.00          # 100% of dates must parse
+  min_currency_detect_rate: 1.00     # 100% must detect currency
+  min_reconciliation_pass_rate: 0.95  # 95% must reconcile
+  max_low_confidence_fraction: 0.15   # ≤15% can have low confidence
+  min_confidence_threshold: 0.85      # Confidence threshold
+  max_duplicate_rate: 0.05            # ≤5% duplicates allowed
+
+# Scoring weights (sum to 1.0)
+scoring:
+  reconcile_weight: 0.30
+  date_parse_weight: 0.25
+  currency_detect_weight: 0.20
+  confidence_weight: 0.15
+  dedup_weight: 0.10
+
+# Report settings
+report:
+  output_dir: out/reader_eval
+  keep_last_n: 20  # Keep last 20 reports
+  timestamp_format: "%Y%m%d_%H%M%S"
+
+
+

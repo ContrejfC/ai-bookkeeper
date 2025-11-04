@@ -498,3 +498,33 @@ export async function saveFeedback(
   }
 }
 
+/**
+ * Delete upload and all associated data
+ */
+export async function deleteUpload(uploadId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const apiBase = getBackendApiBase();
+    const apiKey = getBackendApiKey();
+    
+    const response = await fetch(`${apiBase}/api/free/categorizer/uploads/${uploadId}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Free-Mode': 'true',
+        ...(apiKey && { 'Authorization': `Bearer ${apiKey}` })
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Delete failed');
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Delete error:', error);
+    return {
+      success: false,
+      error: 'Failed to delete upload'
+    };
+  }
+}
+

@@ -1,0 +1,59 @@
+# Bank of America Statement Template
+# =====================================
+#
+# Generic template based on common statement patterns.
+# No trademarks, logos, or copyrighted content.
+
+name: "bank_of_america_checking_v1"
+version: 1
+
+bank_name: "Bank of America"
+account_types:
+  - "checking"
+  - "savings"
+
+match:
+  header_keys:
+    - "Bank of America"
+    - "statement"
+    - "Account"
+    - "Beginning balance"
+    - "Ending balance"
+    - "Online Banking"
+  
+  table_headers:
+    - "(?i)^date$"
+    - "(?i)^description$"
+    - "(?i)^(amount|deposits|withdrawals)$"
+    - "(?i)^(running bal|balance)$"
+  
+  footer_keywords:
+    - "Questions"
+    - "Call"
+    - "Member FDIC"
+    - "MERRILL"
+    - "read your statement"
+  
+  date_format_pref: "MDY"
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.20]
+    table_band_pct: [0.23, 0.83]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.75
+
+notes: |
+  Bank of America template for checking and savings accounts.
+  Updated based on real samples - recognizes enhanced statement format.
+  Often includes "Running Bal." for balance column.
+

@@ -1,0 +1,34 @@
+# Minimal test Dockerfile - Just to prove Cloud Run works
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install just FastAPI and Uvicorn
+RUN pip install fastapi uvicorn[standard]
+
+# Create a simple test app
+RUN echo 'from fastapi import FastAPI\n\
+app = FastAPI()\n\
+\n\
+@app.get("/")\n\
+def read_root():\n\
+    return {"status": "minimal test works", "message": "If you see this, Cloud Run is working!"}\n\
+\n\
+@app.get("/signup")\n\
+def signup_page():\n\
+    return {"message": "Signup endpoint accessible"}\n\
+' > test_app.py
+
+# Expose port
+EXPOSE 8080
+
+# Start on Cloud Run's PORT
+CMD uvicorn test_app:app --host 0.0.0.0 --port ${PORT:-8080}
+
+
+
+
+
+
+
+

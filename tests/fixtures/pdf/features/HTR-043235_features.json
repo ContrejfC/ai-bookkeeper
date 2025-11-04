@@ -1,0 +1,19 @@
+{
+  "filename": "HTR-043235.pdf",
+  "header_text": "Your new Bank of America\u00ae statement...\neasy to read, navigate and follow.",
+  "footer_text": "How to read your statement 1",
+  "table_headers": [],
+  "detected_bank": "bank_of_america",
+  "geometry": {
+    "header_band": [
+      0.0,
+      0.2
+    ],
+    "table_band": [
+      0.25,
+      0.8
+    ]
+  },
+  "page_count": 4,
+  "sample_text": "Your new Bank of America\u00ae statement...\neasy to read, navigate and follow.\nWelcome to your new, enhanced banking statement\nYour Bank of America banking statement has been redesigned to help you find the information you need\nmore easily. Please refer to the descriptions inside for details on key sections and specific features. If you\nhave questions, please call 1.800.MERRILL (1.800.637.7455). Thank you for being a valued client.\nEasy access to your account information anytime\nNow that your banking statement has been enhanced, we also want to remind you that you have many other\nconvenient ways to access your account information.\n\u2022 Online Banking. You can access your banking \u2022 Mobile Banking. There\u2019s no easier way to bank on\naccount information 24/7 through Bank of America the go. Just download the Bank of America Mobile\nOnline Banking. It\u2019s also a great resource to answer App1 and enjoy access to your banking account\nquestions you may have about your banking information, receive alerts2 and even deposit\naccounts or to learn more about Bank of America checks right from your mobile device or tablet.3\nsolutions and services.\n\u2022 Text Banking. Get balance and transaction\n\u2022 Paperless Statements. If you would prefer to information within seconds by text.4\nreceive paperless statements, you can enroll by\nlogging into your account online.\nHow to read your statement 1"
+}

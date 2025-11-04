@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reader Evaluation Report",
+  "description": "Schema for reader evaluation harness output",
+  "type": "object",
+  "required": ["timestamp", "summary", "metrics", "datasets"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Report generation timestamp"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "description": "Total execution time"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["datasets", "pass", "fail", "skip"],
+      "properties": {
+        "datasets": {
+          "type": "integer",
+          "description": "Total number of datasets evaluated"
+        },
+        "pass": {
+          "type": "integer",
+          "description": "Number of datasets that passed"
+        },
+        "fail": {
+          "type": "integer",
+          "description": "Number of datasets that failed"
+        },
+        "skip": {
+          "type": "integer",
+          "description": "Number of datasets skipped"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "reconcile_pass_rate",
+        "date_parse_rate",
+        "currency_detect_rate",
+        "low_conf_fraction",
+        "dedup_rate"
+      ],
+      "properties": {
+        "reconcile_pass_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of datasets with successful reconciliation"
+        },
+        "date_parse_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of dates successfully parsed"
+        },
+        "currency_detect_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of datasets with correct currency detection"
+        },
+        "low_conf_fraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of rows with confidence < threshold"
+        },
+        "dedup_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of duplicates correctly identified"
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "kind", "score", "status", "checks"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Dataset identifier"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["camt", "mt940", "bai2", "ofx", "csv", "pdf_synth"],
+            "description": "Dataset type"
+          },
+          "files": {
+            "type": "integer",
+            "description": "Number of files processed"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall score (0.0-1.0)"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "SKIP"],
+            "description": "Dataset status"
+          },
+          "checks": {
+            "type": "object",
+            "properties": {
+              "reconcile": {
+                "type": "boolean",
+                "description": "Reconciliation passed"
+              },
+              "dates": {
+                "type": "boolean",
+                "description": "Date parsing passed"
+              },
+              "currency": {
+                "type": "boolean",
+                "description": "Currency detection passed"
+              },
+              "confidence": {
+                "type": "boolean",
+                "description": "Confidence scoring passed"
+              },
+              "dedup": {
+                "type": "boolean",
+                "description": "Deduplication passed"
+              }
+            }
+          },
+          "details": {
+            "type": "object",
+            "properties": {
+              "rows_expected": {
+                "type": "integer"
+              },
+              "rows_actual": {
+                "type": "integer"
+              },
+              "reconcile_error_cents": {
+                "type": "number"
+              },
+              "median_confidence": {
+                "type": "number"
+              },
+              "duplicate_count": {
+                "type": "integer"
+              },
+              "error_message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+

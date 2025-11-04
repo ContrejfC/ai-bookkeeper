@@ -1,0 +1,12 @@
+New Support Ticket - AI Bookkeeper
+
+From: {{ user_email }}
+Tenant ID: {{ tenant_id }}
+Request ID: {{ request_id }}
+Subject: {{ subject }}
+
+Message:
+{{ message }}
+
+View Logs: {{ log_url }}
+

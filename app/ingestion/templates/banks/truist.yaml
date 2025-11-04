@@ -1,0 +1,59 @@
+# Truist Bank Statement Template
+# ===============================
+#
+# Based on real sample: account-analysis-guide.pdf
+# Truist (formed from merger of BB&T and SunTrust)
+
+name: "truist_checking_v1"
+version: 1
+
+bank_name: "Truist"
+account_types:
+  - "checking"
+  - "savings"
+  - "business"
+
+match:
+  header_keys:
+    - "Account Analysis"
+    - "Statement"
+    - "Truist"
+    - "service charges"
+  
+  table_headers:
+    - "(?i)^(date|transaction date)$"
+    - "(?i)^(description|charge description)$"
+    - "(?i)^(amount|charges?|debit|credit)$"
+    - "(?i)^(balance|running balance)$"
+    - "(?i)^(charge type)$"
+  
+  footer_keywords:
+    - "Truist"
+    - "Member FDIC"
+    - "online banking"
+  
+  date_format_pref: "MDY"
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.20]
+    table_band_pct: [0.25, 0.80]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.50
+
+notes: |
+  Truist template for checking and business accounts.
+  Formed from BB&T and SunTrust merger.
+  Uses "Account Analysis" terminology for business accounts.
+
+
+

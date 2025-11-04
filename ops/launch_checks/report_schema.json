@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Launch Checks Report Schema",
+  "description": "Schema for AI-Bookkeeper launch verification reports",
+  "type": "object",
+  "required": ["timestamp_utc", "api_base", "summary", "checks"],
+  "properties": {
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when checks were run"
+    },
+    "api_base": {
+      "type": "string",
+      "format": "uri",
+      "description": "Base URL of the API being tested"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["pass", "fail", "skip", "total"],
+      "properties": {
+        "pass": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of checks that passed"
+        },
+        "fail": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of checks that failed"
+        },
+        "skip": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of checks that were skipped"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of checks"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "Array of individual check results",
+      "items": {
+        "type": "object",
+        "required": ["name", "status", "duration_ms", "details", "evidence"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique identifier for the check",
+            "enum": [
+              "healthz",
+              "readyz",
+              "cors_security",
+              "stripe_idempotency",
+              "webhook_idempotency",
+              "qbo_demo_posting",
+              "xero_demo_posting",
+              "ai_threshold_gate",
+              "pii_redaction",
+              "audit_export",
+              "ingestion_robustness"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "SKIP"],
+            "description": "Result status"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Execution time in milliseconds"
+          },
+          "details": {
+            "type": "object",
+            "description": "Detailed information about the check result"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Human-readable summary of the result"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether this check is required for CI to pass",
+            "default": true
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "Additional files generated during checks",
+      "items": {
+        "type": "object",
+        "required": ["path", "description"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path to the artifact file"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the artifact"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+

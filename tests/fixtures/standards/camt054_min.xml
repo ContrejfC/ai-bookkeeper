@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.054.001.02">
+  <BkToCstmrDbtCdtNtfctn>
+    <Ntfctn>
+      <Id>NTFY20240107</Id>
+      <Acct>
+        <Id><IBAN>GB29NWBK60161331926819</IBAN></Id>
+        <Ccy>EUR</Ccy>
+      </Acct>
+      <Ntry>
+        <Amt Ccy="EUR">1200.00</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <BookgDt><Dt>2024-01-07</Dt></BookgDt>
+        <ValDt><Dt>2024-01-07</Dt></ValDt>
+        <AcctSvcrRef>WIRE20240107001</AcctSvcrRef>
+        <AddtlNtryInf>Wire Transfer Received</AddtlNtryInf>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">350.00</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <BookgDt><Dt>2024-01-08</Dt></BookgDt>
+        <AddtlNtryInf>International Wire Fee</AddtlNtryInf>
+      </Ntry>
+    </Ntfctn>
+  </BkToCstmrDbtCdtNtfctn>
+</Document>
+
+
+

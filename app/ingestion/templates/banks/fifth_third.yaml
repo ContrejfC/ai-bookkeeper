@@ -1,0 +1,57 @@
+# Fifth Third Bank Statement Template
+# ======================================
+#
+# Generic template based on common statement patterns.
+# No trademarks, logos, or copyrighted content.
+
+name: "fifth_third_checking_v1"
+version: 1
+
+bank_name: "Fifth Third Bank"
+account_types:
+  - "checking"
+  - "savings"
+
+match:
+  header_keys:
+    - "Statement"
+    - "Account Number"
+    - "Statement Period"
+    - "Previous Balance"
+    - "New Balance"
+  
+  table_headers:
+    - "(?i)^(date|trans date|posting date)$"
+    - "(?i)^(description|transaction)$"
+    - "(?i)^(withdrawals|debits)$"
+    - "(?i)^(deposits|credits)$"
+    - "(?i)^balance$"
+  
+  footer_keywords:
+    - "Questions"
+    - "Member FDIC"
+  
+  date_format_pref: "MDY"
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.18]
+    table_band_pct: [0.22, 0.82]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.75
+
+notes: |
+  Generic Fifth Third Bank-style template.
+  Often uses separate columns for withdrawals/debits and deposits/credits.
+
+
+

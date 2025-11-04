@@ -1,0 +1,14 @@
+Date,Amount,Payee,Description,Reference
+02/01/2024,-500.00,Office Supply Store,Office Supplies Purchase,PO-1001
+03/01/2024,2500.00,Client ABC Corp,Payment Invoice #1001,INV-1001
+04/01/2024,-150.00,National Bank,Monthly Service Fee,FEE-JAN
+05/01/2024,-800.00,Payroll Services Inc,Payroll Processing,PAY-W1
+06/01/2024,1200.00,Customer XYZ Inc,Customer Deposit,DEP-1234
+08/01/2024,-275.50,Power & Electric Co,Utility Bill Payment,UTIL-JAN
+09/01/2024,-99.00,Software Solutions LLC,Software Subscription,SUB-2024-01
+10/01/2024,45.00,Returns Department,Refund Received,REF-567
+12/01/2024,-1250.00,Equipment Supply Co,Equipment Purchase,EQ-2024-001
+15/01/2024,3500.00,Consulting Client,Consulting Fee,CONS-JAN
+
+
+

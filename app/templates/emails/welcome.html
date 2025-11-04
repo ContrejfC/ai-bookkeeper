@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Welcome</title></head>
+<body style="font-family: sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 10px 10px 0 0; text-align: center;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to AI Bookkeeper!</h1>
+    </div>
+    <div style="background: #f9f9f9; padding: 40px 30px;">
+        <p>Hi {{ name }},</p>
+        <p>Welcome to AI Bookkeeper! Your account is ready with a <strong>{{ trial_days }}-day free trial</strong>.</p>
+        <h3>🚀 Get Started:</h3>
+        <ol>
+            <li><strong>Upload a bank statement</strong> (CSV, PDF, or OFX)</li>
+            <li><strong>Review AI-categorized transactions</strong> with confidence scores</li>
+            <li><strong>Export to QuickBooks or Xero</strong> with one click</li>
+        </ol>
+        <p style="text-align: center; margin: 40px 0;">
+            <a href="{{ onboarding_url }}" style="display: inline-block; background: #667eea; color: white; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">Start Onboarding →</a>
+        </p>
+        <h3>📚 Resources:</h3>
+        <ul>
+            <li><a href="{{ docs_url }}" style="color: #667eea;">Documentation & Guides</a></li>
+            <li><a href="{{ onboarding_url }}" style="color: #667eea;">Step-by-Step Onboarding</a></li>
+            <li>Need help? Email <a href="mailto:{{ support_email }}" style="color: #667eea;">{{ support_email }}</a></li>
+        </ul>
+        <p style="margin-top: 40px;">We're excited to help you automate your bookkeeping!</p>
+        <p>— The AI Bookkeeper Team</p>
+    </div>
+</body>
+</html>
+

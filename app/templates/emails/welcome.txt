@@ -1,0 +1,23 @@
+Welcome to AI Bookkeeper!
+
+Hi {{ name }},
+
+Welcome to AI Bookkeeper! Your account is ready with a {{ trial_days }}-day free trial.
+
+GET STARTED:
+
+1. Upload a bank statement (CSV, PDF, or OFX)
+2. Review AI-categorized transactions with confidence scores
+3. Export to QuickBooks or Xero with one click
+
+Start Onboarding: {{ onboarding_url }}
+
+RESOURCES:
+
+• Documentation & Guides: {{ docs_url }}
+• Need help? Email: {{ support_email }}
+
+We're excited to help you automate your bookkeeping!
+
+— The AI Bookkeeper Team
+

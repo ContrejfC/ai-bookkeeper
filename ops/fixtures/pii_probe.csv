@@ -1,0 +1,14 @@
+date,description,amount,contact,memo
+2024-10-01,Payment from client,1000.00,john.doe@example.com,Invoice #1234
+2024-10-02,Vendor payment,500.00,vendor@company.com,PO #5678
+2024-10-03,Employee reimbursement,250.00,employee@work.com,SSN: 123-45-6789
+2024-10-04,Customer refund,-100.00,customer@email.com,Phone: (555) 123-4567
+2024-10-05,Consultant fee,1500.00,consultant@freelance.com,Tax ID 98-7654321
+2024-10-06,Credit card payment,2500.00,Card: 4532-1234-5678-9012,Monthly payment
+2024-10-07,Bank transfer,5000.00,Account: 1234567890,Wire transfer
+2024-10-08,Payroll direct deposit,3500.00,SSN 987-65-4321,Salary
+2024-10-09,Client invoice,-2000.00,test@example.com,Payment received
+2024-10-10,Subscription renewal,99.00,Contact: jane.smith@company.org,Annual renewal
+
+
+

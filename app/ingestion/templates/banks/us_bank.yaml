@@ -1,0 +1,57 @@
+# U.S. Bank Statement Template
+# ==============================
+#
+# Generic template based on common statement patterns.
+# No trademarks, logos, or copyrighted content.
+
+name: "us_bank_checking_v1"
+version: 1
+
+bank_name: "U.S. Bank"
+account_types:
+  - "checking"
+  - "savings"
+
+match:
+  header_keys:
+    - "Statement"
+    - "Account Number"
+    - "Statement Period"
+    - "Previous Balance"
+    - "Current Balance"
+  
+  table_headers:
+    - "(?i)^date$"
+    - "(?i)^description$"
+    - "(?i)^(deposits|additions)$"
+    - "(?i)^(withdrawals|subtractions)$"
+    - "(?i)^balance$"
+  
+  footer_keywords:
+    - "Questions"
+    - "Member FDIC"
+  
+  date_format_pref: "MDY"
+  
+  amount_sign_rules:
+    debit_is_negative: true
+    credit_markers: []
+  
+  geometry_hints:
+    header_top_pct: [0.00, 0.19]
+    table_band_pct: [0.22, 0.84]
+
+score_weights:
+  headers: 0.35
+  table: 0.35
+  footer: 0.10
+  geometry: 0.20
+
+accept_threshold: 0.75
+
+notes: |
+  Generic U.S. Bank-style template.
+  Often uses "Additions" and "Subtractions" terminology.
+
+
+

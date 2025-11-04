@@ -1,0 +1,34 @@
+{
+  "TxnDate": "2024-10-30",
+  "PrivateNote": "Launch check test transaction",
+  "Line": [
+    {
+      "Description": "Test debit entry",
+      "Amount": 100.00,
+      "DetailType": "JournalEntryLineDetail",
+      "JournalEntryLineDetail": {
+        "PostingType": "Debit",
+        "AccountRef": {
+          "value": "35",
+          "name": "Checking"
+        }
+      }
+    },
+    {
+      "Description": "Test credit entry",
+      "Amount": 100.00,
+      "DetailType": "JournalEntryLineDetail",
+      "JournalEntryLineDetail": {
+        "PostingType": "Credit",
+        "AccountRef": {
+          "value": "79",
+          "name": "Sales"
+        }
+      }
+    }
+  ],
+  "DocNumber": "LAUNCH-CHECK-001"
+}
+
+
+

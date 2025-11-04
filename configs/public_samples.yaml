@@ -1,0 +1,94 @@
+# Public Bank Statement Samples Configuration
+# ============================================
+#
+# IMPORTANT: Only add URLs to publicly available example/sample statements
+# provided by banks for customer education. Do NOT add real customer statements.
+#
+# Legal Notice:
+# - These samples are for internal development/testing only
+# - Do not redistribute or commit actual bank PDFs to the repository
+# - Features extracted from these samples may be used for template development
+#
+# Safety:
+# - Only allowlisted domains are permitted
+# - Files must be application/pdf and ≤10MB
+# - robots.txt is respected
+# - PDFs are deleted after feature extraction (with --delete-after-extract flag)
+
+# Allowlisted domains (only these domains are permitted)
+allow_domains:
+  - "chase.com"
+  - "wellsfargo.com"
+  - "53.com"
+  - "bankofamerica.com"
+  - "usbank.com"
+  - "citi.com"
+  - "capitalone.com"
+  - "pnc.com"
+  - "ally.com"
+  - "schwab.com"
+
+# Sample URLs
+# Note: These are placeholder URLs. Replace with actual public sample URLs
+# when available from bank websites.
+samples:
+  # Chase examples (placeholder URLs)
+  - name: "chase_checking_example"
+    url: "https://www.chase.com/content/dam/chasecom/en/checking/documents/sample-statement.pdf"
+    bank: "Chase"
+    account_type: "checking"
+    enabled: false  # Set to true when valid URL is confirmed
+    
+  - name: "chase_credit_example"
+    url: "https://www.chase.com/content/dam/chasecom/en/credit-cards/documents/sample-statement.pdf"
+    bank: "Chase"
+    account_type: "credit_card"
+    enabled: false
+  
+  # Wells Fargo examples (placeholder URLs)
+  - name: "wells_fargo_checking_example"
+    url: "https://www.wellsfargo.com/help/online-banking/sample-checking-statement.pdf"
+    bank: "Wells Fargo"
+    account_type: "checking"
+    enabled: false
+  
+  # Bank of America examples (placeholder URLs)
+  - name: "bofa_checking_example"
+    url: "https://www.bankofamerica.com/online-banking/sample-statement.pdf"
+    bank: "Bank of America"
+    account_type: "checking"
+    enabled: false
+  
+  # Fifth Third Bank examples (placeholder URLs)
+  - name: "fifth_third_checking_example"
+    url: "https://www.53.com/content/fifth-third/en/support/sample-statement.pdf"
+    bank: "Fifth Third Bank"
+    account_type: "checking"
+    enabled: false
+
+# Fetch settings
+fetch_settings:
+  max_size_mb: 10
+  connect_timeout: 10
+  read_timeout: 10
+  max_retries: 3
+  retry_status_codes: [429, 500, 502, 503, 504]
+  user_agent: "BankStatementTemplateBuilder/1.0 (Internal Development Use Only)"
+  respect_robots_txt: true
+  
+# Feature extraction settings
+extraction_settings:
+  extract_text: true
+  extract_tables: true
+  extract_metadata: true
+  redact_pii: true
+  max_text_sample_chars: 500  # Maximum characters to sample from text
+  
+# Output settings
+output:
+  features_dir: "tests/fixtures/pdf/features"
+  metadata_dir: "tests/fixtures/pdf/metadata"
+  pdf_download_dir: "tests/fixtures/pdf/_public"  # Gitignored
+
+
+

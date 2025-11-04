@@ -1,0 +1,19 @@
+{
+  "filename": "single_accounts_redesign.pdf",
+  "header_text": "Meet Your Upgraded KeyBank Statement.",
+  "footer_text": "Continued on back.",
+  "table_headers": [],
+  "detected_bank": "key_bank",
+  "geometry": {
+    "header_band": [
+      0.0,
+      0.2
+    ],
+    "table_band": [
+      0.25,
+      0.8
+    ]
+  },
+  "page_count": 2,
+  "sample_text": "Meet Your Upgraded KeyBank Statement.\nWe\u2019ve created a new design that is even easier to read, so you can effortlessly keep track\nof your money. Here\u2019s a guide to the sections included in your new statement:\n1 Account Summary\nKeyBank\nThis is a summary of your statement so P.O. Box 93885\nCleveland, OH 44101\nyou can easily see it at a glance. From\nbeginning balance, to deposits, interest,\nwithdrawals, fees and ending balance,\nKey Account Name\nyou\u2019ll get a quick snapshot of your 0 Jo 0 h 0 n 0 D 00 . 0 S 0 a 0 m 0 p 0 l e Account number ending: XXXX\n6021 Connection Dr.\nfinances. Cleveland, OH 44104 Month XX, XXXX to Month XX, XXXX\n2 Account Updates 1 Account Summary\nIf there\u2019s an important update such as Beginning Balance on Month XX, XXXX $X,XXX.XX\nDeposits (Money In) 2\na change in terms or fees, this section Deposits $X,XXX.XX\nInterest $X.XX\nwill alert you and tell you which page to Fees and Charges Refunded $X.XX M se a c k ti e o n s u o r n e p y a o g u e r e X a d o f t h th e is A s c ta c t o e u m n e t n U t p to d a fin te d s\nWithdrawals (Money Out) out important information about your account.\nread. Some months we may not have Withdrawals -$XXX.XX\nChecks -$XXX.XX\nnew information to share, but be sure to Fees and Charges -$XXX.XX\nWithholding -$X.XX\nread this section when you see it. Ending Balance on Month XX, XXXX $XX,XXX.XX\nNumber of Days This Statement Cycle XX\n3 Contact Us Federal and State Interest Withheld This Statement $X.XX\nFederal and State Interest Withheld Year-to-Date $X.XX\nThis is where you\u2019ll always be able to\nfind convenient ways to contact us. Cash Reserve Credit Balance on Month XX, XXXX $X.XX\nCash Reserve Credit Limit $XX,XXX.XX\nSee page X for Cash Reserve Credit details.\nWe\u2019re here to help!\n3\nClient Service: Sign On or Enroll in Online\n1-800-KEY2YOU\u00ae (1-800-539-2968) and Mobile Banking:\nFor clients using a TDD/TTY key.com\ndevice, please call 1-800-539-8336\nXXXXXXXXXXXXXXX-XXXXX Page 1 of X\nXX\nContinued on back."
+}

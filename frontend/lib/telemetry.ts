@@ -5,7 +5,7 @@
  * Integrates with PostHog or custom analytics backend.
  */
 
-import { loadFreeToolConfig } from './config-server';
+import { getFreeToolConfig } from './validators';
 
 // PostHog client (browser-side)
 declare global {
@@ -69,7 +69,7 @@ class Telemetry {
   
   constructor() {
     this.enabled = process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_ENABLE_TELEMETRY === 'true';
-    this.config = loadFreeToolConfig();
+    this.config = getFreeToolConfig();
   }
   
   /**

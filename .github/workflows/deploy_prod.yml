@@ -1,0 +1,118 @@
+name: Deploy Prod (Monorepo)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      HOST: https://ai-bookkeeper-nine.vercel.app
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+      
+      - name: Pull Vercel environment information
+        run: vercel pull --yes --environment=production --token $VERCEL_TOKEN --cwd frontend
+      
+      - name: Build project artifacts
+        run: vercel build --prod --token $VERCEL_TOKEN --cwd frontend
+      
+      - name: Deploy prebuilt to production
+        id: deploy
+        run: |
+          URL=$(vercel deploy --prebuilt --prod --token $VERCEL_TOKEN --cwd frontend | tail -n1)
+          echo "URL=$URL" >> $GITHUB_OUTPUT
+          echo "Deployed to: $URL"
+      
+      - name: Force alias to production domain
+        run: |
+          vercel alias set ${{ steps.deploy.outputs.URL }} ai-bookkeeper-nine.vercel.app --token $VERCEL_TOKEN
+          echo "Alias set: ai-bookkeeper-nine.vercel.app"
+      
+      - name: Wait for deployment propagation
+        run: sleep 10
+      
+      - name: "Smoke: Policy dates (privacy)"
+        run: |
+          echo "Checking /privacy for November 3, 2025..."
+          curl -sSf $HOST/privacy | grep "November 3, 2025"
+      
+      - name: "Smoke: Policy dates (terms)"
+        run: |
+          echo "Checking /terms for November 3, 2025..."
+          curl -sSf $HOST/terms | grep "November 3, 2025"
+      
+      - name: "Smoke: SOC2 compliance copy"
+        run: |
+          echo "Checking /security for SOC2 copy..."
+          curl -sSf $HOST/security | grep -iE "aligned controls|Type II"
+      
+      - name: "Smoke: API route method guard"
+        run: |
+          echo "Checking /api/free/categorizer/upload for 405 on GET..."
+          STATUS=$(curl -si -X GET $HOST/api/free/categorizer/upload | head -n1 | grep -oE " [0-9]{3} ")
+          ALLOW=$(curl -si -X GET $HOST/api/free/categorizer/upload | grep -i ^allow: | tr -d '\r')
+          echo "Status: $STATUS"
+          echo "Allow: $ALLOW"
+          echo "$STATUS" | grep " 405 "
+          echo "$ALLOW" | grep -i "POST"
+      
+      - name: "Smoke: UI controls present"
+        run: |
+          echo "Checking /free/categorizer for UI controls..."
+          curl -sSf $HOST/free/categorizer | grep -E "Allow anonymized data to improve models|Use Sample Statement|See Sample CSV Output"
+      
+      - name: "Smoke: /api-version endpoint"
+        run: |
+          echo "Checking /api-version..."
+          curl -sSf $HOST/api-version | jq .
+          echo "✅ /api-version returned valid JSON"
+      
+      - name: "Smoke: /api-smoke assertions"
+        run: |
+          echo "Checking /api-smoke assertions..."
+          curl -sSf $HOST/api-smoke | tee /tmp/smoke.json
+          
+          # Install jq if not available
+          if ! command -v jq &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+          
+          # Verify all assertions are true
+          FAILED=$(jq -r '.assertions | to_entries[] | select(.value==false) | .key' /tmp/smoke.json | wc -l)
+          
+          if [ "$FAILED" != "0" ]; then
+            echo "❌ Some assertions failed:"
+            jq -r '.assertions | to_entries[] | select(.value==false) | "  - \(.key): \(.value)"' /tmp/smoke.json
+            exit 1
+          fi
+          
+          echo "✅ All smoke test assertions passed"
+      
+      - name: Post deployment summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL:** ${{ steps.deploy.outputs.URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Production Alias:** https://ai-bookkeeper-nine.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          cat /tmp/smoke.json 2>/dev/null || echo "{ \"status\": \"not run\" }" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+

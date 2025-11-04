@@ -236,6 +236,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Method guards
+export async function GET() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'POST' }
+  });
+}
+
+export async function PUT() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'POST' }
+  });
+}
+
+export async function PATCH() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'POST' }
+  });
+}
+
+export async function DELETE() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'POST' }
+  });
+}
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 

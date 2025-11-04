@@ -57,6 +57,35 @@ export async function DELETE(
   }
 }
 
+// Method guards
+export async function GET() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'DELETE' }
+  });
+}
+
+export async function POST() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'DELETE' }
+  });
+}
+
+export async function PUT() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'DELETE' }
+  });
+}
+
+export async function PATCH() {
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'DELETE' }
+  });
+}
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 

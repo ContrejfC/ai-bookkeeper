@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/admin/purge-ephemeral",
-      "schedule": "0 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }

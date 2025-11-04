@@ -78,7 +78,7 @@ export async function validateMimeType(buffer: Buffer, filename: string): Promis
     }
     
     // If it's a ZIP, we need to validate contents
-    if (fileType.mime === 'application/zip' || fileType.mime === 'application/x-zip-compressed') {
+    if (fileType.mime === 'application/zip' || fileType.ext === 'zip') {
       const zipValidation = await validateZipContents(buffer);
       if (!zipValidation.valid) {
         return zipValidation;

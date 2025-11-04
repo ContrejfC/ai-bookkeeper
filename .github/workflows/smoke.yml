@@ -1,0 +1,64 @@
+name: Smoke Prod
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Check /__smoke endpoint
+        run: |
+          echo "🧪 Curling /__smoke endpoint..."
+          curl -sS https://ai-bookkeeper-nine.vercel.app/__smoke | tee /tmp/smoke.json
+      
+      - name: Verify smoke test results
+        run: |
+          echo "📊 Analyzing smoke test results..."
+          
+          # Check if jq is available
+          if ! command -v jq &> /dev/null; then
+            echo "Installing jq..."
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+          
+          # Count failed assertions
+          failed=$(jq -r '.assertions | to_entries[] | select(.value==false) | .key' /tmp/smoke.json | wc -l)
+          
+          # Print full results
+          echo "Raw results:"
+          cat /tmp/smoke.json | jq .
+          
+          # Check if all passed
+          if [ "$failed" != "0" ]; then
+            echo "❌ Smoke test failed! $failed assertion(s) failed."
+            jq -r '.assertions | to_entries[] | select(.value==false) | "FAILED: \(.key)"' /tmp/smoke.json
+            exit 1
+          fi
+          
+          echo "✅ All smoke tests passed!"
+      
+      - name: Check /__version endpoint
+        run: |
+          echo "📦 Checking /__version endpoint..."
+          curl -sS https://ai-bookkeeper-nine.vercel.app/__version | jq .
+      
+      - name: Post results to summary
+        if: always()
+        run: |
+          echo "## Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          cat /tmp/smoke.json | jq . >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+

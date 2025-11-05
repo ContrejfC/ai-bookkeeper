@@ -16,6 +16,18 @@ import { trackLLMModelUsed, trackLLMFallback } from "./analytics";
 const PRIMARY = process.env.OPENAI_MODEL || "gpt-5-chat-latest";
 const FALLBACK = process.env.OPENAI_FALLBACK_MODEL || "gpt-4o";
 
+// Budget controls
+const MAX_CALLS_PER_MIN = parseInt(process.env.AI_MAX_CALLS_PER_MIN || '60', 10);
+const MAX_DAILY_USD = parseFloat(process.env.AI_MAX_DAILY_USD || '50');
+const CIRCUIT_OPEN_SEC = parseInt(process.env.AI_CIRCUIT_OPEN_SEC || '300', 10);
+
+// Circuit breaker state
+let circuitOpenUntil = 0;
+let callsThisMinute = 0;
+let lastMinuteReset = Date.now();
+let dailySpendUSD = 0;
+let lastDayReset = new Date().toDateString();
+
 // Lazy initialize client to avoid build-time errors
 let _client: OpenAI | null = null;
 
@@ -38,6 +50,43 @@ export interface AIResponse {
 }
 
 /**
+ * Check budget limits and update counters
+ * Throws if budget exceeded to trigger fallback
+ */
+function checkBudgetLimits() {
+  const now = Date.now();
+  const today = new Date().toDateString();
+  
+  // Reset minute counter
+  if (now - lastMinuteReset > 60000) {
+    callsThisMinute = 0;
+    lastMinuteReset = now;
+  }
+  
+  // Reset daily counter
+  if (today !== lastDayReset) {
+    dailySpendUSD = 0;
+    lastDayReset = today;
+  }
+  
+  // Increment call counter
+  callsThisMinute++;
+  
+  // Check limits
+  if (callsThisMinute > MAX_CALLS_PER_MIN) {
+    // Open circuit breaker
+    circuitOpenUntil = now + (CIRCUIT_OPEN_SEC * 1000);
+    throw new Error(`AI_MAX_CALLS_PER_MIN exceeded (${MAX_CALLS_PER_MIN})`);
+  }
+  
+  if (dailySpendUSD > MAX_DAILY_USD) {
+    // Open circuit breaker
+    circuitOpenUntil = now + (CIRCUIT_OPEN_SEC * 1000);
+    throw new Error(`AI_MAX_DAILY_USD exceeded ($${MAX_DAILY_USD})`);
+  }
+}
+
+/**
  * Call OpenAI with automatic fallback
  * 
  * @param input - The prompt/input text
@@ -48,7 +97,24 @@ export async function respond(
   input: string, 
   options: Record<string, any> = {}
 ): Promise<AIResponse> {
+  const t0 = Date.now();
+  
   try {
+    // Check circuit breaker
+    if (Date.now() < circuitOpenUntil) {
+      return {
+        ok: true,
+        model: 'degraded-heuristic',
+        content: 'Service temporarily degraded. Please try again shortly.',
+        fallback: true,
+        // @ts-ignore
+        llm_degraded: true
+      };
+    }
+    
+    // Check budget limits
+    checkBudgetLimits();
+    
     const c = getClient();
     
     // Try primary model (GPT-5) using chat completions
@@ -58,8 +124,13 @@ export async function respond(
       ...options,
     });
     
+    // Track cost (rough estimate: $0.01 per 1K tokens)
+    const estimatedCost = ((r.usage?.total_tokens || 0) / 1000) * 0.01;
+    dailySpendUSD += estimatedCost;
+    
     // Track successful primary model usage
-    trackLLMModelUsed(r.model, false);
+    const latency_ms = Date.now() - t0;
+    trackLLMModelUsed(r.model, false, { latency_ms, llm_degraded: false });
     
     return { 
       ok: true, 

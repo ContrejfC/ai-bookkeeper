@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "bank-transaction-categorizer",
+    "title": "Bank Transaction Categorizer - AI-Powered CSV Import Tool",
+    "primaryIntent": "categorize bank transactions csv",
+    "status": "active",
+    "description": "Automatically categorize bank transactions from CSV, OFX, or QFX files. Free tool with 500 rows, AI-powered, QuickBooks export.",
+    "priority": 0.9
+  },
+  {
+    "slug": "quickbooks-csv-import",
+    "title": "QuickBooks CSV Import Helper - Auto-Categorize Transactions",
+    "primaryIntent": "quickbooks csv import categorization",
+    "status": "active",
+    "description": "Import and auto-categorize CSV files for QuickBooks. Clean data, proper mapping, AI-powered categories.",
+    "priority": 0.8
+  },
+  {
+    "slug": "ofx-to-csv-converter",
+    "title": "OFX to CSV Converter with Auto-Categorization",
+    "primaryIntent": "convert ofx to csv with categories",
+    "status": "active",
+    "description": "Convert OFX/QFX bank files to categorized CSV. Free online tool, no signup required.",
+    "priority": 0.7
+  }
+]
+

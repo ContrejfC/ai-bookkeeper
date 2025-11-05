@@ -17,7 +17,11 @@ type AnalyticsEvent =
   | 'free_categorizer_delete_clicked'
   | 'lead_submitted'
   | 'pse_page_view'
-  | 'pse_cta_clicked';
+  | 'pse_cta_clicked'
+  | 'cat_parse_success'
+  | 'cat_auto_cat_rate'
+  | 'cat_manual_edits'
+  | 'cat_export_success';
 
 interface AnalyticsProperties {
   // Upload events
@@ -229,4 +233,21 @@ export function trackPSEPageView(slug: string, bankName: string, format: string 
 
 export function trackPSECtaClicked(cta: 'free_categorizer' | 'pricing', slug: string) {
   analytics.track('pse_cta_clicked', { cta, slug });
+}
+
+// Categorizer v2 tracking
+export function trackCatParseSuccess(properties: { rowCount: number; format: string; latency_ms: number }) {
+  analytics.track('cat_parse_success', properties);
+}
+
+export function trackCatAutoCatRate(properties: { auto_rate: number; manual_count: number }) {
+  analytics.track('cat_auto_cat_rate', properties);
+}
+
+export function trackCatManualEdits(properties: { edit_count: number; rule_created: boolean }) {
+  analytics.track('cat_manual_edits', properties);
+}
+
+export function trackCatExportSuccess(properties: { format: string; row_count: number; latency_ms: number }) {
+  analytics.track('cat_export_success', properties);
 }

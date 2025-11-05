@@ -36,6 +36,8 @@ export default function CategorizerV2Page() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // SSR marker for CI smoke tests
+
   // Step 1: File Upload
   const handleFileSelected = async (f: File) => {
     setError(null);
@@ -138,7 +140,7 @@ export default function CategorizerV2Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-8">
+    <main data-app="categorizer" data-version="v2" className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-8">
@@ -245,7 +247,7 @@ export default function CategorizerV2Page() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

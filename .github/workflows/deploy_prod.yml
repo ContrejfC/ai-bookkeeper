@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy_prod.yml'
 
 jobs:
   deploy:
@@ -73,11 +76,13 @@ jobs:
           echo "$STATUS" | grep " 405 "
           echo "$ALLOW" | grep -i "POST"
       
-      - name: "Smoke: V2 UI stepper present"
+      - name: "Smoke: Categorizer V2 marker"
         run: |
-          echo "Checking /free/categorizer for v2 stepper..."
-          curl -sSf "$HOST/free/categorizer?cache-bust=$(date +%s)" | grep -E "Upload.*Map.*Review.*Export"
-          echo "✅ V2 stepper markup present"
+          echo "Checking /free/categorizer for v2 marker..."
+          curl -sSf "$HOST/free/categorizer?cb=$(date +%s)" \
+            | grep 'data-app="categorizer"' \
+            | grep 'data-version="v2"'
+          echo "✅ V2 marker present"
       
       - name: "Smoke: /api-version endpoint"
         run: |

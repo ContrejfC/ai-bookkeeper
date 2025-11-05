@@ -6,6 +6,8 @@
  * Upload → Map Columns → Review & Edit → Export
  */
 
+export const revalidate = 0; // Force fresh on every request
+
 import { useState } from 'react';
 import { Stepper } from '@/components/categorizer/Stepper';
 import { UploadZone } from '@/components/categorizer/UploadZone';

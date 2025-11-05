@@ -13,9 +13,7 @@ const BATCH_SIZE = 50;
 /**
  * Categorize transactions using LLM (batched)
  */
-export async function categor
-
-izeWithLLM(
+export async function categorizeWithLLM(
   transactions: Transaction[]
 ): Promise<Map<string, { category: string; explanation: Explanation }>> {
   const results = new Map();

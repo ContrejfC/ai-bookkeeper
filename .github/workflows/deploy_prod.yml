@@ -73,10 +73,11 @@ jobs:
           echo "$STATUS" | grep " 405 "
           echo "$ALLOW" | grep -i "POST"
       
-      - name: "Smoke: UI controls present"
+      - name: "Smoke: V2 UI stepper present"
         run: |
-          echo "Checking /free/categorizer for UI controls..."
-          curl -sSf "$HOST/free/categorizer?cache-bust=$(date +%s)" | grep -E "Allow anonymized data to improve models|Use Sample Statement|See Sample CSV Output"
+          echo "Checking /free/categorizer for v2 stepper..."
+          curl -sSf "$HOST/free/categorizer?cache-bust=$(date +%s)" | grep -E "Upload.*Map.*Review.*Export"
+          echo "✅ V2 stepper markup present"
       
       - name: "Smoke: /api-version endpoint"
         run: |

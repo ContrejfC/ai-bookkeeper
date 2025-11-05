@@ -2,60 +2,55 @@ import { MetadataRoute } from 'next';
 import { getActiveBanks } from '@/lib/pse-banks';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
 
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
+  // Core static pages
+  const core: MetadataRoute.Sitemap = [
+    { url: `${base}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
     {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/free/categorizer`,
+      url: `${base}/free/categorizer`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/gpt-bridge`,
+      url: `${base}/gpt-bridge`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/tools/csv-cleaner`,
+      url: `${base}/tools/csv-cleaner`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/pricing`,
+      url: `${base}/pricing`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/privacy`,
+      url: `${base}/privacy`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/terms`,
+      url: `${base}/terms`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/dpa`,
+      url: `${base}/dpa`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/security`,
+      url: `${base}/security`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
@@ -63,14 +58,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   // PSE Guide pages (active banks only)
-  const activeBanks = getActiveBanks();
-  const guidePages: MetadataRoute.Sitemap = activeBanks.map((bank) => ({
-    url: `${baseUrl}/guides/${bank.bankSlug}`,
-    lastModified: new Date((bank as any).updatedAt || Date.now()),
+  const guides: MetadataRoute.Sitemap = getActiveBanks().map(b => ({
+    url: `${base}/guides/${b.routeSlug}`,
+    lastModified: b.updatedAt ? new Date(b.updatedAt) : new Date(),
     changeFrequency: 'monthly' as const,
-    priority: bank.priority,
+    priority: b.priority || 0.8,
   }));
 
-  return [...staticPages, ...guidePages];
+  return [...core, ...guides];
 }
-

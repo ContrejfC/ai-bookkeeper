@@ -34,6 +34,11 @@ export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
   const pathname = req.nextUrl.pathname;
   
+  // Bypass middleware for OG image endpoints
+  if (pathname.startsWith("/api/og/")) {
+    return NextResponse.next();
+  }
+  
   // If host doesn't match canonical, redirect with 308
   if (host && host !== CANONICAL_HOST) {
     const url = new URL(req.url);

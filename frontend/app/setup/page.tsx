@@ -441,19 +441,44 @@ npm run smoke:prod`} />
               <h3 className="text-2xl font-bold text-white">📞 Quick Reference</h3>
             </CardHeader>
             <CardBody>
-              <div className="grid md:grid-cols-2 gap-4">
-                <Link href="https://github.com/ContrejfC/ai-bookkeeper/settings/secrets/actions" target="_blank" className="text-emerald-400 hover:text-emerald-300">
-                  GitHub Secrets →
-                </Link>
-                <Link href="https://github.com/ContrejfC/ai-bookkeeper/actions" target="_blank" className="text-emerald-400 hover:text-emerald-300">
-                  GitHub Actions →
-                </Link>
-                <Link href="https://vercel.com/account/tokens" target="_blank" className="text-emerald-400 hover:text-emerald-300">
-                  Vercel Tokens →
-                </Link>
-                <Link href="https://ai-bookkeeper.app" target="_blank" className="text-emerald-400 hover:text-emerald-300">
-                  Production URL →
-                </Link>
+              <div className="space-y-6">
+                {/* Quick Links */}
+                <div>
+                  <h4 className="text-white font-semibold mb-3">🔗 Quick Links</h4>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <Link href="https://github.com/ContrejfC/ai-bookkeeper/settings/secrets/actions" target="_blank" className="text-emerald-400 hover:text-emerald-300">
+                      GitHub Secrets →
+                    </Link>
+                    <Link href="https://github.com/ContrejfC/ai-bookkeeper/actions" target="_blank" className="text-emerald-400 hover:text-emerald-300">
+                      GitHub Actions →
+                    </Link>
+                    <Link href="https://vercel.com/account/tokens" target="_blank" className="text-emerald-400 hover:text-emerald-300">
+                      Vercel Tokens →
+                    </Link>
+                    <Link href="https://ai-bookkeeper.app" target="_blank" className="text-emerald-400 hover:text-emerald-300">
+                      Production URL →
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Documentation */}
+                <div>
+                  <h4 className="text-white font-semibold mb-3">📚 Documentation</h4>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <Link href="https://github.com/ContrejfC/ai-bookkeeper/blob/main/SITEMAP_VISUAL.md" target="_blank" className="text-blue-400 hover:text-blue-300">
+                      🗺️ Complete Site Map →
+                    </Link>
+                    <Link href="https://github.com/ContrejfC/ai-bookkeeper/blob/main/CANONICAL_DOMAIN_CUTOVER.md" target="_blank" className="text-blue-400 hover:text-blue-300">
+                      🌐 Domain Setup Guide →
+                    </Link>
+                    <Link href="https://github.com/ContrejfC/ai-bookkeeper/blob/main/FREE_CATEGORIZER_SEO_DELIVERABLES.md" target="_blank" className="text-blue-400 hover:text-blue-300">
+                      📈 SEO Deliverables →
+                    </Link>
+                    <Link href="https://github.com/ContrejfC/ai-bookkeeper/blob/main/GPT5_UPGRADE_DELIVERABLES.md" target="_blank" className="text-blue-400 hover:text-blue-300">
+                      🤖 GPT-5 Implementation →
+                    </Link>
+                  </div>
+                </div>
               </div>
             </CardBody>
           </Card>

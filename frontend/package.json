@@ -10,6 +10,7 @@
     "lint": "next lint",
     "smoke:prod": "node ../scripts/smoke.js",
     "verify:prod": "ts-node scripts/verify_prod.ts",
+    "verify:pse": "bash scripts/verify_pse_full.sh",
     "check:pse": "tsx scripts/check_pse_assets.ts"
   },
   "engines": {

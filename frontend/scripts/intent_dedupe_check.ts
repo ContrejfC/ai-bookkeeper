@@ -26,7 +26,7 @@ function main() {
   const pseFilePath = join(__dirname, '../data/pse.json');
   
   // Check if file exists
-  if (!existsSync(pse FilePath)) {
+  if (!existsSync(pseFilePath)) {
     console.log('✅ No pse.json file found - skipping intent deduplication check');
     process.exit(0);
   }

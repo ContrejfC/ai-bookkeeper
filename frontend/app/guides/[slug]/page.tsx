@@ -17,6 +17,7 @@ import {
   type BankRecord,
 } from '@/lib/pse-banks';
 import { NonAffiliation } from '@/components/NonAffiliation';
+import { PSEAnalytics } from '@/components/PSEAnalytics';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
 
@@ -154,6 +155,9 @@ export default async function BankGuidePage({
 
   return (
     <>
+      {/* Analytics Tracker */}
+      <PSEAnalytics slug={slug} bankName={bank.bankName} format={bank.primaryFormat} />
+
       {/* JSON-LD Schemas */}
       <script
         type="application/ld+json"

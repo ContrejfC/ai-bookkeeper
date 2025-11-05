@@ -15,7 +15,9 @@ type AnalyticsEvent =
   | 'free_categorizer_download_clicked'
   | 'free_categorizer_upgrade_clicked'
   | 'free_categorizer_delete_clicked'
-  | 'lead_submitted';
+  | 'lead_submitted'
+  | 'pse_page_view'
+  | 'pse_cta_clicked';
 
 interface AnalyticsProperties {
   // Upload events
@@ -218,4 +220,13 @@ export function trackLLMFallback(primaryModel: string, fallbackModel: string, re
   }
   // In production, this would send to your analytics provider
   // analytics.track('llm_fallback', { primaryModel, fallbackModel, reason, ...properties });
+}
+
+// PSE (Programmatic SEO) tracking
+export function trackPSEPageView(slug: string, bankName: string, format: string = 'csv') {
+  analytics.track('pse_page_view', { slug, bank: bankName, format });
+}
+
+export function trackPSECtaClicked(cta: 'free_categorizer' | 'pricing', slug: string) {
+  analytics.track('pse_cta_clicked', { cta, slug });
 }

@@ -305,17 +305,17 @@ export default function FreeCategorizerPage() {
   const isWatermarked = totalRows > config.maxRows;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-16">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-16">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
             Free Bank Transaction Categorizer (CSV, OFX, QFX)
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+          <p className="text-xl text-gray-600 mb-8">
             Upload. Auto-categorize. Verify. Download CSV or export to QuickBooks.
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap justify-center items-center gap-3 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -400,24 +400,24 @@ export default function FreeCategorizerPage() {
               />
               
               {/* Consent Checkbox */}
-              <div className="max-w-2xl mx-auto bg-white rounded-lg p-6 border border-gray-200">
+              <div className="max-w-2xl mx-auto bg-white rounded-xl p-6 border-2 border-gray-200 shadow-sm">
                 <Checkbox
                   isSelected={consentTraining}
                   onValueChange={setConsentTraining}
                   aria-label="Consent to use anonymized data for model training"
                 >
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-800 font-medium">
                     Allow anonymized data to improve models (optional).{' '}
-                    <Link href="/privacy" className="text-blue-600 hover:underline" target="_blank">
+                    <Link href="/privacy" className="text-blue-600 hover:underline font-normal" target="_blank">
                       Privacy Policy
                     </Link>
                     {' • '}
-                    <Link href="/dpa" className="text-blue-600 hover:underline" target="_blank">
+                    <Link href="/dpa" className="text-blue-600 hover:underline font-normal" target="_blank">
                       DPA
                     </Link>
                   </span>
                 </Checkbox>
-                <p className="text-xs text-gray-500 mt-2 ml-7">
+                <p className="text-xs text-gray-600 mt-2 ml-7">
                   Your data is never used for training without your explicit consent.
                 </p>
               </div>
@@ -425,18 +425,22 @@ export default function FreeCategorizerPage() {
               {/* Sample Actions */}
               <div className="flex justify-center gap-4">
                 <Button
-                  color="default"
+                  color="primary"
                   variant="bordered"
+                  size="lg"
                   onPress={handleSampleClick}
                   aria-label="Use sample bank statement"
+                  className="font-semibold"
                 >
                   📊 Use Sample Statement
                 </Button>
                 <Button
-                  color="default"
+                  color="primary"
                   variant="bordered"
+                  size="lg"
                   onPress={handleShowSampleOutput}
                   aria-label="View sample CSV output"
+                  className="font-semibold"
                 >
                   👁️ See Sample CSV Output
                 </Button>

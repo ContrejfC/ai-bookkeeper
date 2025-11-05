@@ -1,9 +1,11 @@
 import { MetadataRoute } from 'next';
+import { getActiveBanks } from '@/lib/pse-banks';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
 
-  return [
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -59,5 +61,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
   ];
+
+  // PSE Guide pages (active banks only)
+  const activeBanks = getActiveBanks();
+  const guidePages: MetadataRoute.Sitemap = activeBanks.map((bank) => ({
+    url: `${baseUrl}/guides/${bank.bankSlug}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily' as const,
+    priority: bank.priority,
+  }));
+
+  return [...staticPages, ...guidePages];
 }
 

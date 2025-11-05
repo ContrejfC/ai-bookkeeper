@@ -3,8 +3,18 @@ name: OpenAPI Version Guard
 on:
   pull_request:
     branches: [main]
+    paths:
+      - 'backend/**'
+      - 'app/**'
+      - 'openapi.json'
+      - 'docs/openapi-v*.json'
   push:
     branches: [main]
+    paths:
+      - 'backend/**'
+      - 'app/**'
+      - 'openapi.json'
+      - 'docs/openapi-v*.json'
 
 jobs:
   check-openapi:

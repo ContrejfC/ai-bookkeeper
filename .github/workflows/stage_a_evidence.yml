@@ -3,6 +3,12 @@ name: Stage A Evidence - PostgreSQL + Migrations
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - 'app/**'
+      - 'alembic/**'
+      - 'requirements*.txt'
+      - '.github/workflows/stage_a_evidence.yml'
   # Disabled for PRs - use main CI workflow instead
   # pull_request:
   #   branches: [main]

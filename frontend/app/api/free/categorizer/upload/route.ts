@@ -214,11 +214,21 @@ export async function POST(request: NextRequest) {
     
     // Log consent if granted
     if (consentTraining) {
+      // Get version SHA from environment
+      const version_sha = process.env.VERCEL_GIT_COMMIT_SHA || 
+                         process.env.NEXT_PUBLIC_COMMIT_SHA || 
+                         'unknown';
+      
       const consentLog = {
         id: uuidv4(),
+        created_at: new Date().toISOString(),
         timestamp: new Date().toISOString(),
         upload_id: uploadId,
         consent_granted: true,
+        consent_training: consentTraining,
+        ip_hash: ipHash,
+        file_hash: fileHash,
+        version_sha: version_sha.slice(0, 7), // Short SHA
         file_hash_prefix: fileHash.substring(0, 16),
         metadata: {
           filename_hash: crypto.createHash('sha256').update(file.name).digest('hex').substring(0, 16)

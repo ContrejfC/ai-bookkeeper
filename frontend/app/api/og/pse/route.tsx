@@ -1,50 +1,21 @@
-/**
- * PSE OG Image Generator
- * =======================
- * Text-only, cacheable, trademark-safe.
- */
-
 import { ImageResponse } from 'next/og';
-import { NextResponse } from 'next/server';
-import { findBankByRouteSlug } from '@/lib/pse-banks';
 
 export const runtime = 'edge';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get('slug') || '';
-  const bank = findBankByRouteSlug(slug);
+  const title = slug.replace(/-export-csv$/,'').replace(/-/g,' ') + ' — Export CSV';
 
-  if (!bank) {
-    return new NextResponse('Invalid slug', { status: 400 });
-  }
-
-  const img = new ImageResponse(
+  const res = new ImageResponse(
     (
-      <div
-        style={{
-          width: 1200,
-          height: 630,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: 'white',
-          padding: 64,
-          color: '#111827',
-        }}
-      >
-        <div style={{ fontSize: 56, fontWeight: 700, marginBottom: 16, textAlign: 'center' }}>
-          {bank.name}: Export to CSV
-        </div>
-        <div style={{ fontSize: 32, color: '#374151', textAlign: 'center' }}>
-          Step-by-step guide • ai-bookkeeper.app
-        </div>
+      <div style={{ display:'flex', width:'100%', height:'100%', background:'#0b1220', color:'#fff', padding:'64px', fontSize:64 }}>
+        <div>{title}</div>
       </div>
     ),
     { width: 1200, height: 630 }
   );
 
-  img.headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
-  return img;
+  (res as any).headers.set('Cache-Control','public, max-age=86400, stale-while-revalidate=604800');
+  return res;
 }

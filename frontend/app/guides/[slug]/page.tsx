@@ -1,136 +1,100 @@
-/**
- * Bank Export Guide Page
- * =======================
- * SSG for active banks, on-demand for noindex.
- */
-
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { getActiveBanks, findBankByRouteSlug, toRouteSlug } from '@/lib/pse-banks';
+import { notFound } from 'next/navigation';
+import { findBankByRouteSlug, getActiveBanks, toRouteSlug } from '@/lib/pse-banks';
 
-export const dynamic = 'error'; // Force SSG
-export const revalidate = 86400;
+export const dynamicParams = true;        // allow non-prebuilt slugs to render
+export const revalidate = 86400;          // cache for a day
 
-const SITE = 'https://ai-bookkeeper.app';
-
-// Pre-build active banks only
 export async function generateStaticParams() {
   return getActiveBanks().map(b => ({ slug: toRouteSlug(b.slug) }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const bank = findBankByRouteSlug(slug);
-  if (!bank) return { robots: { index: false, follow: true } };
+type Props = { params: { slug: string } };
 
-  const url = `${SITE}/guides/${slug}`;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const bank = findBankByRouteSlug(params.slug);
+  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
+  if (!bank) {
+    return { robots: { index: false, follow: true }, title: 'Guide not found' };
+  }
   const title = `${bank.name} — Export Transactions to CSV (Guide)`;
-  const desc = `Step-by-step: export ${bank.name} transactions to CSV. Then auto-categorize with the Free Categorizer.`;
+  const canonical = `${site}/guides/${params.slug}`;
+  const robots = bank.active ? { index: true, follow: true } : { index: false, follow: true };
 
   return {
     title,
-    description: desc,
-    alternates: { canonical: url },
-    robots: bank.active ? { index: true, follow: true } : { index: false, follow: true },
+    description: `Step-by-step: export ${bank.name} transactions to CSV and categorize with AI Bookkeeper.`,
+    alternates: { canonical },
+    robots,
     openGraph: {
       title,
-      description: desc,
-      url,
-      images: [`${SITE}/api/og/pse?slug=${encodeURIComponent(slug)}`],
-      type: 'article',
+      url: canonical,
+      images: [`${site}/api/og/pse?slug=${params.slug}`],
+      type: 'website'
     },
-    twitter: { card: 'summary_large_image', title, description: desc },
+    twitter: { card: 'summary_large_image', title }
   };
 }
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const bank = findBankByRouteSlug(slug);
+export default function Page({ params }: Props) {
+  const bank = findBankByRouteSlug(params.slug);
   if (!bank) return notFound();
 
-  // JSON-LD: HowTo
   const howTo = {
-    '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    name: `How to export ${bank.name} transactions to CSV`,
-    step: [
-      { '@type': 'HowToStep', position: 1, name: `Sign in to ${bank.name}`, text: `Visit your ${bank.name} online banking portal.` },
-      { '@type': 'HowToStep', position: 2, name: 'Go to Transactions', text: 'Navigate to the Transactions or Activity section.' },
-      { '@type': 'HowToStep', position: 3, name: 'Select date range', text: 'Choose the date range for transactions to export.' },
-      { '@type': 'HowToStep', position: 4, name: 'Download CSV', text: 'Click Export or Download and select CSV format.' },
-      { '@type': 'HowToStep', position: 5, name: 'Categorize', text: 'Upload to the Free Categorizer for instant organization.' },
-    ],
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": `Export ${bank.name} transactions to CSV`,
+    "step": [
+      { "@type": "HowToStep", "name": "Log in", "text": `Sign in to ${bank.name} online banking.` },
+      { "@type": "HowToStep", "name": "Go to activity", "text": "Open account or transactions." },
+      { "@type": "HowToStep", "name": "Filter dates", "text": "Choose the desired date range." },
+      { "@type": "HowToStep", "name": "Export CSV", "text": "Choose CSV and download the file." },
+      { "@type": "HowToStep", "name": "Categorize", "text": "Upload to AI Bookkeeper to auto-categorize." }
+    ]
   };
 
-  // JSON-LD: FAQ
   const faq = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `How do I export ${bank.name} transactions to CSV?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Log in to ${bank.name} online banking, go to Transactions, select your date range, then download in CSV format.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `Can I export business transactions from ${bank.name}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Yes, most ${bank.name} business accounts support CSV exports through the business banking portal.`,
-        },
-      },
-    ],
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": `Where is ${bank.name}'s export?`,
+        "acceptedAnswer": { "@type": "Answer", "text": "Usually in account activity or statements." } },
+      { "@type": "Question", "name": "Which format is best?",
+        "acceptedAnswer": { "@type": "Answer", "text": "CSV is best for import and cleanup." } },
+      { "@type": "Question", "name": "Can I include categories?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Export raw, then categorize in AI Bookkeeper." } }
+    ]
   };
 
   return (
-    <>
+    <main className="mx-auto max-w-3xl px-4 py-10">
+      <h1 className="text-3xl font-bold mb-2">{bank.name} — Export Transactions to CSV</h1>
+      <p className="text-gray-600 mb-6">
+        Quick guide to download your {bank.name} transactions as CSV. Then use our
+        {' '}<a className="underline" href="/free/categorizer">Free Categorizer</a>{' '}to clean and tag them.
+      </p>
+
+      <ol className="list-decimal pl-6 space-y-2">
+        <li>Sign in to {bank.name} online banking.</li>
+        <li>Open account activity.</li>
+        <li>Choose your date range.</li>
+        <li>Export as CSV.</li>
+        <li>Upload to the Free Categorizer.</li>
+      </ol>
+
+      <div className="mt-8">
+        <a href="/free/categorizer" className="inline-block rounded bg-emerald-600 px-4 py-2 text-white">
+          Use Free Categorizer
+        </a>
+        <a href="/pricing" className="ml-3 underline">See pricing</a>
+      </div>
+
+      <p className="mt-8 text-xs text-gray-500">
+        Not affiliated with {bank.name}. Names are for identification only.
+      </p>
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
-      
-      <main className="mx-auto max-w-3xl px-4 py-10">
-        <h1 className="text-3xl font-bold mb-2">{bank.name}: Export Transactions to CSV</h1>
-        <p className="text-gray-600 mb-6">
-          Follow these steps to export your data. Then use our{' '}
-          <Link className="underline text-emerald-600" href="/free/categorizer">
-            Free Categorizer
-          </Link>{' '}
-          to auto-categorize and download a clean CSV or export to QuickBooks.
-        </p>
-
-        <ol className="list-decimal pl-5 space-y-2 mb-8">
-          <li>Sign in to your {bank.name} online banking.</li>
-          <li>Go to Transactions or Activity.</li>
-          <li>Select date range and click Export.</li>
-          <li>Choose CSV. Download the file.</li>
-          <li>Open the CSV in the Free Categorizer and verify categories.</li>
-        </ol>
-
-        <div className="flex gap-3 mb-12">
-          <Link
-            href="/free/categorizer"
-            className="px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700"
-          >
-            Use Free Categorizer
-          </Link>
-          <Link href="/pricing" className="px-4 py-2 rounded border hover:bg-gray-50">
-            See Pricing
-          </Link>
-        </div>
-
-        <p className="mt-10 text-xs text-gray-500 border-t pt-4">
-          This page is for informational purposes. {bank.name} is a trademark of its respective owner.
-          AI Bookkeeper is not affiliated with or endorsed by {bank.name}.
-        </p>
-      </main>
-    </>
+    </main>
   );
 }

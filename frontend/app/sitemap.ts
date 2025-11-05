@@ -1,27 +1,24 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 import { getActiveBanks, toRouteSlug } from '@/lib/pse-banks';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://ai-bookkeeper.app';
-
-  const core: MetadataRoute.Sitemap = [
-    { url: `${base}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
-    { url: `${base}/free/categorizer`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${base}/gpt-bridge`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${base}/tools/csv-cleaner`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${base}/pricing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${base}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${base}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${base}/dpa`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${base}/security`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-  ];
-
-  const guides: MetadataRoute.Sitemap = getActiveBanks().map(b => ({
-    url: `${base}/guides/${toRouteSlug(b.slug)}`,
-    lastModified: new Date(),
+  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
+  const guides = getActiveBanks().map(b => ({
+    url: `${site}/guides/${toRouteSlug(b.slug)}`,
     changeFrequency: 'monthly' as const,
-    priority: b.priority || 0.8,
+    priority: b.priority ?? 0.7
   }));
 
-  return [...core, ...guides];
+  return [
+    { url: `${site}/`, changeFrequency: 'monthly', priority: 1.0 },
+    { url: `${site}/free/categorizer`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${site}/pricing`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${site}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${site}/terms`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${site}/dpa`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${site}/security`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${site}/gpt-bridge`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${site}/tools/csv-cleaner`, changeFrequency: 'weekly', priority: 0.9 },
+    ...guides
+  ];
 }

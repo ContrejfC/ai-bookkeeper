@@ -106,14 +106,66 @@ export function getAllBankSlugs(): string[] {
 
 ### `active`
 - **Included in:** Sitemap, search engines
-- **Robots:** `index,follow`
+- **Robots:** `index: true, follow: true` (via Next.js metadata API)
+- **Rendering:** All pages render (static generation)
 - **Use for:** Current, operational banks
 
 ### `noindex`
-- **Included in:** Rendered pages (for direct links)
-- **Excluded from:** Sitemap
-- **Robots:** `noindex,follow`
+- **Rendering:** Pages render (for direct links, bookmarks)
+- **Excluded from:** Sitemap (only active banks included)
+- **Robots:** `index: false, follow: true` (via Next.js metadata API)
+- **HTML Output:** `<meta name="robots" content="noindex,follow">` (via metadata)
 - **Use for:** Defunct, merged, or low-priority banks
+
+## Robots Behavior
+
+### Generation Rules
+- **All pages render:** Both active and noindex pages are statically generated
+- **Robots via metadata:** Next.js metadata API sets robots directives
+- **No manual meta tags:** Robots handled automatically by `generateMetadata()`
+
+### Active Pages
+```typescript
+robots: {
+  index: true,
+  follow: true
+}
+```
+
+### Noindex Pages
+```typescript
+robots: {
+  index: false,
+  follow: true
+}
+```
+
+## Sitemap Policy
+
+### Inclusion Rules
+- **Only active banks:** `getActiveBanks()` filters `status === 'active'`
+- **Excludes noindex:** Defunct/merged banks not in sitemap
+- **Priority:** Uses bank-specific priority (0.6-0.9)
+- **Change frequency:** `monthly`
+- **Last modified:** Uses `updatedAt` field or current date
+
+### Structure
+```typescript
+{
+  url: `${SITE_URL}/guides/${bank.bankSlug}`,
+  lastModified: new Date(bank.updatedAt || Date.now()),
+  changeFrequency: 'monthly',
+  priority: bank.priority
+}
+```
+
+### Verification
+```bash
+# Count guide URLs in sitemap
+curl -s https://ai-bookkeeper.app/sitemap.xml | grep -c '/guides/'
+
+# Should return ≥50 (52 active banks)
+```
 
 ## Trademark Policy
 
@@ -136,6 +188,37 @@ This script checks for:
 - Logo imports or paths
 - Banned brand colors (hex codes)
 - Violations in guides, components, OG images, and data
+
+## OG Image Usage
+
+### Endpoint
+- **URL:** `/api/og/pse?slug=${slug}`
+- **Method:** GET
+- **Returns:** PNG image (1200×630)
+
+### Features
+- **Text-only:** No logos, no brand colors
+- **Neutral palette:** Gray/emerald background
+- **Cache headers:** `public, max-age=86400, stale-while-revalidate=604800`
+- **404 handling:** Returns 404 if bank not found
+
+### Usage in Metadata
+```typescript
+images: [
+  {
+    url: `${SITE_URL}/api/og/pse?slug=${encodeURIComponent(slug)}`,
+    width: 1200,
+    height: 630,
+    alt: `${bank.bankName} Export Guide`,
+  },
+]
+```
+
+### Verification
+```bash
+curl -sI 'https://ai-bookkeeper.app/api/og/pse?slug=chase-export-csv' | head -5
+# Should return 200 with cache-control header
+```
 
 ## SEO Elements
 
@@ -220,12 +303,73 @@ npx playwright test tests/e2e/pse-guides.spec.ts
 3. Rebuild and redeploy
 4. Monitor GSC for 404s or indexing issues
 
+## Verification Steps
+
+### Quick Verification Script
+```bash
+npm run verify:pse  # If added to package.json
+# OR
+bash scripts/verify_pse.sh
+```
+
+### Manual Verification
+
+**1. Active guide page (200, indexable):**
+```bash
+curl -sI https://ai-bookkeeper.app/guides/chase-export-csv | head -5
+# Should return 200 OK
+```
+
+**2. Noindex guide page (200, robots noindex):**
+```bash
+curl -s https://ai-bookkeeper.app/guides/peoples-united-export-csv | grep -i 'name="robots"'
+# Should show: <meta name="robots" content="noindex,follow">
+```
+
+**3. Sitemap includes ≥50 guides:**
+```bash
+curl -s https://ai-bookkeeper.app/sitemap.xml | grep -c '/guides/'
+# Should return ≥50 (52 active banks)
+```
+
+**4. OG endpoint returns 200 PNG:**
+```bash
+curl -sI 'https://ai-bookkeeper.app/api/og/pse?slug=chase-export-csv' | head -5
+# Should return 200 with content-type: image/png
+# Should have cache-control header
+```
+
+### E2E Tests
+```bash
+npx playwright test tests/e2e/pse-guides.spec.ts
+```
+
+**Coverage:**
+- ✅ Active guide (Chase): 200, H1, canonical, JSON-LD, CTAs, OG
+- ✅ Noindex guide (People's United): 200, robots noindex, not in sitemap
+- ✅ Sitemap: ≥50 guide URLs, excludes noindex
+- ✅ OG endpoint: 200 PNG with cache headers
+- ✅ 404 handling: Invalid slug returns 404
+
 ## Troubleshooting
 
 ### Bank page not showing in sitemap
 - Check `status: "active"` in banks.json
+- Verify `getActiveBanks()` filters correctly
 - Rebuild: `npm run build`
 - Verify with `curl https://ai-bookkeeper.app/sitemap.xml | grep <slug>`
+
+### Noindex page still indexed
+- Check `robots: { index: false }` in `generateMetadata()`
+- Verify Next.js metadata is rendering correctly
+- Check browser dev tools for `<meta name="robots">` tag
+- Ensure noindex bank is not in sitemap
+
+### OG image not loading
+- Check slug parameter: `/api/og/pse?slug=chase-export-csv`
+- Verify bank exists: `getBankBySlug(slug)`
+- Check cache headers in response
+- Verify edge runtime is enabled
 
 ### Trademark safety check failing
 - Remove logo imports or paths

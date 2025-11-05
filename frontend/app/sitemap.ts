@@ -66,8 +66,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const activeBanks = getActiveBanks();
   const guidePages: MetadataRoute.Sitemap = activeBanks.map((bank) => ({
     url: `${baseUrl}/guides/${bank.bankSlug}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
+    lastModified: new Date((bank as any).updatedAt || Date.now()),
+    changeFrequency: 'monthly' as const,
     priority: bank.priority,
   }));
 

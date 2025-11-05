@@ -51,11 +51,21 @@ test.describe('PSE Bank Export Guides', () => {
         // Check that noindex is NOT present (active banks should be indexed)
         const noindexMeta = await page.locator('meta[name="robots"][content*="noindex"]').count();
         expect(noindexMeta).toBe(0);
+        
+        // Verify robots header allows indexing
+        const robotsHeader = await page.locator('meta[name="robots"]').first();
+        if (await robotsHeader.count() > 0) {
+          const content = await robotsHeader.getAttribute('content');
+          expect(content).not.toContain('noindex');
+        }
       });
 
       test('should include HowTo JSON-LD schema', async ({ page }) => {
         await page.goto(`${BASE_URL}/guides/${bank.slug}`);
         const jsonLdScripts = await page.locator('script[type="application/ld+json"]').all();
+        
+        // Should have at least 2 JSON-LD schemas
+        expect(jsonLdScripts.length).toBeGreaterThanOrEqual(2);
         
         let foundHowTo = false;
         for (const script of jsonLdScripts) {
@@ -133,10 +143,15 @@ test.describe('PSE Bank Export Guides', () => {
         await expect(disclaimer).toBeVisible();
       });
 
-      test('OG image endpoint should return 200', async ({ request }) => {
+      test('OG image endpoint should return 200 with cache headers', async ({ request }) => {
         const response = await request.get(`${BASE_URL}/api/og/pse?slug=${bank.slug}`);
         expect(response.status()).toBe(200);
         expect(response.headers()['content-type']).toContain('image/png');
+        
+        // Check cache headers
+        const cacheControl = response.headers()['cache-control'];
+        expect(cacheControl).toContain('public');
+        expect(cacheControl).toContain('max-age=86400');
       });
     });
   }
@@ -188,6 +203,17 @@ test.describe('PSE Bank Export Guides', () => {
       for (const bank of ACTIVE_BANKS) {
         expect(sitemap).toContain(`/guides/${bank.slug}`);
       }
+    });
+
+    test('should have ≥50 guide URLs in sitemap', async ({ request }) => {
+      const response = await request.get(`${BASE_URL}/sitemap.xml`);
+      const sitemap = await response.text();
+      
+      // Count guide URLs
+      const guideMatches = sitemap.match(/\/guides\/[^<]+/g) || [];
+      const guideCount = guideMatches.length;
+      
+      expect(guideCount).toBeGreaterThanOrEqual(50);
     });
 
     test('should have proper sitemap structure with loc and lastmod', async ({ request }) => {

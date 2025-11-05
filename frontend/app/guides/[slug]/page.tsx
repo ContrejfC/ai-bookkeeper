@@ -49,15 +49,16 @@ export async function generateMetadata({
   const description = `Learn to export ${bank.bankName} transactions to CSV and categorize them in minutes. Step-by-step instructions plus a free CSV categorizer.`;
   const canonical = `${SITE_URL}/guides/${slug}`;
 
-  const robots = bank.status === 'noindex' ? 'noindex,follow' : 'index,follow';
-
   return {
     title,
     description,
     alternates: {
       canonical,
     },
-    robots,
+    robots: {
+      index: bank.status === 'active',
+      follow: true,
+    },
     openGraph: {
       title,
       description,

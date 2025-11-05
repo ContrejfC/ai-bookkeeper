@@ -9,16 +9,19 @@ export async function generateStaticParams() {
   return getActiveBanks().map(b => ({ slug: toRouteSlug(b.slug) }));
 }
 
-type Props = { params: { slug: string } };
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const bank = findBankByRouteSlug(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const bank = findBankByRouteSlug(slug);
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-bookkeeper.app';
   if (!bank) {
     return { robots: { index: false, follow: true }, title: 'Guide not found' };
   }
   const title = `${bank.name} — Export Transactions to CSV (Guide)`;
-  const canonical = `${site}/guides/${params.slug}`;
+  const canonical = `${site}/guides/${slug}`;
   const robots = bank.active ? { index: true, follow: true } : { index: false, follow: true };
 
   return {
@@ -29,15 +32,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       url: canonical,
-      images: [`${site}/api/og/pse?slug=${params.slug}`],
+      images: [`${site}/api/og/pse?slug=${slug}`],
       type: 'website'
     },
     twitter: { card: 'summary_large_image', title }
   };
 }
 
-export default function Page({ params }: Props) {
-  const bank = findBankByRouteSlug(params.slug);
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const bank = findBankByRouteSlug(slug);
   if (!bank) return notFound();
 
   const howTo = {

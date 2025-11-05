@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "smoke:prod": "node ../scripts/smoke.js",
-    "verify:prod": "ts-node scripts/verify_prod.ts"
+    "verify:prod": "ts-node scripts/verify_prod.ts",
+    "check:pse": "tsx scripts/check_pse_assets.ts"
   },
   "engines": {
     "node": ">=20"

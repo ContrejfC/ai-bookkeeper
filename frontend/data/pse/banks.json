@@ -1,0 +1,3464 @@
+{
+  "version": "1.0",
+  "banks": [
+    {
+      "id": "chase",
+      "bankSlug": "chase-export-csv",
+      "bankName": "Chase",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.9,
+      "faq": [
+        {
+          "q": "How do I export Chase transactions to CSV?",
+          "a": "Log in to Chase online banking, go to Statements & Activity, select your account and date range, then click Download and choose CSV format."
+        },
+        {
+          "q": "Can I export Chase credit card transactions?",
+          "a": "Yes, both checking and credit card transactions can be exported using the same process in the Activity section."
+        },
+        {
+          "q": "What date range can I export from Chase?",
+          "a": "Chase typically allows exports for up to 18-24 months of transaction history."
+        },
+        {
+          "q": "Does Chase support OFX format?",
+          "a": "Yes, Chase supports CSV, OFX, and QFX formats for transaction exports."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Chase online banking",
+          "body": "Visit chase.com and sign in with your username and password."
+        },
+        {
+          "title": "Navigate to Statements & Activity",
+          "body": "Select the account you want to export from the account list."
+        },
+        {
+          "title": "Select date range",
+          "body": "Choose the date range for transactions you want to export (up to 18 months)."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Click the Download button and select CSV format from the dropdown menu."
+        },
+        {
+          "title": "Save and categorize",
+          "body": "Save the CSV file to your computer, then upload it to our free categorizer tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Chase may limit downloads to 500 transactions per export",
+          "Business accounts have a separate portal at chase.com/business"
+        ]
+      }
+    },
+    {
+      "id": "bank-of-america",
+      "bankSlug": "bank-of-america-export-csv",
+      "bankName": "Bank of America",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.9,
+      "faq": [
+        {
+          "q": "How do I download Bank of America transactions?",
+          "a": "Sign in to Online Banking, select your account, go to Statements & Documents, then choose Download Transactions and select CSV format."
+        },
+        {
+          "q": "Can I export business account transactions?",
+          "a": "Yes, Bank of America business accounts support CSV exports through the Business Advantage portal."
+        },
+        {
+          "q": "How far back can I download transactions?",
+          "a": "Bank of America allows downloads for up to 24 months of transaction history."
+        },
+        {
+          "q": "What file formats does BofA support?",
+          "a": "Bank of America supports CSV, QFX, OFX, and QBO formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in to Online Banking",
+          "body": "Go to bankofamerica.com and log in with your credentials."
+        },
+        {
+          "title": "Select your account",
+          "body": "Choose the checking, savings, or credit card account from your account list."
+        },
+        {
+          "title": "Access download options",
+          "body": "Click on Statements & Documents, then select Download Transactions."
+        },
+        {
+          "title": "Choose format and date range",
+          "body": "Select CSV format and specify your desired date range (up to 24 months)."
+        },
+        {
+          "title": "Download and process",
+          "body": "Click Download, save the file, and upload to the categorizer tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "May require enabling downloads in security settings",
+          "Business accounts use business.bankofamerica.com"
+        ]
+      }
+    },
+    {
+      "id": "wells-fargo",
+      "bankSlug": "wells-fargo-export-csv",
+      "bankName": "Wells Fargo",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.9,
+      "faq": [
+        {
+          "q": "How do I export Wells Fargo transactions?",
+          "a": "Log in to Wells Fargo Online, select your account, click Download Account Activity, choose CSV format and your date range."
+        },
+        {
+          "q": "Can I export Wells Fargo credit card transactions?",
+          "a": "Yes, credit card transactions can be exported the same way as checking account transactions."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "Wells Fargo allows exports for up to 18 months of transaction data."
+        },
+        {
+          "q": "Does Wells Fargo support Quicken format?",
+          "a": "Yes, Wells Fargo supports QFX (Quicken) and OFX formats in addition to CSV."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Wells Fargo Online",
+          "body": "Visit wellsfargo.com and sign in with your username and password."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose the account you want to export from your account summary."
+        },
+        {
+          "title": "Access download options",
+          "body": "Click on Download Account Activity in the account details section."
+        },
+        {
+          "title": "Select format and dates",
+          "body": "Choose CSV format and select your date range (up to 18 months)."
+        },
+        {
+          "title": "Download and categorize",
+          "body": "Download the file and upload it to our categorizer for instant categorization."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Business accounts may have different download limits",
+          "May need to disable pop-up blockers"
+        ]
+      }
+    },
+    {
+      "id": "citi",
+      "bankSlug": "citi-export-csv",
+      "bankName": "Citi",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.9,
+      "faq": [
+        {
+          "q": "How do I download Citi bank transactions?",
+          "a": "Sign in to Citi Online, select your account, go to Account Activity, then click Download and choose CSV format."
+        },
+        {
+          "q": "Can I export Citi credit card statements?",
+          "a": "Yes, both bank and credit card transactions can be exported to CSV format."
+        },
+        {
+          "q": "How many months of transactions can I export?",
+          "a": "Citi allows exports for up to 18 months of transaction history."
+        },
+        {
+          "q": "What formats does Citi support?",
+          "a": "Citi supports CSV, OFX, QFX, and QBO formats for various accounting software."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in to Citi Online",
+          "body": "Go to citibank.com or citi.com and log in to your account."
+        },
+        {
+          "title": "Navigate to Account Activity",
+          "body": "Select the account you want to export and click on Account Activity."
+        },
+        {
+          "title": "Choose download option",
+          "body": "Click the Download link at the top of your transaction list."
+        },
+        {
+          "title": "Select CSV format",
+          "body": "Choose CSV from the format dropdown and select your date range."
+        },
+        {
+          "title": "Process your export",
+          "body": "Download the file and use our free categorizer to organize your transactions."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Business accounts use citimanager.citibank.com",
+          "May require two-factor authentication"
+        ]
+      }
+    },
+    {
+      "id": "capital-one",
+      "bankSlug": "capital-one-export-csv",
+      "bankName": "Capital One",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.9,
+      "faq": [
+        {
+          "q": "How do I export Capital One transactions?",
+          "a": "Log in to your Capital One account, select your card or account, go to View All Transactions, then click Download."
+        },
+        {
+          "q": "Can I export Capital One credit card transactions?",
+          "a": "Yes, Capital One makes it easy to export both credit card and bank account transactions."
+        },
+        {
+          "q": "What date range can I download?",
+          "a": "Capital One typically allows downloads for up to 12-18 months."
+        },
+        {
+          "q": "Does Capital One support OFX format?",
+          "a": "Yes, Capital One supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Capital One",
+          "body": "Visit capitalone.com and sign in with your credentials."
+        },
+        {
+          "title": "Select your account",
+          "body": "Choose the credit card or bank account you want to export."
+        },
+        {
+          "title": "View all transactions",
+          "body": "Click on View All Transactions to see your complete transaction history."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Click the Download button and select CSV as your format."
+        },
+        {
+          "title": "Categorize instantly",
+          "body": "Upload your CSV to our free categorizer for automatic categorization."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Spark Business has separate portal",
+          "Mobile app also supports exports"
+        ]
+      }
+    },
+    {
+      "id": "us-bank",
+      "bankSlug": "us-bank-export-csv",
+      "bankName": "U.S. Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export U.S. Bank transactions?",
+          "a": "Sign in to U.S. Bank online banking, select your account, click on Statements & Docs, then Export to CSV."
+        },
+        {
+          "q": "Can I download business account transactions?",
+          "a": "Yes, U.S. Bank business accounts support CSV exports through the business banking portal."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "U.S. Bank allows transaction exports for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "U.S. Bank supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in to U.S. Bank",
+          "body": "Visit usbank.com and log in to online banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose the account you want to export from your dashboard."
+        },
+        {
+          "title": "Access statements",
+          "body": "Go to Statements & Documents section."
+        },
+        {
+          "title": "Export transactions",
+          "body": "Click Export to CSV and select your date range."
+        },
+        {
+          "title": "Upload and categorize",
+          "body": "Save the file and use our categorizer tool to organize transactions."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Business portal at businessbanking.usbank.com"
+        ]
+      }
+    },
+    {
+      "id": "pnc",
+      "bankSlug": "pnc-export-csv",
+      "bankName": "PNC Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I download PNC transactions?",
+          "a": "Log in to PNC Online Banking, select your account, click Download Transactions, and choose CSV format."
+        },
+        {
+          "q": "Can I export PNC business transactions?",
+          "a": "Yes, PNC business accounts support transaction exports through the Treasury Management portal."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "PNC allows exports for up to 18 months of transaction data."
+        },
+        {
+          "q": "Does PNC support Quicken?",
+          "a": "Yes, PNC supports QFX (Quicken), OFX, and CSV formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to PNC",
+          "body": "Go to pnc.com and access your online banking account."
+        },
+        {
+          "title": "Choose account",
+          "body": "Select the account from your account list."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Click on Download Transactions or Export."
+        },
+        {
+          "title": "Select CSV format",
+          "body": "Choose CSV and specify your date range (up to 18 months)."
+        },
+        {
+          "title": "Process export",
+          "body": "Download and upload to our categorizer for instant organization."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Acquired BBVA USA accounts",
+          "Business users use pnc.com/businessbanking"
+        ]
+      }
+    },
+    {
+      "id": "truist",
+      "bankSlug": "truist-export-csv",
+      "bankName": "Truist",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Truist transactions?",
+          "a": "Sign in to Truist online banking, select your account, go to Activity, then click Download and select CSV."
+        },
+        {
+          "q": "Can former BB&T and SunTrust customers export transactions?",
+          "a": "Yes, all accounts migrated to Truist can export transactions normally."
+        },
+        {
+          "q": "How many months can I export?",
+          "a": "Truist allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does Truist support?",
+          "a": "Truist supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in to Truist",
+          "body": "Visit truist.com and log in to online banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your checking, savings, or business account."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to the Activity or Transactions section."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Click Download and select CSV format with your date range."
+        },
+        {
+          "title": "Categorize transactions",
+          "body": "Upload your CSV to our free categorizer tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Formed from BB&T and SunTrust merger"
+        ]
+      }
+    },
+    {
+      "id": "td-bank",
+      "bankSlug": "td-bank-export-csv",
+      "bankName": "TD Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export TD Bank transactions?",
+          "a": "Log in to TD Bank EasyWeb, select your account, click Export Transactions, and choose CSV format."
+        },
+        {
+          "q": "Can I export TD business account transactions?",
+          "a": "Yes, TD Bank business accounts support CSV exports through the Small Business Banking portal."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "TD Bank allows downloads for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "TD Bank supports CSV, OFX, QFX, and QBO formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to EasyWeb",
+          "body": "Visit tdbank.com and sign in to online banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose the account you want to export."
+        },
+        {
+          "title": "Export transactions",
+          "body": "Click on Export Transactions or Download."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format and your date range."
+        },
+        {
+          "title": "Upload to categorizer",
+          "body": "Download the file and use our tool to categorize transactions."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Business accounts at tdbank.com/small-business"
+        ]
+      }
+    },
+    {
+      "id": "regions",
+      "bankSlug": "regions-export-csv",
+      "bankName": "Regions Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Regions Bank transactions?",
+          "a": "Sign in to Regions Online Banking, select your account, go to Statements, then click Download and choose CSV."
+        },
+        {
+          "q": "Can I download business transactions?",
+          "a": "Yes, Regions business accounts support transaction exports."
+        },
+        {
+          "q": "What is the export date range limit?",
+          "a": "Regions typically allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Regions support OFX?",
+          "a": "Yes, Regions supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in to Regions",
+          "body": "Go to regions.com and log in to online banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account from the dashboard."
+        },
+        {
+          "title": "Access statements",
+          "body": "Navigate to Statements & Documents."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Select Download and choose CSV format."
+        },
+        {
+          "title": "Process with categorizer",
+          "body": "Upload your CSV for automatic categorization."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Strong presence in Southeast US"
+        ]
+      }
+    },
+    {
+      "id": "fifth-third",
+      "bankSlug": "fifth-third-export-csv",
+      "bankName": "Fifth Third Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Fifth Third transactions?",
+          "a": "Log in to Fifth Third online banking, select your account, click Download Transactions, and choose CSV."
+        },
+        {
+          "q": "Can I export business account data?",
+          "a": "Yes, Fifth Third business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I download?",
+          "a": "Fifth Third allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Fifth Third supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit 53.com and sign in to online banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose the account to export."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Click Download Transactions or Export."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format and date range."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our free categorizer tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Midwest regional bank"
+        ]
+      }
+    },
+    {
+      "id": "keybank",
+      "bankSlug": "keybank-export-csv",
+      "bankName": "KeyBank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I download KeyBank transactions?",
+          "a": "Sign in to Key.com, select your account, go to Account Activity, then click Export and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, KeyBank business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "KeyBank allows exports for up to 18 months."
+        },
+        {
+          "q": "Does KeyBank support Quicken?",
+          "a": "Yes, KeyBank supports QFX, OFX, and CSV formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in to Key.com",
+          "body": "Log in to KeyBank online banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account from the list."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to Account Activity."
+        },
+        {
+          "title": "Export transactions",
+          "body": "Click Export and select CSV format."
+        },
+        {
+          "title": "Upload to categorizer",
+          "body": "Use our tool to categorize your transactions."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "huntington",
+      "bankSlug": "huntington-export-csv",
+      "bankName": "Huntington Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Huntington transactions?",
+          "a": "Log in to Huntington online banking, select your account, click Download, and choose CSV format."
+        },
+        {
+          "q": "Can I download business account transactions?",
+          "a": "Yes, Huntington business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Huntington allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats does Huntington support?",
+          "a": "Huntington supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit huntington.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download or Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "citizens-bank",
+      "bankSlug": "citizens-bank-export-csv",
+      "bankName": "Citizens Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Citizens Bank transactions?",
+          "a": "Sign in to Citizens Bank online, select your account, go to Activity, then click Export to CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Citizens business accounts support transaction exports."
+        },
+        {
+          "q": "What is the export limit?",
+          "a": "Citizens allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Citizens supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to citizensbank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export to CSV."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "m-and-t",
+      "bankSlug": "m-and-t-export-csv",
+      "bankName": "M&T Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I download M&T Bank transactions?",
+          "a": "Log in to M&T Online Banking, select your account, click Download, and choose CSV format."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, M&T business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I download?",
+          "a": "M&T allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does M&T support?",
+          "a": "M&T supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit mtb.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Acquired People's United Bank"
+        ]
+      }
+    },
+    {
+      "id": "bmo",
+      "bankSlug": "bmo-export-csv",
+      "bankName": "BMO (Bank of Montreal)",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export BMO transactions?",
+          "a": "Sign in to BMO Digital Banking, select your account, go to Statements, then click Download and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, BMO business accounts support transaction exports."
+        },
+        {
+          "q": "What is the download limit?",
+          "a": "BMO allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "BMO supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to bmo.com/digital-banking."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Access statements",
+          "body": "Go to Statements & Documents."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download and select CSV."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Acquired Bank of the West"
+        ]
+      }
+    },
+    {
+      "id": "santander",
+      "bankSlug": "santander-export-csv",
+      "bankName": "Santander Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Santander transactions?",
+          "a": "Log in to Santander Online Banking, select your account, click Download Transactions, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Santander business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "Santander allows exports for up to 12 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Santander supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit santanderbank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "comerica",
+      "bankSlug": "comerica-export-csv",
+      "bankName": "Comerica Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Comerica transactions?",
+          "a": "Sign in to Comerica Web Banking, select your account, click Export, and choose CSV format."
+        },
+        {
+          "q": "Can I export business account data?",
+          "a": "Yes, Comerica business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "Comerica allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Comerica support OFX?",
+          "a": "Yes, Comerica supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to comerica.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Strong business banking presence"
+        ]
+      }
+    },
+    {
+      "id": "first-citizens",
+      "bankSlug": "first-citizens-export-csv",
+      "bankName": "First Citizens Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export First Citizens transactions?",
+          "a": "Log in to First Citizens Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I download business transactions?",
+          "a": "Yes, First Citizens business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I export?",
+          "a": "First Citizens allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does First Citizens support?",
+          "a": "First Citizens supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit firstcitizens.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Acquired SVB assets"
+        ]
+      }
+    },
+    {
+      "id": "zions",
+      "bankSlug": "zions-export-csv",
+      "bankName": "Zions Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Zions Bank transactions?",
+          "a": "Sign in to Zions Online Banking, select your account, go to Activity, then click Export to CSV."
+        },
+        {
+          "q": "Can I export business account data?",
+          "a": "Yes, Zions business accounts support transaction exports."
+        },
+        {
+          "q": "What is the download limit?",
+          "a": "Zions allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "Zions supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to zionsbank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export to CSV."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Regional bank in Western US"
+        ]
+      }
+    },
+    {
+      "id": "frost",
+      "bankSlug": "frost-export-csv",
+      "bankName": "Frost Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Frost Bank transactions?",
+          "a": "Log in to Frost Internet Banking, select your account, click Download, and choose CSV format."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Frost business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "Frost allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does Frost support?",
+          "a": "Frost supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit frostbank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Texas-based regional bank"
+        ]
+      }
+    },
+    {
+      "id": "synovus",
+      "bankSlug": "synovus-export-csv",
+      "bankName": "Synovus Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Synovus transactions?",
+          "a": "Sign in to Synovus Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, Synovus business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "Synovus allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Synovus support OFX?",
+          "a": "Yes, Synovus supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to synovus.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Southeast regional bank"
+        ]
+      }
+    },
+    {
+      "id": "valley",
+      "bankSlug": "valley-export-csv",
+      "bankName": "Valley National Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Valley Bank transactions?",
+          "a": "Log in to Valley Online Banking, select your account, click Download, and choose CSV format."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Valley business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I download?",
+          "a": "Valley allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Valley supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit valley.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "webster",
+      "bankSlug": "webster-export-csv",
+      "bankName": "Webster Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Webster Bank transactions?",
+          "a": "Sign in to Webster Online Banking, select your account, go to Activity, then click Export to CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, Webster business accounts support transaction exports."
+        },
+        {
+          "q": "What is the download limit?",
+          "a": "Webster allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats does Webster support?",
+          "a": "Webster supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to websterbank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export to CSV."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Northeast regional bank"
+        ]
+      }
+    },
+    {
+      "id": "east-west-bank",
+      "bankSlug": "east-west-bank-export-csv",
+      "bankName": "East West Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export East West Bank transactions?",
+          "a": "Log in to East West Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, East West business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "East West allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "East West supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit eastwestbank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "american-express-business",
+      "bankSlug": "american-express-business-export-csv",
+      "bankName": "American Express Business",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.9,
+      "faq": [
+        {
+          "q": "How do I export Amex Business transactions?",
+          "a": "Log in to americanexpress.com, select your business card, go to Statements & Activity, then click Download and choose CSV."
+        },
+        {
+          "q": "Can I export multiple months at once?",
+          "a": "Yes, you can select custom date ranges or individual statement periods."
+        },
+        {
+          "q": "How far back can I download transactions?",
+          "a": "American Express allows exports for up to 7 years of transaction history."
+        },
+        {
+          "q": "What file formats does Amex support?",
+          "a": "American Express supports CSV, OFX, QFX, and QBO formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Amex",
+          "body": "Visit americanexpress.com and sign in to your business account."
+        },
+        {
+          "title": "Select your card",
+          "body": "Choose the business card you want to export."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to Statements & Activity."
+        },
+        {
+          "title": "Download transactions",
+          "body": "Click Download and select CSV format with your date range."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload your CSV to our free categorizer for instant organization."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Exceptional historical data retention (7 years)",
+          "Business and personal cards use same portal"
+        ]
+      }
+    },
+    {
+      "id": "paypal",
+      "bankSlug": "paypal-export-csv",
+      "bankName": "PayPal",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export PayPal transactions?",
+          "a": "Log in to PayPal, go to Activity, click Statements, then select Custom Date Range and download CSV."
+        },
+        {
+          "q": "Can I export PayPal business account transactions?",
+          "a": "Yes, both personal and business PayPal accounts support CSV exports."
+        },
+        {
+          "q": "How many transactions can I export at once?",
+          "a": "PayPal allows downloads with up to several years of transaction history."
+        },
+        {
+          "q": "Does PayPal support QuickBooks format?",
+          "a": "PayPal primarily supports CSV, but you can import CSV into QuickBooks."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to PayPal",
+          "body": "Visit paypal.com and sign in."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Click on Activity in the top navigation."
+        },
+        {
+          "title": "Access Statements",
+          "body": "Click Statements, then select Custom or Activity."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Choose your date range and click Download."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer for organized records."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Includes fees and currency conversions",
+          "Different format than traditional banks"
+        ]
+      }
+    },
+    {
+      "id": "stripe",
+      "bankSlug": "stripe-export-csv",
+      "bankName": "Stripe",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Stripe transactions?",
+          "a": "Log in to Stripe Dashboard, go to Payments, then click Export and choose CSV format."
+        },
+        {
+          "q": "Can I export Stripe payouts?",
+          "a": "Yes, you can export both payments and payouts separately or combined."
+        },
+        {
+          "q": "What data is included in Stripe exports?",
+          "a": "Stripe exports include transaction amounts, fees, customer info, and metadata."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Stripe allows exports for your entire transaction history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Stripe",
+          "body": "Visit dashboard.stripe.com and sign in."
+        },
+        {
+          "title": "Go to Payments",
+          "body": "Navigate to Payments or Payouts section."
+        },
+        {
+          "title": "Export data",
+          "body": "Click Export and select your date range."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Choose CSV format and download."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer for bookkeeping."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Developer-focused export options",
+          "Includes detailed fee breakdown"
+        ]
+      }
+    },
+    {
+      "id": "square",
+      "bankSlug": "square-export-csv",
+      "bankName": "Square",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I download Square transactions?",
+          "a": "Log in to Square Dashboard, go to Transactions, click Export, and choose CSV format."
+        },
+        {
+          "q": "Can I export Square sales and fees?",
+          "a": "Yes, Square allows you to export sales, refunds, and fees in detailed CSV format."
+        },
+        {
+          "q": "What date range can I export?",
+          "a": "Square allows exports for your entire transaction history."
+        },
+        {
+          "q": "Does Square integrate with QuickBooks?",
+          "a": "Square has direct QuickBooks integration, but you can also export CSV for manual import."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Square",
+          "body": "Visit squareup.com/dashboard and sign in."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions or Sales."
+        },
+        {
+          "title": "Export data",
+          "body": "Click Export and select date range."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Choose CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Includes POS and online transactions",
+          "Separate export for payments and deposits"
+        ]
+      }
+    },
+    {
+      "id": "wise-business",
+      "bankSlug": "wise-business-export-csv",
+      "bankName": "Wise Business",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Wise Business transactions?",
+          "a": "Log in to Wise, go to Account, select Statements, then download CSV for your desired date range."
+        },
+        {
+          "q": "Can I export multi-currency transactions?",
+          "a": "Yes, Wise exports include all currencies with conversion details."
+        },
+        {
+          "q": "What formats does Wise support?",
+          "a": "Wise supports CSV and OFX formats for transaction exports."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "Wise allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Wise",
+          "body": "Visit wise.com and sign in to your business account."
+        },
+        {
+          "title": "Go to Account",
+          "body": "Select your balance or account."
+        },
+        {
+          "title": "Download Statement",
+          "body": "Click Statements and select date range."
+        },
+        {
+          "title": "Export CSV",
+          "body": "Choose CSV format and download."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Includes currency conversion details",
+          "Multi-currency statements"
+        ]
+      }
+    },
+    {
+      "id": "payoneer",
+      "bankSlug": "payoneer-export-csv",
+      "bankName": "Payoneer",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Payoneer transactions?",
+          "a": "Log in to Payoneer, go to Activity, then click Export and select CSV format."
+        },
+        {
+          "q": "Can I export specific transaction types?",
+          "a": "Yes, Payoneer allows filtering by transaction type before export."
+        },
+        {
+          "q": "What data is included?",
+          "a": "Payoneer exports include amounts, fees, currencies, and transaction details."
+        },
+        {
+          "q": "How many months can I export?",
+          "a": "Payoneer allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Payoneer",
+          "body": "Visit payoneer.com and sign in."
+        },
+        {
+          "title": "Go to Activity",
+          "body": "Navigate to Activity or Transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export and select date range."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Choose CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "International payment focus",
+          "Multi-currency support"
+        ]
+      }
+    },
+    {
+      "id": "brex",
+      "bankSlug": "brex-export-csv",
+      "bankName": "Brex",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Brex transactions?",
+          "a": "Log in to Brex Dashboard, go to Transactions, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I export Brex card transactions?",
+          "a": "Yes, Brex supports exports for both card and cash account transactions."
+        },
+        {
+          "q": "Does Brex integrate with accounting software?",
+          "a": "Brex has integrations with QuickBooks, Xero, NetSuite, and supports CSV export."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Brex allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Brex",
+          "body": "Visit dashboard.brex.com and sign in."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export and select date range."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Choose CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Startup-focused features",
+          "Rich transaction metadata"
+        ]
+      }
+    },
+    {
+      "id": "mercury",
+      "bankSlug": "mercury-export-csv",
+      "bankName": "Mercury",
+      "formats": [
+        "csv",
+        "ofx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.8,
+      "faq": [
+        {
+          "q": "How do I export Mercury transactions?",
+          "a": "Log in to Mercury, go to Transactions, click Export, and choose CSV format."
+        },
+        {
+          "q": "Can I export Mercury checking transactions?",
+          "a": "Yes, Mercury supports CSV exports for all account types."
+        },
+        {
+          "q": "Does Mercury support accounting integrations?",
+          "a": "Mercury integrates with QuickBooks, Xero, and supports CSV/OFX export."
+        },
+        {
+          "q": "What is the export date range?",
+          "a": "Mercury allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Mercury",
+          "body": "Visit mercury.com and sign in."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions tab."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export button."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Startup banking focus",
+          "Developer-friendly API"
+        ]
+      }
+    },
+    {
+      "id": "novo",
+      "bankSlug": "novo-export-csv",
+      "bankName": "Novo",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Novo transactions?",
+          "a": "Log in to Novo, go to Transactions, click the three dots, then Export to CSV."
+        },
+        {
+          "q": "Can I export Novo business account data?",
+          "a": "Yes, Novo business checking supports CSV exports."
+        },
+        {
+          "q": "What formats does Novo support?",
+          "a": "Novo primarily supports CSV format for transaction exports."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Novo allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Novo",
+          "body": "Visit banknovo.com and sign in."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click menu (three dots) and select Export."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Save the CSV file."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Small business focus",
+          "No monthly fees"
+        ]
+      }
+    },
+    {
+      "id": "bluevine",
+      "bankSlug": "bluevine-export-csv",
+      "bankName": "BlueVine",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export BlueVine transactions?",
+          "a": "Log in to BlueVine, go to Transactions, click Export, and download CSV."
+        },
+        {
+          "q": "Can I export BlueVine checking account data?",
+          "a": "Yes, BlueVine business checking supports transaction exports."
+        },
+        {
+          "q": "Does BlueVine integrate with QuickBooks?",
+          "a": "BlueVine has QuickBooks integration and supports CSV export."
+        },
+        {
+          "q": "What is the export limit?",
+          "a": "BlueVine allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to BlueVine",
+          "body": "Visit bluevine.com/dashboard and sign in."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export button."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Save the CSV file."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Business banking focus"
+        ]
+      }
+    },
+    {
+      "id": "relayfi",
+      "bankSlug": "relayfi-export-csv",
+      "bankName": "Relay",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Relay transactions?",
+          "a": "Log in to Relay, select your account, go to Transactions, then click Export to CSV."
+        },
+        {
+          "q": "Can I export multiple Relay accounts?",
+          "a": "Yes, you can export each account separately or combined."
+        },
+        {
+          "q": "Does Relay support QuickBooks?",
+          "a": "Relay has direct QuickBooks integration and supports CSV export."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "Relay allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Relay",
+          "body": "Visit relayfi.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose the account to export."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions."
+        },
+        {
+          "title": "Export CSV",
+          "body": "Click Export and download."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Multiple sub-accounts feature",
+          "No fees"
+        ]
+      }
+    },
+    {
+      "id": "northone",
+      "bankSlug": "northone-export-csv",
+      "bankName": "NorthOne",
+      "formats": [
+        "csv"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download NorthOne transactions?",
+          "a": "Log in to NorthOne, go to Transactions, click Export, and select CSV format."
+        },
+        {
+          "q": "Can I export NorthOne business account data?",
+          "a": "Yes, NorthOne business checking supports CSV exports."
+        },
+        {
+          "q": "Does NorthOne integrate with accounting software?",
+          "a": "NorthOne integrates with QuickBooks and supports CSV export."
+        },
+        {
+          "q": "What is the export date range?",
+          "a": "NorthOne allows exports for your entire account history."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to NorthOne",
+          "body": "Visit northone.com and sign in."
+        },
+        {
+          "title": "Go to Transactions",
+          "body": "Navigate to Transactions."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export button."
+        },
+        {
+          "title": "Download CSV",
+          "body": "Select CSV and save."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Small business banking"
+        ]
+      }
+    },
+    {
+      "id": "axos-business",
+      "bankSlug": "axos-business-export-csv",
+      "bankName": "Axos Business",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Axos Business transactions?",
+          "a": "Log in to Axos Bank, select your account, go to Statements, then click Export and choose CSV."
+        },
+        {
+          "q": "Can I export Axos business checking data?",
+          "a": "Yes, Axos business accounts support CSV, OFX, and QFX exports."
+        },
+        {
+          "q": "How far back can I download?",
+          "a": "Axos allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Axos support QuickBooks?",
+          "a": "Yes, Axos supports QBO, OFX, and CSV formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in to Axos",
+          "body": "Visit axosbank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your business account."
+        },
+        {
+          "title": "Go to Statements",
+          "body": "Navigate to Statements & Documents."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export and select CSV."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Online-only bank"
+        ]
+      }
+    },
+    {
+      "id": "first-horizon",
+      "bankSlug": "first-horizon-export-csv",
+      "bankName": "First Horizon Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export First Horizon transactions?",
+          "a": "Sign in to First Horizon Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I download business transactions?",
+          "a": "Yes, First Horizon business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I export?",
+          "a": "First Horizon allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "First Horizon supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to firsthorizon.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Formerly First Tennessee"
+        ]
+      }
+    },
+    {
+      "id": "banner",
+      "bankSlug": "banner-export-csv",
+      "bankName": "Banner Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Banner Bank transactions?",
+          "a": "Log in to Banner Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I export business account data?",
+          "a": "Yes, Banner business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "Banner allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Banner support OFX?",
+          "a": "Yes, Banner supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit bannerbank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Pacific Northwest regional"
+        ]
+      }
+    },
+    {
+      "id": "old-national",
+      "bankSlug": "old-national-export-csv",
+      "bankName": "Old National Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Old National transactions?",
+          "a": "Sign in to Old National Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I download business transactions?",
+          "a": "Yes, Old National business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Old National allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does Old National support?",
+          "a": "Old National supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to oldnational.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Midwest regional bank"
+        ]
+      }
+    },
+    {
+      "id": "first-hawaiian",
+      "bankSlug": "first-hawaiian-export-csv",
+      "bankName": "First Hawaiian Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export First Hawaiian transactions?",
+          "a": "Log in to First Hawaiian Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I export business account data?",
+          "a": "Yes, First Hawaiian business accounts support transaction exports."
+        },
+        {
+          "q": "What is the download limit?",
+          "a": "First Hawaiian allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "First Hawaiian supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit fhb.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Hawaii's largest bank"
+        ]
+      }
+    },
+    {
+      "id": "independence-bank",
+      "bankSlug": "independence-bank-export-csv",
+      "bankName": "Independence Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.6,
+      "faq": [
+        {
+          "q": "How do I download Independence Bank transactions?",
+          "a": "Sign in to Independence Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Independence business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I download?",
+          "a": "Independence allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Independence supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to your bank's online portal."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "pinnacle",
+      "bankSlug": "pinnacle-export-csv",
+      "bankName": "Pinnacle Financial Partners",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Pinnacle transactions?",
+          "a": "Log in to Pinnacle Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, Pinnacle business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "Pinnacle allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Pinnacle support OFX?",
+          "a": "Yes, Pinnacle supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit pnfp.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Southeast regional bank"
+        ]
+      }
+    },
+    {
+      "id": "associated-bank",
+      "bankSlug": "associated-bank-export-csv",
+      "bankName": "Associated Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Associated Bank transactions?",
+          "a": "Sign in to Associated Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Associated business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Associated allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does Associated support?",
+          "a": "Associated supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to associatedbank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Midwest regional bank"
+        ]
+      }
+    },
+    {
+      "id": "texas-capital",
+      "bankSlug": "texas-capital-export-csv",
+      "bankName": "Texas Capital Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Texas Capital transactions?",
+          "a": "Log in to Texas Capital Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, Texas Capital business accounts support transaction exports."
+        },
+        {
+          "q": "What is the download limit?",
+          "a": "Texas Capital allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "Texas Capital supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit texascapitalbank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Business banking focus"
+        ]
+      }
+    },
+    {
+      "id": "western-alliance",
+      "bankSlug": "western-alliance-export-csv",
+      "bankName": "Western Alliance Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Western Alliance transactions?",
+          "a": "Sign in to Western Alliance Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Western Alliance business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I download?",
+          "a": "Western Alliance allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Western Alliance supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to westernalliancebank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Western US regional"
+        ]
+      }
+    },
+    {
+      "id": "umpqua",
+      "bankSlug": "umpqua-export-csv",
+      "bankName": "Umpqua Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export Umpqua transactions?",
+          "a": "Log in to Umpqua Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, Umpqua business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "Umpqua allows exports for up to 18 months."
+        },
+        {
+          "q": "Does Umpqua support OFX?",
+          "a": "Yes, Umpqua supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit umpquabank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Pacific Northwest regional"
+        ]
+      }
+    },
+    {
+      "id": "columbia-bank",
+      "bankSlug": "columbia-bank-export-csv",
+      "bankName": "Columbia Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Columbia Bank transactions?",
+          "a": "Sign in to Columbia Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Columbia business accounts support CSV exports."
+        },
+        {
+          "q": "How far back can I export?",
+          "a": "Columbia allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats does Columbia support?",
+          "a": "Columbia supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to columbiabank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Pacific Northwest regional"
+        ]
+      }
+    },
+    {
+      "id": "nbkc",
+      "bankSlug": "nbkc-export-csv",
+      "bankName": "NBKC Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I export NBKC transactions?",
+          "a": "Log in to NBKC Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, NBKC business accounts support transaction exports."
+        },
+        {
+          "q": "What is the download limit?",
+          "a": "NBKC allows exports for up to 18 months."
+        },
+        {
+          "q": "What file formats are available?",
+          "a": "NBKC supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit nbkc.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Online-focused bank"
+        ]
+      }
+    },
+    {
+      "id": "live-oak-bank",
+      "bankSlug": "live-oak-bank-export-csv",
+      "bankName": "Live Oak Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.7,
+      "faq": [
+        {
+          "q": "How do I download Live Oak transactions?",
+          "a": "Sign in to Live Oak Online Banking, select your account, click Download, and choose CSV."
+        },
+        {
+          "q": "Can I export business transactions?",
+          "a": "Yes, Live Oak business accounts support CSV exports."
+        },
+        {
+          "q": "How many months can I download?",
+          "a": "Live Oak allows exports for up to 18 months."
+        },
+        {
+          "q": "What formats are supported?",
+          "a": "Live Oak supports CSV, OFX, and QFX."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Sign in",
+          "body": "Log in to liveoakbank.com."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Download",
+          "body": "Click Download Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our tool."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Small business lending focus"
+        ]
+      }
+    },
+    {
+      "id": "incredibank",
+      "bankSlug": "incredibank-export-csv",
+      "bankName": "IncrediBank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "active",
+      "priority": 0.6,
+      "faq": [
+        {
+          "q": "How do I export IncrediBank transactions?",
+          "a": "Log in to IncrediBank Online Banking, select your account, click Export, and choose CSV."
+        },
+        {
+          "q": "Can I download business account data?",
+          "a": "Yes, IncrediBank business accounts support transaction exports."
+        },
+        {
+          "q": "What is the maximum export period?",
+          "a": "IncrediBank allows exports for up to 18 months."
+        },
+        {
+          "q": "Does IncrediBank support OFX?",
+          "a": "Yes, IncrediBank supports CSV, OFX, and QFX formats."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Log in",
+          "body": "Visit incredibank.com and sign in."
+        },
+        {
+          "title": "Select account",
+          "body": "Choose your account."
+        },
+        {
+          "title": "Export",
+          "body": "Click Export Transactions."
+        },
+        {
+          "title": "Choose CSV",
+          "body": "Select CSV format."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": []
+      }
+    },
+    {
+      "id": "bbva-us",
+      "bankSlug": "bbva-us-export-csv",
+      "bankName": "BBVA USA",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to BBVA USA?",
+          "a": "BBVA USA was acquired by PNC Bank in 2021. Accounts have been migrated to PNC."
+        },
+        {
+          "q": "Can I still access BBVA transactions?",
+          "a": "Former BBVA customers should now use PNC's online banking to access transaction history."
+        },
+        {
+          "q": "How do I export old BBVA data?",
+          "a": "Log in to PNC online banking with your migrated credentials to access and export historical transactions."
+        },
+        {
+          "q": "Where should I go for banking now?",
+          "a": "Visit pnc.com to access your account (formerly BBVA USA)."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "BBVA USA was acquired by PNC Bank. Please visit pnc.com for account access."
+        },
+        {
+          "title": "Log in to PNC",
+          "body": "Use your migrated credentials at pnc.com."
+        },
+        {
+          "title": "Access history",
+          "body": "Your BBVA transaction history is available in PNC."
+        },
+        {
+          "title": "Export",
+          "body": "Follow PNC's export process for CSV downloads."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Acquired by PNC in 2021 - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "peoples-united",
+      "bankSlug": "peoples-united-export-csv",
+      "bankName": "People's United Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to People's United Bank?",
+          "a": "People's United Bank merged with M&T Bank in 2022. Accounts have been migrated."
+        },
+        {
+          "q": "Can I still export People's United transactions?",
+          "a": "Former customers should use M&T Bank's online banking to access and export transactions."
+        },
+        {
+          "q": "How do I access my old account?",
+          "a": "Log in to M&T Bank with your migrated credentials at mtb.com."
+        },
+        {
+          "q": "Where should I go now?",
+          "a": "Visit mtb.com to access your account (formerly People's United)."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "People's United merged with M&T Bank. Visit mtb.com for account access."
+        },
+        {
+          "title": "Log in to M&T",
+          "body": "Use your migrated credentials at mtb.com."
+        },
+        {
+          "title": "Access history",
+          "body": "Your People's United history is in M&T."
+        },
+        {
+          "title": "Export",
+          "body": "Follow M&T's export process."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Merged with M&T Bank in 2022 - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "signature-bank",
+      "bankSlug": "signature-bank-export-csv",
+      "bankName": "Signature Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to Signature Bank?",
+          "a": "Signature Bank was closed by regulators in March 2023. Deposits were transferred to Flagstar Bank (now New York Community Bank)."
+        },
+        {
+          "q": "How do I access my Signature Bank data?",
+          "a": "Former Signature customers should contact New York Community Bank / Flagstar for account access and historical data."
+        },
+        {
+          "q": "Can I still export transactions?",
+          "a": "Contact New York Community Bank at mynycb.com for assistance with historical transaction data."
+        },
+        {
+          "q": "Where should I go for help?",
+          "a": "Visit mynycb.com or flagstar.com for account assistance."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "Signature Bank was closed in 2023. Deposits transferred to Flagstar/NYCB."
+        },
+        {
+          "title": "Contact NYCB",
+          "body": "Visit mynycb.com or call for account assistance."
+        },
+        {
+          "title": "Request data",
+          "body": "Ask for historical transaction export assistance."
+        },
+        {
+          "title": "Export if available",
+          "body": "Follow provided export process."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Defunct - closed March 2023 - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "pacwest",
+      "bankSlug": "pacwest-export-csv",
+      "bankName": "PacWest Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to PacWest Bank?",
+          "a": "PacWest Bank merged with Banc of California in 2023 to form a new institution."
+        },
+        {
+          "q": "How do I access my PacWest transactions?",
+          "a": "Former PacWest customers should use the new merged bank's online banking for transaction history."
+        },
+        {
+          "q": "Can I still export my data?",
+          "a": "Contact the merged institution for assistance with exporting historical transaction data."
+        },
+        {
+          "q": "Where should I go now?",
+          "a": "Visit bancofcal.com for information about the merged bank."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "PacWest merged with Banc of California in 2023."
+        },
+        {
+          "title": "Visit new bank",
+          "body": "Go to bancofcal.com for account access."
+        },
+        {
+          "title": "Log in",
+          "body": "Use your migrated credentials."
+        },
+        {
+          "title": "Export",
+          "body": "Follow the new bank's export process."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Merged with Banc of California 2023 - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "silicon-valley-bank",
+      "bankSlug": "silicon-valley-bank-export-csv",
+      "bankName": "Silicon Valley Bank (SVB)",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to Silicon Valley Bank?",
+          "a": "Silicon Valley Bank failed in March 2023 and was taken over by First Citizens Bank."
+        },
+        {
+          "q": "How do I access my SVB data?",
+          "a": "Former SVB customers should visit First Citizens Bank at firstcitizens.com for account access."
+        },
+        {
+          "q": "Can I export SVB transactions?",
+          "a": "Contact First Citizens Bank for assistance with historical SVB transaction data."
+        },
+        {
+          "q": "Where should I go now?",
+          "a": "Visit firstcitizens.com for SVB account access and support."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "SVB failed in March 2023. Assets acquired by First Citizens Bank."
+        },
+        {
+          "title": "Visit First Citizens",
+          "body": "Go to firstcitizens.com for account access."
+        },
+        {
+          "title": "Log in",
+          "body": "Use your migrated credentials."
+        },
+        {
+          "title": "Request export",
+          "body": "Follow First Citizens export process or contact support."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Failed March 2023, acquired by First Citizens - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "first-republic",
+      "bankSlug": "first-republic-export-csv",
+      "bankName": "First Republic Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to First Republic Bank?",
+          "a": "First Republic Bank failed in May 2023 and was acquired by JPMorgan Chase."
+        },
+        {
+          "q": "How do I access my First Republic data?",
+          "a": "Former First Republic customers should visit chase.com for account access."
+        },
+        {
+          "q": "Can I export First Republic transactions?",
+          "a": "Contact Chase for assistance with historical First Republic transaction data."
+        },
+        {
+          "q": "Where should I go now?",
+          "a": "Visit chase.com for First Republic account access and support."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "First Republic failed in May 2023. Acquired by JPMorgan Chase."
+        },
+        {
+          "title": "Visit Chase",
+          "body": "Go to chase.com for account access."
+        },
+        {
+          "title": "Log in",
+          "body": "Use your migrated credentials."
+        },
+        {
+          "title": "Export",
+          "body": "Follow Chase export process for historical data."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Failed May 2023, acquired by Chase - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "suntrust",
+      "bankSlug": "suntrust-export-csv",
+      "bankName": "SunTrust Bank",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to SunTrust?",
+          "a": "SunTrust merged with BB&T in 2019 to form Truist."
+        },
+        {
+          "q": "How do I access my SunTrust data?",
+          "a": "Former SunTrust customers should visit truist.com for account access."
+        },
+        {
+          "q": "Can I export SunTrust transactions?",
+          "a": "Log in to Truist online banking to access and export historical SunTrust transactions."
+        },
+        {
+          "q": "Where should I go now?",
+          "a": "Visit truist.com for account access (formerly SunTrust)."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "SunTrust merged with BB&T to form Truist in 2019."
+        },
+        {
+          "title": "Visit Truist",
+          "body": "Go to truist.com for account access."
+        },
+        {
+          "title": "Log in",
+          "body": "Use your migrated credentials."
+        },
+        {
+          "title": "Export",
+          "body": "Follow Truist export process."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Merged to form Truist 2019 - marked noindex"
+        ]
+      }
+    },
+    {
+      "id": "bbt",
+      "bankSlug": "bbt-export-csv",
+      "bankName": "BB&T (Branch Banking and Trust)",
+      "formats": [
+        "csv",
+        "ofx",
+        "qfx"
+      ],
+      "primaryFormat": "csv",
+      "status": "noindex",
+      "priority": 0.5,
+      "faq": [
+        {
+          "q": "What happened to BB&T?",
+          "a": "BB&T merged with SunTrust in 2019 to form Truist."
+        },
+        {
+          "q": "How do I access my BB&T data?",
+          "a": "Former BB&T customers should visit truist.com for account access."
+        },
+        {
+          "q": "Can I export BB&T transactions?",
+          "a": "Log in to Truist online banking to access and export historical BB&T transactions."
+        },
+        {
+          "q": "Where should I go now?",
+          "a": "Visit truist.com for account access (formerly BB&T)."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Note",
+          "body": "BB&T merged with SunTrust to form Truist in 2019."
+        },
+        {
+          "title": "Visit Truist",
+          "body": "Go to truist.com for account access."
+        },
+        {
+          "title": "Log in",
+          "body": "Use your migrated credentials."
+        },
+        {
+          "title": "Export",
+          "body": "Follow Truist export process."
+        },
+        {
+          "title": "Categorize",
+          "body": "Upload to our categorizer."
+        }
+      ],
+      "notes": {
+        "quirks": [
+          "Merged to form Truist 2019 - marked noindex"
+        ]
+      }
+    }
+  ]
+}

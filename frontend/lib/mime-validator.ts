@@ -102,7 +102,13 @@ export async function validateMimeType(buffer: Buffer, filename: string): Promis
 }
 
 /**
- * Validate ZIP file contents
+ * Validate ZIP file contents with security checks
+ * 
+ * Protects against:
+ * - ZIP bombs (excessive uncompressed size)
+ * - Path traversal (../ in paths)
+ * - Nested archives
+ * - Too many entries
  */
 async function validateZipContents(buffer: Buffer): Promise<MimeValidationResult> {
   try {
@@ -111,7 +117,11 @@ async function validateZipContents(buffer: Buffer): Promise<MimeValidationResult
     const zip = await JSZip.loadAsync(buffer);
     
     const entries = Object.keys(zip.files);
+    const maxUnzipMB = parseInt(process.env.FREE_MAX_UNZIP_MB || '50', 10);
+    const maxEntries = 500;
+    const maxUnzipBytes = maxUnzipMB * 1024 * 1024;
     
+    // Check 1: Empty ZIP
     if (entries.length === 0) {
       return {
         valid: false,
@@ -120,17 +130,60 @@ async function validateZipContents(buffer: Buffer): Promise<MimeValidationResult
       };
     }
     
+    // Check 2: Too many entries (DoS protection)
+    if (entries.length > maxEntries) {
+      return {
+        valid: false,
+        error: `ZIP contains too many files (${entries.length}). Maximum ${maxEntries} allowed.`,
+        code: 'ZIP_SAFETY_VIOLATION'
+      };
+    }
+    
+    let totalUncompressed = 0;
+    
     // Check each entry
     for (const entry of entries) {
-      if (zip.files[entry].dir) continue; // Skip directories
+      const file = zip.files[entry];
       
+      if (file.dir) continue; // Skip directories
+      
+      // Check 3: Path traversal (../ or absolute paths)
+      if (entry.includes('../') || entry.startsWith('/') || entry.includes('..\\') || entry.match(/^[A-Z]:\\/)) {
+        return {
+          valid: false,
+          error: `ZIP contains unsafe path: ${entry}`,
+          code: 'ZIP_SAFETY_VIOLATION'
+        };
+      }
+      
+      // Check 4: Nested archives (security risk)
       const ext = entry.split('.').pop()?.toLowerCase();
+      if (ext === 'zip' || ext === 'tar' || ext === 'gz' || ext === '7z' || ext === 'rar') {
+        return {
+          valid: false,
+          error: 'ZIP contains nested archive files (not allowed)',
+          code: 'ZIP_SAFETY_VIOLATION'
+        };
+      }
       
+      // Check 5: Allowed file types
       if (!ext || !ALLOWED_EXTENSIONS.includes(ext)) {
         return {
           valid: false,
-          error: `ZIP contains unsupported file: ${entry}`,
+          error: `ZIP contains unsupported file: ${entry} (${ext})`,
           code: 'ZIP_UNSUPPORTED_MIME'
+        };
+      }
+      
+      // Check 6: Track total uncompressed size (ZIP bomb protection)
+      const uncompressedSize = file._data?.uncompressedSize || 0;
+      totalUncompressed += uncompressedSize;
+      
+      if (totalUncompressed > maxUnzipBytes) {
+        return {
+          valid: false,
+          error: `ZIP total uncompressed size exceeds ${maxUnzipMB}MB limit`,
+          code: 'ZIP_SAFETY_VIOLATION'
         };
       }
     }

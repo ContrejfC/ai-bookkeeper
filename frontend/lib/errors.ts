@@ -10,6 +10,7 @@ export type ErrorCode =
   | 'FILE_TOO_LARGE'
   | 'UNSUPPORTED_TYPE'
   | 'ZIP_UNSUPPORTED_MIME'
+  | 'ZIP_SAFETY_VIOLATION'
   | 'MALFORMED_FILE'
   | 'ENCRYPTED_PDF'
   | 'PARSE_TIMEOUT'
@@ -77,6 +78,19 @@ export function getErrorDetails(
         'Remove any unsupported files from the archive',
         'Extract and upload files individually'
       ]
+    },
+    
+    ZIP_SAFETY_VIOLATION: {
+      code: 'ZIP_SAFETY_VIOLATION',
+      message: 'ZIP file failed safety checks (too large, nested archives, or unsafe paths).',
+      repairTips: [
+        'Ensure total uncompressed size is under 50MB',
+        'Remove nested ZIP/archive files',
+        'Ensure file paths don't contain ../ or absolute paths',
+        'Limit to 500 files per ZIP',
+        'Extract and upload files individually instead'
+      ],
+      helpLink: '#help-zip-safety'
     },
     
     MALFORMED_FILE: {

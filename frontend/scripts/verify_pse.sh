@@ -1,41 +1,45 @@
 #!/bin/bash
-
 # PSE Verification Script
-# =======================
-# Quick verification commands for PSE guide pages
+# Clean zsh-safe commands
 
 set -e
 
-BASE_URL="${NEXT_PUBLIC_SITE_URL:-https://ai-bookkeeper.app}"
+BASE="https://ai-bookkeeper.app"
 
-echo "🧪 Verifying PSE Implementation..."
+echo "🧪 PSE Verification"
 echo ""
 
-# Active guide 200
-echo "1️⃣ Active guide (Chase) should return 200:"
-curl -sI "${BASE_URL}/guides/chase-export-csv" | head -5
+# 1) Active guide returns 200
+echo "1️⃣ Active guide (chase-export-csv):"
+curl -sI ${BASE}/guides/chase-export-csv | head -5
 echo ""
 
-# Noindex guide 200 and robots tag
-echo "2️⃣ Noindex guide (People's United) should return 200 with noindex:"
-curl -s "${BASE_URL}/guides/peoples-united-export-csv" | grep -i 'name="robots"' || echo "⚠️ Robots meta tag not found in HTML"
+# 2) Count JSON-LD blocks on the page
+echo "2️⃣ JSON-LD count (should be ≥2):"
+COUNT=$(curl -s ${BASE}/guides/chase-export-csv | grep -c 'application/ld+json' || echo 0)
+echo "Found: $COUNT"
 echo ""
 
-# Sitemap contains guides
-echo "3️⃣ Sitemap should contain ≥50 guide URLs:"
-GUIDE_COUNT=$(curl -s "${BASE_URL}/sitemap.xml" | grep -c '/guides/' || echo "0")
-echo "Found: ${GUIDE_COUNT} guide URLs"
-if [ "$GUIDE_COUNT" -ge 50 ]; then
-  echo "✅ Pass: ${GUIDE_COUNT} ≥ 50"
-else
-  echo "❌ Fail: ${GUIDE_COUNT} < 50"
-fi
+# 3) Noindex page has robots meta
+echo "3️⃣ Noindex page robots meta:"
+curl -s ${BASE}/guides/peoples-united-export-csv | grep -i 'name="robots"' || echo "⚠️ Not found"
 echo ""
 
-# OG endpoint 200
-echo "4️⃣ OG image endpoint should return 200:"
-curl -sI "${BASE_URL}/api/og/pse?slug=chase-export-csv" | head -5
+# 4) Noindex page absent from sitemap
+echo "4️⃣ Noindex page NOT in sitemap (should be 0):"
+COUNT=$(curl -s ${BASE}/sitemap.xml | grep -c '/guides/peoples-united' || echo 0)
+echo "Count: $COUNT"
 echo ""
 
-echo "✅ Verification complete!"
+# 5) Sitemap has many guides
+echo "5️⃣ Sitemap guide count (should be ≥50):"
+COUNT=$(curl -s ${BASE}/sitemap.xml | grep -c '/guides/' || echo 0)
+echo "Found: $COUNT guide URLs"
+echo ""
 
+# 6) OG endpoint works and is cacheable
+echo "6️⃣ OG endpoint:"
+curl -sI "${BASE}/api/og/pse?slug=chase-export-csv" | grep -Ei 'HTTP/|content-type|cache-control'
+echo ""
+
+echo "✅ Verification complete"

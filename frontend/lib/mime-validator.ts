@@ -176,7 +176,10 @@ async function validateZipContents(buffer: Buffer): Promise<MimeValidationResult
       }
       
       // Check 6: Track total uncompressed size (ZIP bomb protection)
-      const uncompressedSize = file._data?.uncompressedSize || 0;
+      // Note: JSZip doesn't expose uncompressedSize directly in types
+      // We'll estimate by reading file data
+      const fileData = await file.async('uint8array');
+      const uncompressedSize = fileData.length;
       totalUncompressed += uncompressedSize;
       
       if (totalUncompressed > maxUnzipBytes) {

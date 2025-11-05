@@ -23,6 +23,23 @@ const FREE_RETENTION_HOURS = parseInt(process.env.FREE_RETENTION_HOURS || '24', 
 
 export async function POST(request: NextRequest) {
   try {
+    // Maintenance mode kill-switch
+    if (process.env.MAINTENANCE_MODE === 'true') {
+      return NextResponse.json(
+        {
+          code: 'MAINTENANCE',
+          message: 'Service temporarily unavailable for maintenance. Please try again shortly.',
+          retryAfterSec: 120
+        },
+        {
+          status: 503,
+          headers: {
+            'Retry-After': '120'
+          }
+        }
+      );
+    }
+    
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const consentTraining = formData.get('consentTraining') === 'true';

@@ -11,6 +11,7 @@ import { join } from 'path';
 import { exportCsvSchema } from '@/lib/validators';
 import { loadFreeToolConfig } from '@/lib/config-server';
 import { checkEmailRateLimit } from '@/lib/rateLimit';
+import { sanitizeCsvField } from '@/lib/csv_sanitize';
 
 export async function POST(request: NextRequest) {
   try {
@@ -164,16 +165,16 @@ function generateWatermarkedCSV(transactions: any[]): string {
   const maxRows = config.max_rows || 500;
   const cappedTransactions = transactions.slice(0, maxRows);
   
-  // Add data rows
+  // Add data rows with formula injection prevention
   for (const txn of cappedTransactions) {
     const row = [
-      escapeCSV(txn.date || txn.post_date || ''),
-      escapeCSV((txn.description || '').slice(0, 80)), // Truncate for privacy
-      (txn.amount || 0).toFixed(2),
-      escapeCSV(txn.category || 'Uncategorized'),
-      (txn.confidence || 0).toFixed(2),
-      escapeCSV(txn.notes || ''),
-      config.watermark?.column_value || 'watermarked'
+      sanitizeCsvField(escapeCSV(txn.date || txn.post_date || '')),
+      sanitizeCsvField(escapeCSV((txn.description || '').slice(0, 80))), // Truncate for privacy
+      sanitizeCsvField((txn.amount || 0).toFixed(2)),
+      sanitizeCsvField(escapeCSV(txn.category || 'Uncategorized')),
+      sanitizeCsvField((txn.confidence || 0).toFixed(2)),
+      sanitizeCsvField(escapeCSV(txn.notes || '')),
+      sanitizeCsvField(config.watermark?.column_value || 'watermarked')
     ];
     
     lines.push(row.join(','));

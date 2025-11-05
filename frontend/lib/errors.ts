@@ -86,7 +86,7 @@ export function getErrorDetails(
       repairTips: [
         'Ensure total uncompressed size is under 50MB',
         'Remove nested ZIP/archive files',
-        'Ensure file paths don't contain ../ or absolute paths',
+        'Ensure file paths do not contain ../ or absolute paths',
         'Limit to 500 files per ZIP',
         'Extract and upload files individually instead'
       ],

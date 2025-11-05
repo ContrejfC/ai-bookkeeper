@@ -11,6 +11,21 @@ import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
+    // Maintenance mode kill-switch
+    if (process.env.MAINTENANCE_MODE === 'true') {
+      return NextResponse.json(
+        {
+          code: 'MAINTENANCE',
+          message: 'Service temporarily unavailable for maintenance.',
+          retryAfterSec: 120
+        },
+        {
+          status: 503,
+          headers: { 'Retry-After': '120' }
+        }
+      );
+    }
+    
     const body = await request.json();
     const { email, uploadId, rows } = body;
     
